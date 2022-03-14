@@ -13,6 +13,14 @@
 #include "base/files/file_path.h"
 #include "base/memory/weak_ptr.h"
 
+namespace {
+constexpr char kAdNotificationTaskName[] =
+    "ad_notification_timing_federated_task";
+constexpr int kAdNotificationTaskId = 0;
+constexpr int kMaxNumberOfRecords = 50;
+constexpr int kMaxRetentionDays = 30;
+}  // namespace
+
 namespace brave_federated {
 
 class AsyncDataStore;
