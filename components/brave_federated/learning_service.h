@@ -3,6 +3,9 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this file,
  * You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+#ifndef BRAVE_COMPONENTS_BRAVE_FEDERATED_LEARNING_SERVICE_H_
+#define BRAVE_COMPONENTS_BRAVE_FEDERATED_LEARNING_SERVICE_H_
+
 #include <map>
 #include <string>
 
@@ -12,16 +15,12 @@
 namespace brave_federated {
 
 class DataStoreService;
-struct AdNotificationTimingTaskLog;
 class EligibilityService;
-class Client;
-class Model;
+class FederatedClient;
 
-class LearningService: public Observer {
+class LearningService : public Observer {
  public:
-  LearningService(
-      DataStoreService* data_store_service,
-      EligibilityService* eligibility_service);
+  explicit LearningService(EligibilityService* eligibility_service);
   ~LearningService() override;
 
   void StartParticipating();
@@ -30,12 +29,10 @@ class LearningService: public Observer {
   void OnEligibilityChanged(bool is_eligible) override;
 
  private:
-  void AdNotificationLogsLoadComplete(
-      base::flat_map<int, AdNotificationTimingTaskLog> logs);
-
-  DataStoreService* data_store_service_;
   EligibilityService* eligibility_service_;
-  std::map<std::string, Client*> clients_;
+  std::map<std::string, FederatedClient*> clients_;
 };
 
-}
+}  // namespace brave_federated
+
+#endif  // BRAVE_COMPONENTS_BRAVE_FEDERATED_LEARNING_SERVICE_H_

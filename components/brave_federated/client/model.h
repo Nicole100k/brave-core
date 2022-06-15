@@ -7,21 +7,50 @@
 #define BRAVE_COMPONENTS_BRAVE_FEDERATED_CLIENT_MODEL_H_
 
 #include <memory>
+#include <tuple>
 #include <vector>
+
+#include "brave/components/brave_federated/linear_algebra_util/linear_algebra_util.h"
 
 namespace brave_federated {
 
 class Model {
  public:
-  Model();
+  Model(int num_iterations, float learning_rate, int num_params);
+
   ~Model();
 
-  void Forward(std::vector<float> input);
+  std::vector<float> Predict(DataSet X);
+
+  std::tuple<size_t, float, float> Train(
+      const DataSet& dataset);
+
+  std::tuple<size_t, float, float> Evaluate(
+      const DataSet& test_dataset);
+
+  Weights GetPredWeights();
+  void SetPredWeights(Weights new_prediction_weights);
+
+  float Bias();
+
+  void SetBias(float new_bias);
+
+  size_t ModelSize();
 
  private:
-  std::vector<std::vector<float>> parameters_;
+  int num_iterations_;
+  int batch_size_;
+  float learning_rate_;
+  float threshold_;
+
+  Weights prediction_weights_;
+  float prediction_bias_;
+
+  float ComputeNLL(std::vector<float> true_labels, std::vector<float> predictions);
+
+  float Activation(float z);
 };
 
-} // namespace brave_federated
+}  // namespace brave_federated
 
-#endif //BRAVE_COMPONENTS_BRAVE_FEDERATED_CLIENT_MODEL_H_
+#endif  // BRAVE_COMPONENTS_BRAVE_FEDERATED_CLIENT_MODEL_H_
