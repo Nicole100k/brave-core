@@ -24,6 +24,7 @@ class BraveShieldsActionView
       public brave_shields::BraveShieldsDataController::Observer,
       public TabStripModelObserver {
  public:
+  DECLARE_CLASS_ELEMENT_IDENTIFIER_VALUE(kShieldsActionIcon);
   explicit BraveShieldsActionView(Profile* profile,
                                   TabStripModel* tab_strip_model);
   BraveShieldsActionView(const BraveShieldsActionView&) = delete;
