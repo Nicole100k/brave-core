@@ -242,7 +242,7 @@ void Conversions::MaybeConvert(
   }
 
   const GURL& url = redirect_chain.back();
-  if (!SchemeIsSupported(url)) {
+  if (!SchemeIsSupportedForUrl(url)) {
     BLOG(1, "URL is not supported for conversions");
     return;
   }
