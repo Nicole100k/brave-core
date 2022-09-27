@@ -8,6 +8,7 @@
 #include "bat/ads/internal/ads/serving/eligible_ads/pipelines/notification_ads/eligible_notification_ads_base.h"
 #include "bat/ads/internal/ads/serving/eligible_ads/pipelines/notification_ads/eligible_notification_ads_v1.h"
 #include "bat/ads/internal/ads/serving/eligible_ads/pipelines/notification_ads/eligible_notification_ads_v2.h"
+#include "bat/ads/internal/ads/serving/eligible_ads/pipelines/notification_ads/eligible_notification_ads_v3.h"
 #include "bat/ads/internal/geographic/subdivision/subdivision_targeting.h"
 #include "bat/ads/internal/resources/behavioral/anti_targeting/anti_targeting_resource.h"
 
@@ -25,6 +26,11 @@ std::unique_ptr<EligibleAdsBase> EligibleAdsFactory::Build(
 
     case 2: {
       return std::make_unique<EligibleAdsV2>(subdivision_targeting,
+                                             anti_targeting_resource);
+    }
+
+    case 3: {
+      return std::make_unique<EligibleAdsV3>(subdivision_targeting,
                                              anti_targeting_resource);
     }
 
