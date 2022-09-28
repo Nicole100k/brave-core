@@ -25,7 +25,6 @@ struct UserModelInfo final {
   SegmentList interest_segments;
   SegmentList latent_interest_segments;
   SegmentList purchase_intent_segments;
-  TextEmbeddingHtmlEventList embeddings_history;
 };
 
 }  // namespace ads::targeting

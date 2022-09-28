@@ -353,6 +353,7 @@ source_set("ads") {
     "src/bat/ads/internal/ads/serving/choose/ad_predictor_info.h",
     "src/bat/ads/internal/ads/serving/choose/eligible_ads_predictor_util.h",
     "src/bat/ads/internal/ads/serving/choose/predict_ad.h",
+    "src/bat/ads/internal/ads/serving/choose/predict_ad_embeddings.h",
     "src/bat/ads/internal/ads/serving/choose/sample_ads.h",
     "src/bat/ads/internal/ads/serving/eligible_ads/allocation/round_robin_ads.h",
     "src/bat/ads/internal/ads/serving/eligible_ads/allocation/round_robin_advertisers.h",
