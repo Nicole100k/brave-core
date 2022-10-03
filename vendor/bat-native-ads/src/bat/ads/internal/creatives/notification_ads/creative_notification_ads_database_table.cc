@@ -26,6 +26,7 @@
 #include "bat/ads/internal/creatives/creative_ad_info.h"
 #include "bat/ads/internal/creatives/creative_ads_database_table.h"
 #include "bat/ads/internal/creatives/dayparts_database_table.h"
+#include "bat/ads/internal/creatives/embeddings_database_table.h"
 #include "bat/ads/internal/creatives/geo_targets_database_table.h"
 #include "bat/ads/internal/creatives/segments_database_table.h"
 #include "bat/ads/internal/segments/segment_util.h"
@@ -83,16 +84,17 @@ CreativeNotificationAdInfo GetFromRecord(mojom::DBRecordInfo* record) {
   creative_ad.value = ColumnDouble(record, 13);
   creative_ad.split_test_group = ColumnString(record, 14);
   creative_ad.segment = ColumnString(record, 15);
-  creative_ad.geo_targets.insert(ColumnString(record, 16));
-  creative_ad.target_url = GURL(ColumnString(record, 17));
-  creative_ad.title = ColumnString(record, 18);
-  creative_ad.body = ColumnString(record, 19);
-  creative_ad.ptr = ColumnDouble(record, 20);
+  creative_ad.embedding = ColumnString(record, 16);
+  creative_ad.geo_targets.insert(ColumnString(record, 17));
+  creative_ad.target_url = GURL(ColumnString(record, 18));
+  creative_ad.title = ColumnString(record, 19);
+  creative_ad.body = ColumnString(record, 20);
+  creative_ad.ptr = ColumnDouble(record, 21);
 
   CreativeDaypartInfo daypart;
-  daypart.dow = ColumnString(record, 21);
-  daypart.start_minute = ColumnInt(record, 22);
-  daypart.end_minute = ColumnInt(record, 23);
+  daypart.dow = ColumnString(record, 22);
+  daypart.start_minute = ColumnInt(record, 23);
+  daypart.end_minute = ColumnInt(record, 24);
   creative_ad.dayparts.push_back(daypart);
 
   return creative_ad;
@@ -209,6 +211,7 @@ CreativeNotificationAds::CreativeNotificationAds()
       campaigns_database_table_(std::make_unique<Campaigns>()),
       creative_ads_database_table_(std::make_unique<CreativeAds>()),
       dayparts_database_table_(std::make_unique<Dayparts>()),
+      embeddings_database_table_(std::make_unique<Embeddings>()),
       geo_targets_database_table_(std::make_unique<GeoTargets>()),
       segments_database_table_(std::make_unique<Segments>()) {}
 
@@ -239,6 +242,8 @@ void CreativeNotificationAds::Save(
                                              creative_ads_batch);
     deposits_database_table_->InsertOrUpdate(transaction.get(),
                                              creative_ads_batch);
+    embeddings_database_table_->InsertOrUpdate(transaction.get(),
+                                               creative_ads_batch);
     geo_targets_database_table_->InsertOrUpdate(transaction.get(),
                                                 creative_ads_batch);
     segments_database_table_->InsertOrUpdate(transaction.get(),
@@ -378,6 +383,7 @@ void CreativeNotificationAds::GetAll(
       "ca.value, "
       "ca.split_test_group, "
       "s.segment, "
+      "e.embedding, "
       "gt.geo_target, "
       "ca.target_url, "
       "can.title, "
@@ -391,6 +397,8 @@ void CreativeNotificationAds::GetAll(
       "ON cam.campaign_id = can.campaign_id "
       "INNER JOIN segments AS s "
       "ON s.creative_set_id = can.creative_set_id "
+      "INNER JOIN embeddings AS e"
+      "ON e.creative_set_id = can.creative_set_id "
       "INNER JOIN creative_ads AS ca "
       "ON ca.creative_instance_id = can.creative_instance_id "
       "INNER JOIN geo_targets AS gt "
@@ -422,6 +430,7 @@ void CreativeNotificationAds::GetAll(
       mojom::DBCommandInfo::RecordBindingType::DOUBLE_TYPE,  // value
       mojom::DBCommandInfo::RecordBindingType::STRING_TYPE,  // split_test_group
       mojom::DBCommandInfo::RecordBindingType::STRING_TYPE,  // segment
+      mojom::DBCommandInfo::RecordBindingType::STRING_TYPE,  // embedding
       mojom::DBCommandInfo::RecordBindingType::STRING_TYPE,  // geo_target
       mojom::DBCommandInfo::RecordBindingType::STRING_TYPE,  // target_url
       mojom::DBCommandInfo::RecordBindingType::STRING_TYPE,  // title

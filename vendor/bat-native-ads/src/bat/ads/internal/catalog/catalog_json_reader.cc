@@ -93,6 +93,10 @@ absl::optional<CatalogInfo> ReadCatalog(const std::string& json) {
       const bool success = base::StringToDouble(value, &creative_set.value);
       DCHECK(success);
 
+      if (creative_set_node.HasMember("embedding")) {
+        creative_set.embedding = creative_set_node["embedding"].GetString();
+      }
+
       if (creative_set_node.HasMember("splitTestGroup")) {
         creative_set.split_test_group =
             creative_set_node["splitTestGroup"].GetString();
