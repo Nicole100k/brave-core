@@ -440,7 +440,7 @@ source_set("ads") {
     "src/bat/ads/internal/ads/serving/eligible_ads/pipelines/notification_ads/eligible_notification_ads_v1.h",
     "src/bat/ads/internal/ads/serving/eligible_ads/pipelines/notification_ads/eligible_notification_ads_v2.cc",
     "src/bat/ads/internal/ads/serving/eligible_ads/pipelines/notification_ads/eligible_notification_ads_v2.h",
-        "src/bat/ads/internal/ads/serving/eligible_ads/pipelines/notification_ads/eligible_notification_ads_v3.cc",
+    "src/bat/ads/internal/ads/serving/eligible_ads/pipelines/notification_ads/eligible_notification_ads_v3.cc",
     "src/bat/ads/internal/ads/serving/eligible_ads/pipelines/notification_ads/eligible_notification_ads_v3.h",
     "src/bat/ads/internal/ads/serving/eligible_ads/priority/priority.h",
     "src/bat/ads/internal/ads/serving/eligible_ads/priority/priority_util.h",

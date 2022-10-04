@@ -7,7 +7,6 @@
 #define BRAVE_VENDOR_BAT_NATIVE_ADS_SRC_BAT_ADS_INTERNAL_ADS_SERVING_TARGETING_USER_MODEL_INFO_H_
 
 #include "bat/ads/internal/segments/segment_alias.h"
-#include "bat/ads/internal/processors/contextual/text_embedding/text_embedding_html_event_info.h"
 
 namespace ads::targeting {
 

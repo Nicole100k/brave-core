@@ -40,12 +40,15 @@ TEST_F(BatAdsEmbeddingProcessingTest, EmbedText) {
       resource.Get();
   ASSERT_TRUE(embedding_processing);
 
+  const std::vector<float> data1 = {0.5, 0.4, 1.0};
+  const std::vector<float> data2 = {0.0, 0.0, 0.0};
+  const std::vector<float> data3 = {0.85, 0.2, 1.0};
   const std::vector<std::tuple<std::string, ml::VectorData>> kSamples = {
-      {"this simple unittest", ml::VectorData({0.5, 0.4, 1.0})},
-      {"this is a simple unittest", ml::VectorData({0.5, 0.4, 1.0})},
-      {"this is @ #1a simple unittest", ml::VectorData({0.5, 0.4, 1.0})},
-      {"that is a test", ml::VectorData({0.0, 0.0, 0.0})},
-      {"this 54 is simple", ml::VectorData({0.85, 0.2, 1.0})},
+      {"this simple unittest", ml::VectorData(data1)},
+      {"this is a simple unittest", ml::VectorData(data1)},
+      {"this is @ #1a simple unittest", ml::VectorData(data1)},
+      {"that is a test", ml::VectorData(data2)},
+      {"this 54 is simple", ml::VectorData(data3)},
       {{}, {}}};
 
   for (const auto& [text, expected_embedding] : kSamples) {

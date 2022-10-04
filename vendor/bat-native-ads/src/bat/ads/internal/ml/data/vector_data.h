@@ -24,12 +24,12 @@ class VectorData final : public Data {
   // ({0, data[0]}, {1, data[0]}, .., {n-1, data[n-1]}}
   explicit VectorData(std::vector<float> data);
 
+  // Make a DataVector using a string representation.
+  explicit VectorData(std::string vector_string);
+
   // Make a "sparse" DataVector using points from |data|.
   // double is used for backward compatibility with the current code.
   VectorData(int dimension_count, const std::map<uint32_t, double>& data);
-
-  // Make a DataVector using a string representation.
-  VectorData(std::string& vector_string);
 
   // Explicit copy assignment && move operators is required because the class
   // inherits const member type_ that cannot be copied by default

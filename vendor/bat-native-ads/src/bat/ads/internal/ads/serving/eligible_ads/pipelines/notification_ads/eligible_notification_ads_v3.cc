@@ -88,7 +88,8 @@ void EligibleAdsV3::GetEligibleAds(
       return;
     }
 
-    PredictAdEmbeddings<CreativeNotificationAdInfo>(user_model, ad_events, eligible_creative_ads,
+    PredictAdEmbeddings<CreativeNotificationAdInfo>(
+        user_model, ad_events, eligible_creative_ads,
         [=](const absl::optional<CreativeNotificationAdInfo> creative_ad) {
           if (!creative_ad) {
             BLOG(1, "No eligible ads out of " << creative_ads.size() << " ads");
@@ -97,10 +98,11 @@ void EligibleAdsV3::GetEligibleAds(
           }
 
           BLOG(1, eligible_creative_ads.size()
-                      << " eligible ads out of " << creative_ads.size() << " ads");
+                      << " eligible ads out of " << creative_ads.size()
+                      << " ads");
 
           callback(/*had_opportunity*/ false, {*creative_ad});
-      });
+        });
   });
 }
 

@@ -80,6 +80,20 @@ VectorData::VectorData(std::vector<float> data) : Data(DataType::kVector) {
       static_cast<int>(data.size()), std::vector<uint32_t>(), std::move(data));
 }
 
+VectorData::VectorData(std::string string) : Data(DataType::kVector) {
+  const std::vector<std::string> vector_string = base::SplitString(
+      string, " ", base::TRIM_WHITESPACE, base::SPLIT_WANT_NONEMPTY);
+  std::vector<float> vector;
+  for (const std::string& element_string : vector_string) {
+    double element;
+    base::StringToDouble(element_string, &element);
+    vector.push_back(element);
+  }
+
+  storage_ = std::make_unique<VectorDataStorage>(
+      vector.size(), std::vector<uint32_t>(), std::move(vector));
+}
+
 VectorData::VectorData(int dimension_count,
                        const std::map<uint32_t, double>& data)
     : Data(DataType::kVector) {
@@ -92,20 +106,6 @@ VectorData::VectorData(int dimension_count,
   }
   storage_ = std::make_unique<VectorDataStorage>(
       dimension_count, std::move(points), std::move(values));
-}
-
-VectorData::VectorData(std::string& string) : Data(DataType::kVector) {
-  std::vector<std::string> vector_string = base::SplitString(
-      string, " ", base::TRIM_WHITESPACE, base::SPLIT_WANT_NONEMPTY);
-  std::vector<float> vector;
-  for (const std::string& element_string : vector_string) {
-    double element;
-    base::StringToDouble(element_string, &element);
-    vector.push_back(element);
-  }
-
-  storage_ = std::make_unique<VectorDataStorage>(
-      vector.size(), std::vector<uint32_t>(), std::move(vector));
 }
 
 VectorData::~VectorData() = default;
