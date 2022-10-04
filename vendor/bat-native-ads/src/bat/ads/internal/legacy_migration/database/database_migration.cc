@@ -19,6 +19,7 @@
 #include "bat/ads/internal/creatives/campaigns_database_table.h"
 #include "bat/ads/internal/creatives/creative_ads_database_table.h"
 #include "bat/ads/internal/creatives/dayparts_database_table.h"
+#include "bat/ads/internal/creatives/embeddings_database_table.h"
 #include "bat/ads/internal/creatives/geo_targets_database_table.h"
 #include "bat/ads/internal/creatives/inline_content_ads/creative_inline_content_ads_database_table.h"
 #include "bat/ads/internal/creatives/new_tab_page_ads/creative_new_tab_page_ad_wallpapers_database_table.h"
@@ -58,6 +59,9 @@ void MigrateToVersion(mojom::DBTransactionInfo* transaction,
 
   table::Segments segments_database_table;
   segments_database_table.Migrate(transaction, to_version);
+
+  table::Embeddings embeddings_database_table;
+  embeddings_database_table.Migrate(transaction, to_version);
 
   table::Deposits deposits_database_table;
   deposits_database_table.Migrate(transaction, to_version);

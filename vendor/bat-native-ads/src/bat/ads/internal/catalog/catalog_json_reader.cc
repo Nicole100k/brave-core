@@ -94,6 +94,7 @@ absl::optional<CatalogInfo> ReadCatalog(const std::string& json) {
       DCHECK(success);
 
       if (creative_set_node.HasMember("embedding")) {
+        // TODO(lminto): Change to GetArray
         creative_set.embedding = creative_set_node["embedding"].GetString();
       }
 

@@ -76,8 +76,8 @@ void Embeddings::Migrate(mojom::DBTransactionInfo* transaction,
   DCHECK(transaction);
 
   switch (to_version) {
-    case 24: {
-      MigrateToV24(transaction);
+    case 26: {
+      MigrateToV26(transaction);
       break;
     }
 
@@ -104,17 +104,17 @@ std::string Embeddings::BuildInsertOrUpdateQuery(
       BuildBindingParameterPlaceholders(2, count).c_str());
 }
 
-void Embeddings::MigrateToV24(mojom::DBTransactionInfo* transaction) {
+void Embeddings::MigrateToV26(mojom::DBTransactionInfo* transaction) {
   DCHECK(transaction);
 
   DropTable(transaction, "embeddings");
 
   const std::string query =
-      "CREATE TABLE embedding "
+      "CREATE TABLE IF NOT EXISTS embeddings"
       "(creative_set_id TEXT NOT NULL, "
-      "embeddings TEXT NOT NULL, "
-      "PRIMARY KEY (creative_set_id, segment), "
-      "UNIQUE(creative_set_id, segment) ON CONFLICT REPLACE)";
+      "embedding TEXT NOT NULL, "
+      "PRIMARY KEY (creative_set_id), "
+      "UNIQUE(creative_set_id) ON CONFLICT REPLACE)";
 
   mojom::DBCommandInfoPtr command = mojom::DBCommandInfo::New();
   command->type = mojom::DBCommandInfo::Type::EXECUTE;

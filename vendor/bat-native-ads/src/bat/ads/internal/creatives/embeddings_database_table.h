@@ -31,7 +31,7 @@ class Embeddings final : public TableInterface {
       mojom::DBCommandInfo* command,
       const CreativeAdList& creative_ads) const;
 
-  void MigrateToV24(mojom::DBTransactionInfo* transaction);
+  void MigrateToV26(mojom::DBTransactionInfo* transaction);
 };
 
 }  // namespace ads::database::table
