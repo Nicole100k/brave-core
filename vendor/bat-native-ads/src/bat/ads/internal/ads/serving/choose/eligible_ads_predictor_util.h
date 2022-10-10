@@ -14,6 +14,8 @@
 #include "bat/ads/internal/ads/serving/eligible_ads/eligible_ads_features.h"
 #include "bat/ads/internal/ads/serving/targeting/top_segments.h"
 #include "bat/ads/internal/common/containers/container_util.h"
+#include "bat/ads/internal/ml/data/vector_data.h"
+#include "bat/ads/internal/processors/contextual/text_embedding/text_embedding_html_event_info.h"
 #include "bat/ads/internal/segments/segment_alias.h"
 
 namespace ads {
@@ -157,6 +159,36 @@ CreativeAdPredictorMap<T> ComputePredictorFeaturesAndScores(
   }
 
   return creative_ad_predictors_with_features;
+}
+
+template <typename T>
+std::vector<int> ComputeVoteRegistry(
+    const std::vector<T>& creative_ads,
+    const TextEmbeddingHtmlEventList& text_embedding_html_events) {
+  std::vector<int> vote_registry;
+  vote_registry.assign(creative_ads.size(), 0);
+
+  for (const auto& text_embedding : text_embedding_html_events) {
+    int max_idx = 0;
+    float max_similarity = 0;
+    for (const auto creative_ad : creative_ads) {
+      ml::VectorData ad_embedding = ml::VectorData(creative_ad.embedding);
+      const ml::VectorData page_text_embedding =
+          ml::VectorData(text_embedding.embedding);
+      const float similarity_score =
+          ad_embedding.ComputeSimilarity(page_text_embedding);
+
+      if (similarity_score > max_similarity) {
+        max_idx =
+            std::find(creative_ads.begin(), creative_ads.end(), creative_ad) -
+            creative_ads.begin();
+        max_similarity = similarity_score;
+      }
+    }
+    vote_registry[max_idx] += 1;
+  }
+
+  return vote_registry;
 }
 
 }  // namespace ads

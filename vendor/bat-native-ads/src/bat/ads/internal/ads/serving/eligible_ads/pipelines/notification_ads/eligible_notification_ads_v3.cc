@@ -89,7 +89,7 @@ void EligibleAdsV3::GetEligibleAds(
     }
 
     PredictAdEmbeddings<CreativeNotificationAdInfo>(
-        user_model, ad_events, eligible_creative_ads,
+        eligible_creative_ads,
         [=](const absl::optional<CreativeNotificationAdInfo> creative_ad) {
           if (!creative_ad) {
             BLOG(1, "No eligible ads out of " << creative_ads.size() << " ads");
