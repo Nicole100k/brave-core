@@ -169,9 +169,9 @@ std::vector<int> ComputeVoteRegistry(
   vote_registry.assign(creative_ads.size(), 0);
 
   for (const auto& text_embedding : text_embedding_html_events) {
-    int max_idx = 0;
-    float max_similarity = 0;
-    for (const auto creative_ad : creative_ads) {
+    int max_index = 0;
+    float max_similarity = 0.0;
+    for (const auto& creative_ad : creative_ads) {
       ml::VectorData ad_embedding = ml::VectorData(creative_ad.embedding);
       const ml::VectorData page_text_embedding =
           ml::VectorData(text_embedding.embedding);
@@ -179,13 +179,13 @@ std::vector<int> ComputeVoteRegistry(
           ad_embedding.ComputeSimilarity(page_text_embedding);
 
       if (similarity_score > max_similarity) {
-        max_idx =
-            std::find(creative_ads.begin(), creative_ads.end(), creative_ad) -
+        max_index =
+            std::find(creative_ads.cbegin(), creative_ads.cend(), creative_ad) -
             creative_ads.begin();
         max_similarity = similarity_score;
       }
     }
-    vote_registry[max_idx] += 1;
+    vote_registry[max_index] += 1.0;
   }
 
   return vote_registry;

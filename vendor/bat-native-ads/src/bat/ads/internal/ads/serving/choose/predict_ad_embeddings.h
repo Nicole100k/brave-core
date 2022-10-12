@@ -14,6 +14,7 @@
 #include "bat/ads/internal/ads/serving/choose/eligible_ads_predictor_util.h"
 #include "bat/ads/internal/ads/serving/choose/sample_ads.h"
 #include "bat/ads/internal/ads/serving/eligible_ads/pacing/pacing.h"
+#include "bat/ads/internal/base/logging_util.h"
 #include "bat/ads/internal/base/numbers/number_util.h"
 #include "bat/ads/internal/processors/contextual/text_embedding/text_embedding_html_event_info.h"
 #include "bat/ads/internal/processors/contextual/text_embedding/text_embedding_html_events.h"
@@ -32,25 +33,24 @@ void PredictAdEmbeddings(
       [=](const bool success,
           const TextEmbeddingHtmlEventList& text_embedding_html_events) {
         if (!success) {
+          BLOG(1, "Failed to get text embedding events");
           return;
         }
 
-        std::vector<int> votes_registry =
-            ComputeVoteRegistry(creative_ads, text_embedding_html_events);
+        const std::vector<int> votes_registry =
+            ComputeVoteRegistry(paced_creative_ads, text_embedding_html_events);
 
-        std::vector<double> probabilities =
+        const std::vector<double> probabilities =
             ComputeProbabilities(votes_registry);
 
         const double rand = base::RandDouble();
         double sum = 0;
 
         for (size_t i = 0; i < paced_creative_ads.size(); i++) {
-          const T creative_ad = paced_creative_ads[i];
-          const double probability = probabilities[i];
-          sum += probability;
+          sum += probabilities[i];
 
           if (DoubleIsLess(rand, sum)) {
-            callback(creative_ad);
+            callback(paced_creative_ads.at(i));
           }
         }
       });

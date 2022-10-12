@@ -18,10 +18,10 @@
 namespace ads {
 
 template <typename T>
-T CalculateNormalizingConstantBase(const std::vector<T> scores) {
-  T normalizing_constant = 0.0;
-  for (const auto& votes : scores) {
-    normalizing_constant += votes;
+T CalculateNormalizingConstantBase(const std::vector<T>& scores) {
+  T normalizing_constant = 0;
+  for (const auto& score : scores) {
+    normalizing_constant += score;
   }
 
   return normalizing_constant;
@@ -68,14 +68,15 @@ absl::optional<T> SampleAdFromPredictors(
   return absl::nullopt;
 }
 
-inline std::vector<double> ComputeProbabilities(std::vector<int> scores) {
+inline std::vector<double> ComputeProbabilities(
+    const std::vector<int>& scores) {
   std::vector<double> probabilities;
 
   const double normalizing_constant = CalculateNormalizingConstantBase(scores);
 
   probabilities.reserve(scores.size());
-  for (const auto& votes : scores) {
-    probabilities.push_back(votes / normalizing_constant);
+  for (const auto& score : scores) {
+    probabilities.push_back(score / normalizing_constant);
   }
 
   return probabilities;

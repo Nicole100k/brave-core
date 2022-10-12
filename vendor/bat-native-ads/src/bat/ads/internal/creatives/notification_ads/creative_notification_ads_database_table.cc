@@ -291,6 +291,7 @@ void CreativeNotificationAds::GetForSegments(
       "ca.value, "
       "ca.split_test_group, "
       "s.segment, "
+      "e.embedding, "
       "gt.geo_target, "
       "ca.target_url, "
       "can.title, "
@@ -304,6 +305,8 @@ void CreativeNotificationAds::GetForSegments(
       "ON cam.campaign_id = can.campaign_id "
       "INNER JOIN segments AS s "
       "ON s.creative_set_id = can.creative_set_id "
+      "INNER JOIN embeddings AS e "
+      "ON e.creative_set_id = can.creative_set_id "
       "INNER JOIN creative_ads AS ca "
       "ON ca.creative_instance_id = can.creative_instance_id "
       "INNER JOIN geo_targets AS gt "
@@ -344,6 +347,7 @@ void CreativeNotificationAds::GetForSegments(
       mojom::DBCommandInfo::RecordBindingType::DOUBLE_TYPE,  // value
       mojom::DBCommandInfo::RecordBindingType::STRING_TYPE,  // split_test_group
       mojom::DBCommandInfo::RecordBindingType::STRING_TYPE,  // segment
+      mojom::DBCommandInfo::RecordBindingType::STRING_TYPE,  // embedding
       mojom::DBCommandInfo::RecordBindingType::STRING_TYPE,  // geo_target
       mojom::DBCommandInfo::RecordBindingType::STRING_TYPE,  // target_url
       mojom::DBCommandInfo::RecordBindingType::STRING_TYPE,  // title
