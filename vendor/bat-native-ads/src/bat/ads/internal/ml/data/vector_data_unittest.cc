@@ -39,17 +39,6 @@ TEST_F(BatAdsVectorDataTest, SparseVectorDataInitialization) {
   EXPECT_EQ(kDimensionCount, sparse_data_vector_6.GetDimensionCount());
 }
 
-TEST_F(BatAdsVectorDataTest, StringDataInitialization) {
-  // Arrange
-  const std::string vector_string = "0.1 0.2 0.3 0.4 0.5 0.6";
-  const VectorData string_data_vector_6(vector_string);
-
-  // Act
-
-  // Assert
-  EXPECT_EQ(6, string_data_vector_6.GetDimensionCount());
-}
-
 TEST_F(BatAdsVectorDataTest, DenseDenseProduct) {
   // Arrange
   const double kTolerance = 1e-6;

@@ -5,6 +5,8 @@
 
 #include "bat/ads/internal/processors/contextual/text_embedding/text_embedding_processor.h"
 
+#include <algorithm>
+
 #include "base/check.h"
 #include "bat/ads/internal/common/logging_util.h"
 #include "bat/ads/internal/common/search_engine/search_engine_results_page_util.h"
@@ -62,7 +64,9 @@ void TextEmbedding::Process(const std::string& html) {
       resource_->Get();
   const ml::pipeline::TextEmbeddingInfo text_embedding =
       embedding_proc_pipeline->EmbedText(text);
-  if (text_embedding.embedding.GetNonZeroElementCount() == 0) {
+  std::vector<float> vector = text_embedding.embedding;
+  if (*std::min_element(vector.begin(), vector.end()) == 0.0 &&
+      *std::max_element(vector.begin(), vector.end()) == 0.0) {
     BLOG(1, "Failed to embed text");
     return;
   }

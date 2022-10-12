@@ -7,8 +7,7 @@
 #define BRAVE_VENDOR_BAT_NATIVE_ADS_SRC_BAT_ADS_INTERNAL_ML_PIPELINE_TEXT_PROCESSING_EMBEDDING_INFO_H_
 
 #include <string>
-
-#include "bat/ads/internal/ml/data/vector_data.h"
+#include <vector>
 
 namespace ads::ml::pipeline {
 
@@ -26,7 +25,7 @@ struct TextEmbeddingInfo final {
   std::string text;
   std::string hashed_text_base64;
   std::string locale;
-  VectorData embedding;
+  std::vector<float> embedding;
 };
 
 }  // namespace ads::ml::pipeline

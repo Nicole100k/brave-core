@@ -24,9 +24,6 @@ class VectorData final : public Data {
   // ({0, data[0]}, {1, data[0]}, .., {n-1, data[n-1]}}
   explicit VectorData(std::vector<float> data);
 
-  // Make a DataVector using a string representation.
-  explicit VectorData(std::string vector_string);
-
   // Make a "sparse" DataVector using points from |data|.
   // double is used for backward compatibility with the current code.
   VectorData(int dimension_count, const std::map<uint32_t, double>& data);
@@ -45,15 +42,18 @@ class VectorData final : public Data {
 
   // Mathematical vector operations
   friend double operator*(const VectorData& lhs, const VectorData& rhs);
+  float ComputeSimilarity(const VectorData& v_other) const;
+
   void AddElementWise(const VectorData& v_add);
   void DivideByScalar(float scalar);
-  float ComputeSimilarity(const VectorData& v_sim) const;
   void Normalize();
 
   int GetDimensionCount() const;
   int GetNonZeroElementCount() const;
+  float GetMagnitude() const;
 
   const std::vector<float>& GetValuesForTesting() const;
+  std::vector<float> GetAsFloatVector() const;
   std::string GetVectorAsString() const;
 
  private:
