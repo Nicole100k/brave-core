@@ -185,7 +185,7 @@ std::vector<int> ComputeVoteRegistry(
         max_similarity = similarity_score;
       }
     }
-    vote_registry[max_index] += 1.0;
+    vote_registry[max_index]++;
   }
 
   return vote_registry;

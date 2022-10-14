@@ -148,15 +148,12 @@ TEST_F(BatAdsVectorDataTest, NonsenseProduct) {
 
 TEST_F(BatAdsVectorDataTest, AddElementWise) {
   // Arrange
-  const std::vector<float> data1 = {0.3F, 0.5F, 0.8F};
-  VectorData v1 = VectorData(data1);
-  const VectorData v1_b = VectorData(data1);
-  const std::vector<float> data2 = {1.0F, -0.6F, 0.0F};
-  VectorData v2 = VectorData(data2);
-  const std::vector<float> data3 = {0.0F, 0.0F, 0.0F};
-  VectorData v3 = VectorData(data3);
-  const std::vector<float> data4 = {0.7F, 0.2F, -0.35F};
-  const VectorData v4 = VectorData(data4);
+  const std::vector<float> data_1 = {0.3F, 0.5F, 0.8F};
+  VectorData v1 = VectorData(data_1);
+  const VectorData v1_b = VectorData(data_1);
+  VectorData v2 = VectorData({1.0F, -0.6F, 0.0F});
+  VectorData v3 = VectorData({0.0F, 0.0F, 0.0F});
+  const VectorData v4 = VectorData({0.7F, 0.2F, -0.35F});
 
   const std::vector<float> v12({1.3F, -0.1F, 0.8F});
   const std::vector<float> v21({1.3F, -0.1F, 0.8F});
@@ -177,14 +174,10 @@ TEST_F(BatAdsVectorDataTest, AddElementWise) {
 
 TEST_F(BatAdsVectorDataTest, DivideByScalar) {
   // Arrange
-  const std::vector<float> data1 = {0.4F, 0.3F, 0.8F};
-  const std::vector<float> data2 = {1.9F, -0.75F, 0.0F};
-  const std::vector<float> data3 = {0.0F, 0.0F, 0.0F};
-  const std::vector<float> data4 = {0.8F, 0.2F, -0.35F};
-  VectorData v1 = VectorData(data1);
-  VectorData v2 = VectorData(data2);
-  VectorData v3 = VectorData(data3);
-  VectorData v4 = VectorData(data4);
+  VectorData v1 = VectorData({0.4F, 0.3F, 0.8F});
+  VectorData v2 = VectorData({1.9F, -0.75F, 0.0F});
+  VectorData v3 = VectorData({0.0F, 0.0F, 0.0F});
+  VectorData v4 = VectorData({0.8F, 0.2F, -0.35F});
 
   const std::vector<float> v1d({8.0F, 6.0F, 16.0F});
   const std::vector<float> v2d({1.9F, -0.75F, 0.0F});
@@ -207,10 +200,10 @@ TEST_F(BatAdsVectorDataTest, DivideByScalar) {
 }
 
 TEST_F(BatAdsVectorDataTest, NormalizeDenseVector) {
-  const std::vector<float> dense_data = {1, 3, 5, 5, 2};
-  VectorData dense_data_vector_5(dense_data);
+  VectorData dense_data_vector_5({1, 3, 5, 5, 2});
   dense_data_vector_5.Normalize();
-  EXPECT_EQ(std::vector<float>({1. / 8, 3. / 8, 5. / 8, 5. / 8, 2. / 8}),
+  EXPECT_EQ(std::vector<float>(
+                {1.0 / 8.0, 3.0 / 8.0, 5.0 / 8.0, 5.0 / 8.0, 2.0 / 8.0}),
             dense_data_vector_5.GetValuesForTesting());
 }
 
@@ -220,7 +213,8 @@ TEST_F(BatAdsVectorDataTest, NormalizeSparseVector) {
       {0UL, 1.0}, {2UL, 3.0}, {3UL, -2.0}, {10UL, -1.0}, {30UL, 1.0}};
   VectorData sparse_data_vector_5(kDimensionCount, s_5);
   sparse_data_vector_5.Normalize();
-  EXPECT_EQ(std::vector<float>({1. / 4, 3. / 4, -2. / 4, -1. / 4, 1. / 4}),
+  EXPECT_EQ(std::vector<float>(
+                {1.0 / 4.0, 3.0 / 4.0, -2.0 / 4.0, -1.0 / 4.0, 1.0 / 4.0}),
             sparse_data_vector_5.GetValuesForTesting());
 }
 

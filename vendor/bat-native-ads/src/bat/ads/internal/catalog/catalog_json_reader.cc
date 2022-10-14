@@ -6,6 +6,7 @@
 #include "bat/ads/internal/catalog/catalog_json_reader.h"
 
 #include <cstdint>
+#include <vector>
 
 #include "base/check.h"
 #include "base/notreached.h"
