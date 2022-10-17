@@ -8,6 +8,7 @@
 #include "absl/types/optional.h"
 #include "base/bind.h"
 #include "bat/ads/internal/ads/ad_events/ad_events_database_table.h"
+#include "bat/ads/internal/ads/serving/choose/predict_ad.h"
 #include "bat/ads/internal/ads/serving/choose/predict_ad_embeddings.h"
 #include "bat/ads/internal/ads/serving/eligible_ads/exclusion_rules/exclusion_rules_util.h"
 #include "bat/ads/internal/ads/serving/eligible_ads/exclusion_rules/notification_ads/notification_ad_exclusion_rules.h"
@@ -88,21 +89,25 @@ void EligibleAdsV3::GetEligibleAds(
       return;
     }
 
-    PredictAdEmbeddings<CreativeNotificationAdInfo>(
-        user_model, eligible_creative_ads,
-        [=](const absl::optional<CreativeNotificationAdInfo> creative_ad) {
-          if (!creative_ad) {
-            BLOG(1, "No eligible ads out of " << creative_ads.size() << " ads");
-            callback(/*had_opportunity*/ false, {});
-            return;
-          }
+    absl::optional<CreativeNotificationAdInfo> creative_ad;
+    if (user_model.text_embedding_html_events.empty()) {
+      // Fallback to prediction v2 if no embeddings are available
+      creative_ad = PredictAd(user_model, ad_events, eligible_creative_ads);
+    } else {
+      creative_ad = PredictAdEmbeddings<CreativeNotificationAdInfo>(
+          user_model, eligible_creative_ads);
+    }
 
-          BLOG(1, eligible_creative_ads.size()
-                      << " eligible ads out of " << creative_ads.size()
-                      << " ads");
+    if (!creative_ad) {
+      BLOG(1, "No eligible ads out of " << creative_ads.size() << " ads");
+      callback(/*had_opportunity*/ false, {});
+      return;
+    }
 
-          callback(/*had_opportunity*/ false, {*creative_ad});
-        });
+    BLOG(1, eligible_creative_ads.size()
+                << " eligible ads out of " << creative_ads.size() << " ads");
+
+    callback(/*had_opportunity*/ false, {*creative_ad});
   });
 }
 

@@ -10,6 +10,7 @@
 #include <vector>
 
 #include "absl/types/optional.h"
+#include "base/notreached.h"
 #include "base/rand_util.h"
 #include "bat/ads/internal/ads/serving/choose/eligible_ads_predictor_util.h"
 #include "bat/ads/internal/ads/serving/choose/sample_ads.h"
@@ -21,10 +22,9 @@
 namespace ads {
 
 template <typename T>
-void PredictAdEmbeddings(
+absl::optional<T> PredictAdEmbeddings(
     const targeting::UserModelInfo& user_model,
-    const std::vector<T>& creative_ads,
-    std::function<void(const absl::optional<T>)> callback) {
+    const std::vector<T>& creative_ads) {
   DCHECK(!creative_ads.empty());
 
   const std::vector<T> paced_creative_ads = PaceCreativeAds(creative_ads);
@@ -42,12 +42,12 @@ void PredictAdEmbeddings(
     sum += probabilities.at(i);
 
     if (DoubleIsLess(rand, sum)) {
-      callback(paced_creative_ads.at(i));
-      return;
+      return paced_creative_ads.at(i);
     }
   }
 
-  callback({});
+  NOTREACHED();
+  return {};
 }
 
 }  // namespace ads
