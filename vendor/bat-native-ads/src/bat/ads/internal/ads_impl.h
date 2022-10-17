@@ -78,6 +78,7 @@ class PromotedContentAd;
 class ResourceManager;
 class SearchResultAd;
 class TabManager;
+class TimeProfilerManager;
 class Transfer;
 class UserActivityManager;
 class UserReactions;
@@ -240,6 +241,7 @@ class AdsImpl final : public Ads,
   std::unique_ptr<PrefManager> pref_manager_;
   std::unique_ptr<ResourceManager> resource_manager_;
   std::unique_ptr<TabManager> tab_manager_;
+  std::unique_ptr<TimeProfilerManager> time_profiler_manager_;
   std::unique_ptr<UserActivityManager> user_activity_manager_;
 
   std::unique_ptr<Catalog> catalog_;

@@ -9,6 +9,7 @@
 #include "base/files/file_path.h"
 #include "base/files/file_util.h"
 #include "base/functional/bind.h"
+#include "base/time/time.h"
 #include "base/values.h"
 #include "bat/ads/database.h"
 #include "bat/ads/internal/common/unittest/unittest_command_line_switch_util.h"
@@ -211,6 +212,8 @@ void UnitTestBase::Initialize() {
   resource_manager_ = std::make_unique<ResourceManager>();
 
   tab_manager_ = std::make_unique<TabManager>();
+
+  time_profiler_manager_ = std::make_unique<TimeProfilerManager>();
 
   user_activity_manager_ = std::make_unique<UserActivityManager>();
 
