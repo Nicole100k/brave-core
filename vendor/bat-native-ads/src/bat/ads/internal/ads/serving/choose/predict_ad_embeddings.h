@@ -39,10 +39,11 @@ void PredictAdEmbeddings(
   double sum = 0;
 
   for (size_t i = 0; i < paced_creative_ads.size(); i++) {
-    sum += probabilities[i];
+    sum += probabilities.at(i);
 
     if (DoubleIsLess(rand, sum)) {
       callback(paced_creative_ads.at(i));
+      return;
     }
   }
 
