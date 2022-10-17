@@ -61,7 +61,7 @@ TEST_F(BatAdsEligibleNotificationAdsV3Test, GetAds) {
 
   // Act
   eligible_ads_->GetForUserModel(
-      targeting::BuildUserModel({}, {}, {}),
+      targeting::BuildUserModel({}, {}, {}, {}),
       [](const bool had_opportunity,
          const CreativeNotificationAdList& creative_ads) {
         // Assert
@@ -86,7 +86,7 @@ TEST_F(BatAdsEligibleNotificationAdsV3Test, GetAdsForNoEmbeddings) {
 
   // Act
   eligible_ads_->GetForUserModel(
-      targeting::BuildUserModel({}, {}, {}),
+      targeting::BuildUserModel({}, {}, {}, {}),
       [](const bool had_opportunity,
          const CreativeNotificationAdList& creative_ads) {
         // Assert
@@ -104,7 +104,7 @@ TEST_F(BatAdsEligibleNotificationAdsV3Test, DoNotGetAdsIfNoEligibleAds) {
 
   // Act
   eligible_ads_->GetForUserModel(
-      targeting::BuildUserModel({}, {}, {}),
+      targeting::BuildUserModel({}, {}, {}, {}),
       [](const bool had_opportunity,
          const CreativeNotificationAdList& creative_ads) {
         // Assert
