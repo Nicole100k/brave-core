@@ -69,8 +69,7 @@ void Serving::MaybeServeAd(const std::string& dimensions,
     return;
   }
 
-  const targeting::UserModelInfo user_model = targeting::BuildUserModel();
-
+  targeting::BuildUserModel([=](const targeting::UserModelInfo user_model) {
   DCHECK(eligible_ads_);
   eligible_ads_->GetForUserModel(
       user_model, dimensions,

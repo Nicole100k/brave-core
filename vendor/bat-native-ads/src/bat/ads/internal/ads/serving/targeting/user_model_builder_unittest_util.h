@@ -6,15 +6,18 @@
 #ifndef BRAVE_VENDOR_BAT_NATIVE_ADS_SRC_BAT_ADS_INTERNAL_ADS_SERVING_TARGETING_USER_MODEL_BUILDER_UNITTEST_UTIL_H_
 #define BRAVE_VENDOR_BAT_NATIVE_ADS_SRC_BAT_ADS_INTERNAL_ADS_SERVING_TARGETING_USER_MODEL_BUILDER_UNITTEST_UTIL_H_
 
+#include "bat/ads/internal/processors/contextual/text_embedding/text_embedding_html_event_info.h"
 #include "bat/ads/internal/segments/segment_alias.h"
 
 namespace ads::targeting {
 
 struct UserModelInfo;
 
-UserModelInfo BuildUserModel(const SegmentList& interest_segments,
-                             const SegmentList& latent_interest_segments,
-                             const SegmentList& purchase_intent_segments);
+UserModelInfo BuildUserModel(
+    const SegmentList& interest_segments,
+    const SegmentList& latent_interest_segments,
+    const SegmentList& purchase_intent_segments,
+    const TextEmbeddingHtmlEventList& text_embedding_html_events);
 
 }  // namespace ads::targeting
 

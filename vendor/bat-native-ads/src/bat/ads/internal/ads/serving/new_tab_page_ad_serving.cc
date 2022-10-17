@@ -67,13 +67,13 @@ void Serving::MaybeServeAd(MaybeServeNewTabPageAdCallback callback) {
     return;
   }
 
-  const targeting::UserModelInfo user_model = targeting::BuildUserModel();
-
-  DCHECK(eligible_ads_);
-  eligible_ads_->GetForUserModel(
-      user_model,
-      base::BindOnce(&Serving::OnGetForUserModel, base::Unretained(this),
-                     std::move(callback), user_model));
+  targeting::BuildUserModel([=](const targeting::UserModelInfo user_model) {
+    DCHECK(eligible_ads_);
+    eligible_ads_->GetForUserModel(
+        user_model,
+        base::BindOnce(&Serving::OnGetForUserModel, base::Unretained(this),
+                      std::move(callback), user_model));
+  }
 }
 
 void Serving::OnGetForUserModel(MaybeServeNewTabPageAdCallback callback,

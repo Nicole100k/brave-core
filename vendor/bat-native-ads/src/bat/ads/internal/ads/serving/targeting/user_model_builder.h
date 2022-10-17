@@ -6,11 +6,15 @@
 #ifndef BRAVE_VENDOR_BAT_NATIVE_ADS_SRC_BAT_ADS_INTERNAL_ADS_SERVING_TARGETING_USER_MODEL_BUILDER_H_
 #define BRAVE_VENDOR_BAT_NATIVE_ADS_SRC_BAT_ADS_INTERNAL_ADS_SERVING_TARGETING_USER_MODEL_BUILDER_H_
 
+#include <functional>
+
 namespace ads::targeting {
 
 struct UserModelInfo;
 
-UserModelInfo BuildUserModel();
+using GetUserModelCallback = std::function<void(const UserModelInfo)>;
+
+void BuildUserModel(GetUserModelCallback callback);
 
 }  // namespace ads::targeting
 
