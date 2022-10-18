@@ -10,6 +10,7 @@
 #include <vector>
 
 #include "absl/types/optional.h"
+#include "base/check_op.h"
 #include "base/notreached.h"
 #include "base/rand_util.h"
 #include "bat/ads/internal/ads/serving/choose/eligible_ads_predictor_util.h"
@@ -32,6 +33,7 @@ absl::optional<T> PredictAdEmbeddings(
   const std::vector<int> votes_registry = ComputeVoteRegistry(
       paced_creative_ads, user_model.text_embedding_html_events);
 
+  DCHECK_EQ(votes_registry.size(), paced_creative_ads.size());
   const std::vector<double> probabilities =
       ComputeProbabilities(votes_registry);
 

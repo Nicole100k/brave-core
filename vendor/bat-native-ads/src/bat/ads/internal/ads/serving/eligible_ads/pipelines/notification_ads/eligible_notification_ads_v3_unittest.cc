@@ -68,7 +68,7 @@ TEST_F(BatAdsEligibleNotificationAdsV3Test, GetAds) {
       });
 }
 
-TEST_F(BatAdsEligibleNotificationAdsV3Test, GetAdsForNoEmbeddings) {
+TEST_F(BatAdsEligibleNotificationAdsV3Test, GetAdsForNoStoredEmbeddings) {
   // Arrange
   CreativeNotificationAdList creative_ads;
 
@@ -85,6 +85,35 @@ TEST_F(BatAdsEligibleNotificationAdsV3Test, GetAdsForNoEmbeddings) {
   // Act
   eligible_ads_->GetForUserModel(
       targeting::BuildUserModel({}, {}, {}, {}),
+      [](const bool had_opportunity,
+         const CreativeNotificationAdList& creative_ads) {
+        // Assert
+        EXPECT_FALSE(had_opportunity);
+        EXPECT_TRUE(!creative_ads.empty());
+      });
+}
+
+TEST_F(BatAdsEligibleNotificationAdsV3Test,
+       GetAdsForCreativeWithoutEmbeddingProperty) {
+  // Arrange
+  CreativeNotificationAdList creative_ads;
+
+  const CreativeNotificationAdInfo creative_ad_1 =
+      BuildCreativeNotificationAd();
+  creative_ads.push_back(creative_ad_1);
+
+  const CreativeNotificationAdInfo creative_ad_2 =
+      BuildCreativeNotificationAd();
+  creative_ads.push_back(creative_ad_2);
+
+  SaveCreativeAds(creative_ads);
+
+  const TextEmbeddingHtmlEventInfo text_embedding_event =
+      BuildTextEmbeddingHtmlEvent(BuildTextEmbedding());
+
+  // Act
+  eligible_ads_->GetForUserModel(
+      targeting::BuildUserModel({}, {}, {}, {text_embedding_event}),
       [](const bool had_opportunity,
          const CreativeNotificationAdList& creative_ads) {
         // Assert

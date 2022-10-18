@@ -38,15 +38,15 @@ void BuildUserModel(GetUserModelCallback callback) {
   }
 
   GetTextEmbeddingHtmlEventsFromDatabase(
-      [=](const bool success,
-          const TextEmbeddingHtmlEventList& text_embedding_html_events) {
+      [=](const bool success, const TextEmbeddingHtmlEventList&
+                                  text_embedding_html_events) mutable {
         if (!success) {
           BLOG(1, "Failed to get text embedding events");
           callback(user_model);
           return;
         }
 
-        // user_model.text_embedding_html_events = text_embedding_html_events;
+        user_model.text_embedding_html_events = text_embedding_html_events;
 
         callback(user_model);
       });
