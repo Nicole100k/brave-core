@@ -3,8 +3,8 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this file,
  * You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-#ifndef BRAVE_VENDOR_BAT_NATIVE_ADS_SRC_BAT_ADS_INTERNAL_ADS_SERVING_CHOOSE_PREDICT_AD_EMBEDDINGS_H_
-#define BRAVE_VENDOR_BAT_NATIVE_ADS_SRC_BAT_ADS_INTERNAL_ADS_SERVING_CHOOSE_PREDICT_AD_EMBEDDINGS_H_
+#ifndef BRAVE_VENDOR_BAT_NATIVE_ADS_SRC_BAT_ADS_INTERNAL_ADS_SERVING_CHOOSE_PREDICT_AD_USING_EMBEDDINGS_H_
+#define BRAVE_VENDOR_BAT_NATIVE_ADS_SRC_BAT_ADS_INTERNAL_ADS_SERVING_CHOOSE_PREDICT_AD_USING_EMBEDDINGS_H_
 
 #include <iostream>
 #include <vector>
@@ -23,12 +23,16 @@
 namespace ads {
 
 template <typename T>
-absl::optional<T> PredictAdEmbeddings(
+absl::optional<T> PredictAdUsingEmbeddings(
     const targeting::UserModelInfo& user_model,
     const std::vector<T>& creative_ads) {
   DCHECK(!creative_ads.empty());
 
   const std::vector<T> paced_creative_ads = PaceCreativeAds(creative_ads);
+
+  if (paced_creative_ads.empty()) {
+    return {};
+  }
 
   const std::vector<int> votes_registry = ComputeVoteRegistry(
       paced_creative_ads, user_model.text_embedding_html_events);
@@ -54,4 +58,4 @@ absl::optional<T> PredictAdEmbeddings(
 
 }  // namespace ads
 
-#endif  // BRAVE_VENDOR_BAT_NATIVE_ADS_SRC_BAT_ADS_INTERNAL_ADS_SERVING_CHOOSE_PREDICT_AD_EMBEDDINGS_H_
+#endif  // BRAVE_VENDOR_BAT_NATIVE_ADS_SRC_BAT_ADS_INTERNAL_ADS_SERVING_CHOOSE_PREDICT_AD_USING_EMBEDDINGS_H_
