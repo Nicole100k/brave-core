@@ -15,35 +15,20 @@ namespace ads::ml {
 
 class BatAdsLinearTest : public UnitTestBase {};
 
-<<<<<<< HEAD
 TEST_F(BatAdsLinearTest, ThreeClassesPredictionTest) {
-=======
-std::vector<float> data_1 = {1.0, 0.0, 0.0};
-std::vector<float> data_2 = {0.0, 1.0, 0.0};
-std::vector<float> data_3 = {0.0, 0.0, 1.0};
-std::vector<float> data_4 = {0.0, 1.0, 2.0};
-std::vector<float> data_5 = {1.0, 1.0, 1.0};
-
-TEST_F(BatAdsLinearModelTest, ThreeClassesPredictionTest) {
->>>>>>> 8f7c5fad27 (address feedback 2)
   // Arrange
-  std::vector<float> data1 = {1.0, 0.0, 0.0};
-  std::vector<float> data2 = {0.0, 1.0, 0.0};
-  std::vector<float> data3 = {0.0, 0.0, 1.0};
-  std::vector<float> data4 = {0.0, 1.0, 2.0};
-  std::vector<float> data5 = {1.0, 1.0, 1.0};
   const std::map<std::string, VectorData> weights = {
-      {"class_1", VectorData(data_1)},
-      {"class_2", VectorData(data_2)},
-      {"class_3", VectorData(data_3)}};
+      {"class_1", VectorData({1.0, 0.0, 0.0})},
+      {"class_2", VectorData({0.0, 1.0, 0.0})},
+      {"class_3", VectorData({0.0, 0.0, 1.0})}};
 
   const std::map<std::string, double> biases = {
       {"class_1", 0.0}, {"class_2", 0.0}, {"class_3", 0.0}};
 
   const model::Linear linear(weights, biases);
-  const VectorData class_1_vector_data(data_1);
-  const VectorData class_2_vector_data(data_2);
-  const VectorData class_3_vector_data(data_4);
+  const VectorData class_1_vector_data({1.0, 0.0, 0.0});
+  const VectorData class_2_vector_data({0.0, 1.0, 0.0});
+  const VectorData class_3_vector_data({0.0, 1.0, 2.0});
 
   // Act
   const PredictionMap predictions_1 = linear.Predict(class_1_vector_data);
@@ -64,15 +49,15 @@ TEST_F(BatAdsLinearModelTest, ThreeClassesPredictionTest) {
 TEST_F(BatAdsLinearTest, BiasesPredictionTest) {
   // Arrange
   const std::map<std::string, VectorData> weights = {
-      {"class_1", VectorData(data_1)},
-      {"class_2", VectorData(data_2)},
-      {"class_3", VectorData(data_3)}};
+      {"class_1", VectorData({1.0, 0.0, 0.0})},
+      {"class_2", VectorData({0.0, 1.0, 0.0})},
+      {"class_3", VectorData({0.0, 0.0, 1.0})}};
 
   const std::map<std::string, double> biases = {
       {"class_1", 0.5}, {"class_2", 0.25}, {"class_3", 1.0}};
 
   const model::Linear linear_biased(weights, biases);
-  const VectorData avg_vector(data_5);
+  const VectorData avg_vector({1.0, 1.0, 1.0});
 
   // Act
   const PredictionMap predictions = linear_biased.Predict(avg_vector);

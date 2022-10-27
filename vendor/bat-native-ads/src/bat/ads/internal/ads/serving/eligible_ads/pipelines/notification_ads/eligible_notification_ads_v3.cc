@@ -94,7 +94,7 @@ void EligibleAdsV3::GetEligibleAds(
       // Fallback to prediction v2 if no embeddings are available
       creative_ad = PredictAd(user_model, ad_events, eligible_creative_ads);
     } else {
-      creative_ad = PredictAdUsingEmbeddings<CreativeNotificationAdInfo>(
+      creative_ad = MaybePredictAdUsingEmbeddings<CreativeNotificationAdInfo>(
           user_model, eligible_creative_ads);
     }
 
