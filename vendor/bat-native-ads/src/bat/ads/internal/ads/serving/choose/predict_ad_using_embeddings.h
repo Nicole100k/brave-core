@@ -11,7 +11,6 @@
 
 #include "absl/types/optional.h"
 #include "base/check_op.h"
-#include "base/notreached.h"
 #include "base/rand_util.h"
 #include "bat/ads/internal/ads/serving/choose/eligible_ads_predictor_util.h"
 #include "bat/ads/internal/ads/serving/choose/sample_ads.h"
@@ -52,7 +51,6 @@ absl::optional<T> MaybePredictAdUsingEmbeddings(
     }
   }
 
-  NOTREACHED();
   return {};
 }
 

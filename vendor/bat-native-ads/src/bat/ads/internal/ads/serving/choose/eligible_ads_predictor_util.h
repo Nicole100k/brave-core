@@ -168,14 +168,13 @@ std::vector<int> ComputeVoteRegistry(
     const TextEmbeddingHtmlEventList& text_embedding_html_events) {
   DCHECK(!creative_ads.empty());
 
-  std::vector<int> vote_registry;
-  vote_registry.assign(creative_ads.size(), 0);
+  std::vector<int> vote_registry(creative_ads.size(), 0);
 
   for (const auto& text_embedding : text_embedding_html_events) {
     std::vector<float> similarities;
 
     for (const auto& creative_ad : creative_ads) {
-      ml::VectorData ad_embedding(creative_ad.embedding);
+      const ml::VectorData ad_embedding(creative_ad.embedding);
       const ml::VectorData page_text_embedding(text_embedding.embedding);
       const float similarity_score =
           ad_embedding.ComputeSimilarity(page_text_embedding);
