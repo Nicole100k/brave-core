@@ -47,7 +47,7 @@ int BindParameters(mojom::DBCommandInfo* command,
 }  // namespace
 
 void Embeddings::InsertOrUpdate(mojom::DBTransactionInfo* transaction,
-                              const CreativeAdList& creative_ads) {
+                                const CreativeAdList& creative_ads) {
   DCHECK(transaction);
 
   if (creative_ads.empty()) {
@@ -76,7 +76,7 @@ std::string Embeddings::GetTableName() const {
 }
 
 void Embeddings::Migrate(mojom::DBTransactionInfo* transaction,
-                       const int to_version) {
+                         const int to_version) {
   DCHECK(transaction);
 
   switch (to_version) {

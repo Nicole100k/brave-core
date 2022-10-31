@@ -37,12 +37,12 @@ TEST_F(BatAdsEmbeddingPipelineValueUtilTest, FromValue) {
   ASSERT_TRUE(dict);
 
   const std::vector<float> quick_data = {0.7481F, 0.0493F, -0.5572F};
-  const std::vector<float> quick_brown = {-0.0647F, 0.4511F, -0.7326F};
-  const std::vector<float> quick_fox = {-0.9328F, -0.2578F, 0.0032F};
+  const std::vector<float> brown_data = {-0.0647F, 0.4511F, -0.7326F};
+  const std::vector<float> fox_data = {-0.9328F, -0.2578F, 0.0032F};
   const std::vector<std::tuple<std::string, VectorData>> kSamples = {
       {"quick", VectorData(quick_data)},
-      {"brown", VectorData(quick_brown)},
-      {"fox", VectorData(quick_fox)},
+      {"brown", VectorData(brown_data)},
+      {"fox", VectorData(fox_data)},
   };
 
   // Act

@@ -16,7 +16,6 @@
 #include "bat/ads/internal/processors/contextual/text_embedding/text_embedding_html_event_unittest_util.h"
 #include "bat/ads/internal/processors/contextual/text_embedding/text_embedding_html_events.h"
 #include "bat/ads/internal/resources/behavioral/anti_targeting/anti_targeting_resource.h"
-#include "gtest/gtest.h"
 
 // npm run test -- brave_unit_tests --filter=BatAds*
 

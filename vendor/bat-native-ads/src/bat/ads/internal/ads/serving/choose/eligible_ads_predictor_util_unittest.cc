@@ -14,7 +14,6 @@
 #include "bat/ads/internal/processors/contextual/text_embedding/text_embedding_html_event_info.h"
 #include "bat/ads/internal/processors/contextual/text_embedding/text_embedding_html_event_unittest_util.h"
 #include "bat/ads/internal/processors/contextual/text_embedding/text_embedding_html_events.h"
-#include "gtest/gtest.h"
 #include "testing/gtest/include/gtest/gtest.h"  // IWYU pragma: keep
 
 // npm run test -- brave_unit_tests --filter=BatAds*
