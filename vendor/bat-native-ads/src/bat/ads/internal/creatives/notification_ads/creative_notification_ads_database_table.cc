@@ -44,19 +44,6 @@ constexpr char kTableName[] = "creative_ad_notifications";
 
 constexpr int kDefaultBatchSize = 50;
 
-std::vector<float> ConvertStringToVector(std::string string) {
-  const std::vector<std::string> vector_string = base::SplitString(
-      string, " ", base::TRIM_WHITESPACE, base::SPLIT_WANT_NONEMPTY);
-  std::vector<float> vector;
-  for (const std::string& element_string : vector_string) {
-    double element;
-    base::StringToDouble(element_string, &element);
-    vector.push_back(element);
-  }
-
-  return vector;
-}
-
 int BindParameters(mojom::DBCommandInfo* command,
                    const CreativeNotificationAdList& creative_ads) {
   DCHECK(command);

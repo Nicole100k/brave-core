@@ -17,22 +17,13 @@
 #include "bat/ads/internal/base/database/database_bind_util.h"
 #include "bat/ads/internal/base/database/database_table_util.h"
 #include "bat/ads/internal/base/database/database_transaction_util.h"
+#include "bat/ads/internal/base/strings/string_conversions_util.h"
 
 namespace ads::database::table {
 
 namespace {
 
 constexpr char kTableName[] = "embeddings";
-
-std::string ConvertVectorToString(std::vector<float> vector) {
-  size_t v_index = 0;
-  std::vector<std::string> vector_as_string;
-  while (v_index < vector.size()) {
-    vector_as_string.push_back(base::NumberToString(vector.at(v_index)));
-    ++v_index;
-  }
-  return base::JoinString(vector_as_string, " ");
-}
 
 int BindParameters(mojom::DBCommandInfo* command,
                    const CreativeAdList& creative_ads) {

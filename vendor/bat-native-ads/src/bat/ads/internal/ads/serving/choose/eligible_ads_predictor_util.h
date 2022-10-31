@@ -6,6 +6,7 @@
 #ifndef BRAVE_VENDOR_BAT_NATIVE_ADS_SRC_BAT_ADS_INTERNAL_ADS_SERVING_CHOOSE_ELIGIBLE_ADS_PREDICTOR_UTIL_H_
 #define BRAVE_VENDOR_BAT_NATIVE_ADS_SRC_BAT_ADS_INTERNAL_ADS_SERVING_CHOOSE_ELIGIBLE_ADS_PREDICTOR_UTIL_H_
 
+#include <algorithm>
 #include <vector>
 
 #include "bat/ads/internal/ads/ad_events/ad_event_util.h"
@@ -171,22 +172,25 @@ std::vector<int> ComputeVoteRegistry(
   vote_registry.assign(creative_ads.size(), 0);
 
   for (const auto& text_embedding : text_embedding_html_events) {
-    int max_index = 0;
-    float max_similarity = 0.0;
+    std::vector<float> similarities;
+
     for (const auto& creative_ad : creative_ads) {
       ml::VectorData ad_embedding(creative_ad.embedding);
       const ml::VectorData page_text_embedding(text_embedding.embedding);
       const float similarity_score =
           ad_embedding.ComputeSimilarity(page_text_embedding);
 
-      if (similarity_score > max_similarity) {
-        max_index =
-            std::find(creative_ads.cbegin(), creative_ads.cend(), creative_ad) -
-            creative_ads.begin();
-        max_similarity = similarity_score;
-      }
+      similarities.push_back(similarity_score);
     }
-    vote_registry[max_index]++;
+
+    auto result = std::max_element(similarities.begin(), similarities.end());
+
+    while (result != similarities.end()) {
+      auto index = std::distance(similarities.begin(), result);
+      vote_registry[index]++;
+
+      result = std::find(std::next(result), similarities.end(), *result);
+    }
   }
 
   return vote_registry;
