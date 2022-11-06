@@ -39,6 +39,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.android.billingclient.api.Purchase;
+import com.brave.braveandroidplaylist.activity.AllPlaylistActivity;
 import com.brave.braveandroidplaylist.util.ViewUtils;
 import com.brave.braveandroidplaylist.view.MovableImageButton;
 import com.bumptech.glide.Glide;
@@ -363,6 +364,8 @@ public abstract class BraveActivity<C extends ChromeActivityComponent> extends C
             openNewOrSelectExistingTab(BRAVE_REWARDS_SETTINGS_URL);
         } else if (id == R.id.brave_wallet_id) {
             openBraveWallet(false, false, false);
+        } else if (id == R.id.brave_playlist_id) {
+            openBravePlaylist();
         } else if (id == R.id.brave_news_id) {
             openBraveNewsSettings();
         } else if (id == R.id.request_brave_vpn_id || id == R.id.request_brave_vpn_check_id) {
@@ -862,7 +865,7 @@ public abstract class BraveActivity<C extends ChromeActivityComponent> extends C
     private void showPlaylistButton() {
         ViewUtils.showPlaylistButton(BraveActivity.this, findViewById(android.R.id.content),
                 SharedPreferencesManager.getInstance().readBoolean(
-                        BravePreferenceKeys.SHOULD_SHOW_PLAYLIST_ONBOARDING, true));
+                        BravePreferenceKeys.SHOULD_SHOW_PLAYLIST_ONBOARDING, false));
     }
 
     @Override
@@ -1292,6 +1295,12 @@ public abstract class BraveActivity<C extends ChromeActivityComponent> extends C
         braveWalletIntent.putExtra(Utils.RESTART_WALLET_ACTIVITY_RESTORE, restoreAction);
         braveWalletIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         startActivity(braveWalletIntent);
+    }
+
+    private void openBravePlaylist() {
+        Intent bravePlaylistIntent = new Intent(this, AllPlaylistActivity.class);
+        bravePlaylistIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        startActivity(bravePlaylistIntent);
     }
 
     public void viewOnBlockExplorer(String address, @CoinType.EnumType int coinType) {

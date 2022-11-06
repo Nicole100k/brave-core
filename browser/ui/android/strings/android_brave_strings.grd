@@ -3506,6 +3506,9 @@ If you don't accept this request, VPN will not reconnect and your internet conne
     <message name="IDS_VBAT_UNSUPPORTED_REGION_TEXT" desc="Vbat modal text for unsupported region">
       On <ph name="DUE_DATE">%1$s</ph>, we will be discontinuing support for existing virtual BAT balances. Unfortunately, there are no available custodians in your region (<ph name="REGION">%2$s</ph>) to withdraw your earnings. Until then, you can still contribute to your favorite creators.
     </message>
+    <message name="IDS_BRAVE_PLAYLIST" desc="Playlist menu item text">
+      Playlist
+    </message>
   </messages>
   </release>
 </grit>
