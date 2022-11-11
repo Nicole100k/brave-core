@@ -7,6 +7,10 @@ static_library("brave_federated") {
     "brave_federated_service.h",
     "client/federated_client.cc",
     "client/federated_client.h",
+    "client/linear_algebra_util/linear_algebra_util.cc",
+    "client/linear_algebra_util/linear_algebra_util.h",
+    "client/synthetic_dataset/synthetic_dataset.cc",
+    "client/synthetic_dataset/synthetic_dataset.h",
     "client/model.cc",
     "client/model.h",
     "data_store_service.cc",
@@ -22,15 +26,11 @@ static_library("brave_federated") {
     "features.h",
     "learning_service.cc",
     "learning_service.h",
-    "linear_algebra_util/linear_algebra_util.cc",
-    "linear_algebra_util/linear_algebra_util.h",
     "notification_ad_task_constants.h",
     "operational_patterns.cc",
     "operational_patterns.h",
     "operational_patterns_util.cc",
     "operational_patterns_util.h",
-    "synthetic_dataset/synthetic_dataset.cc",
-    "synthetic_dataset/synthetic_dataset.h",
   ]
 
   public_deps = [ "public/interfaces" ]

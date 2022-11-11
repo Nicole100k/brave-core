@@ -11,9 +11,13 @@
 #include <vector>
 
 #include "base/memory/raw_ptr.h"
+#include "base/memory/scoped_refptr.h"
 #include "brave/components/brave_federated/client/linear_algebra_util/linear_algebra_util.h"
 #include "brave/third_party/flower/src/cc/flwr/include/client.h"
-#include "memory/scoped_refptr.h"
+
+namespace net {
+class HttpResponseHeaders;
+}
 
 namespace network {
 
@@ -27,7 +31,7 @@ namespace brave_federated {
 
 class Model;
 
-class FederatedClient final : public flwr::Client {
+class FederatedClient final {
  public:
   FederatedClient(
       const std::string& task_name,
@@ -40,15 +44,20 @@ class FederatedClient final : public flwr::Client {
   void Start();
   void Stop();
 
+  void GetTasks();
+  void OnGetTasks(scoped_refptr<net::HttpResponseHeaders> headers);
+  void PostTaskResults();
+  void OnPostTaskResults(scoped_refptr<net::HttpResponseHeaders> headers);
+  bool IsCommunicating();
+
   void SetTrainingData(DataSet training_data);
   void SetTestData(DataSet test_data);
 
   void SetParameters(flwr::Parameters parameters);
-  bool IsCommunicating() override;
-  flwr::ParametersRes GetParameters() override;
-  flwr::PropertiesRes GetProperties(flwr::PropertiesIns instructions) override;
-  flwr::EvaluateRes Evaluate(flwr::EvaluateIns instructions) override;
-  flwr::FitRes Fit(flwr::FitIns instructions) override;
+  // flwr::ParametersRes GetParameters() override;
+  // flwr::PropertiesRes GetProperties(flwr::PropertiesIns instructions)
+  // override; flwr::EvaluateRes Evaluate(flwr::EvaluateIns instructions)
+  // override; flwr::FitRes Fit(flwr::FitIns instructions) override;
 
  private:
   scoped_refptr<network::SharedURLLoaderFactory>
