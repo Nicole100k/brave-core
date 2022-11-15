@@ -6,25 +6,19 @@
 #include "bat/ads/internal/privacy/tokens/unblinded_tokens/unblinded_tokens_unittest_util.h"
 
 #include "base/check.h"
-#include "bat/ads/internal/deprecated/confirmations/confirmation_state_manager.h"
 #include "bat/ads/internal/privacy/challenge_bypass_ristretto/public_key.h"
 #include "bat/ads/internal/privacy/challenge_bypass_ristretto/unblinded_token.h"
 #include "bat/ads/internal/privacy/tokens/unblinded_tokens/unblinded_token_util.h"
-#include "bat/ads/internal/privacy/tokens/unblinded_tokens/unblinded_tokens.h"
 
 namespace ads::privacy {
 
-UnblindedTokens* GetUnblindedTokens() {
-  return ConfirmationStateManager::GetInstance()->GetUnblindedTokens();
+UnblindedTokenInfo BuildUnblindedToken() {
+  const UnblindedTokenList unblinded_tokens = BuildUnblindedTokens(/*count*/ 1);
+  CHECK(!unblinded_tokens.empty());
+  return unblinded_tokens.front();
 }
 
-UnblindedTokenList SetUnblindedTokens(const int count) {
-  UnblindedTokenList unblinded_tokens = GetUnblindedTokens(count);
-  GetUnblindedTokens()->SetTokens(unblinded_tokens);
-  return unblinded_tokens;
-}
-
-UnblindedTokenInfo CreateUnblindedToken(
+UnblindedTokenInfo BuildUnblindedToken(
     const std::string& unblinded_token_base64) {
   UnblindedTokenInfo unblinded_token;
 
@@ -38,21 +32,7 @@ UnblindedTokenInfo CreateUnblindedToken(
   return unblinded_token;
 }
 
-UnblindedTokenList CreateUnblindedTokens(
-    const std::vector<std::string>& unblinded_tokens_base64) {
-  UnblindedTokenList unblinded_tokens;
-
-  for (const auto& unblinded_token_base64 : unblinded_tokens_base64) {
-    const UnblindedTokenInfo unblinded_token =
-        CreateUnblindedToken(unblinded_token_base64);
-
-    unblinded_tokens.push_back(unblinded_token);
-  }
-
-  return unblinded_tokens;
-}
-
-UnblindedTokenList GetUnblindedTokens(const int count) {
+UnblindedTokenList BuildUnblindedTokens(const int count) {
   const std::vector<std::string> unblinded_tokens_base64 = {
       R"(PLowz2WF2eGD5zfwZjk9p76HXBLDKMq/3EAZHeG/fE2XGQ48jyte+Ve50ZlasOuYL5mwA8CU2aFMlJrt3DDgC3B1+VD/uyHPfa/+bwYRrpVH5YwNSDEydVx8S4r+BYVY)",
       R"(hfrMEltWLuzbKQ02Qixh5C/DWiJbdOoaGaidKZ7Mv+cRq5fyxJqemE/MPlARPhl6NgXPHUeyaxzd6/Lk6YHlfXbBA023DYvGMHoKm15NP/nWnZ1V3iLkgOOHZuk80Z4K)",
@@ -73,7 +53,7 @@ UnblindedTokenList GetUnblindedTokens(const int count) {
     const std::string& unblinded_token_base64 =
         unblinded_tokens_base64.at(i % modulo);
     const UnblindedTokenInfo unblinded_token =
-        CreateUnblindedToken(unblinded_token_base64);
+        BuildUnblindedToken(unblinded_token_base64);
 
     unblinded_tokens.push_back(unblinded_token);
   }
@@ -81,10 +61,24 @@ UnblindedTokenList GetUnblindedTokens(const int count) {
   return unblinded_tokens;
 }
 
-UnblindedTokenInfo GetUnblindedToken() {
-  const UnblindedTokenList unblinded_tokens = GetUnblindedTokens(/*count*/ 1);
-  CHECK(!unblinded_tokens.empty());
-  return unblinded_tokens.front();
+UnblindedTokenList BuildUnblindedTokens(
+    const std::vector<std::string>& unblinded_tokens_base64) {
+  UnblindedTokenList unblinded_tokens;
+
+  for (const auto& unblinded_token_base64 : unblinded_tokens_base64) {
+    const UnblindedTokenInfo unblinded_token =
+        BuildUnblindedToken(unblinded_token_base64);
+
+    unblinded_tokens.push_back(unblinded_token);
+  }
+
+  return unblinded_tokens;
+}
+
+UnblindedTokenList BuildAndSetUnblindedTokens(const int count) {
+  UnblindedTokenList unblinded_tokens = BuildUnblindedTokens(count);
+  SetUnblindedTokens(unblinded_tokens);
+  return unblinded_tokens;
 }
 
 }  // namespace ads::privacy

@@ -501,7 +501,7 @@ TEST_F(BatAdsAccountTest, DepositForCash) {
   ON_CALL(*token_generator_mock_, Generate(_))
       .WillByDefault(Return(privacy::GetTokens(1)));
 
-  privacy::SetUnblindedTokens(1);
+  privacy::BuildAndSetUnblindedTokens(/*count*/ 1);
 
   CreativeNotificationAdList creative_ads;
   const CreativeDaypartInfo daypart_info;
@@ -565,7 +565,7 @@ TEST_F(BatAdsAccountTest, DepositForNonCash) {
   ON_CALL(*token_generator_mock_, Generate(_))
       .WillByDefault(Return(privacy::GetTokens(1)));
 
-  privacy::SetUnblindedTokens(1);
+  privacy::BuildAndSetUnblindedTokens(/*count*/ 1);
 
   // Act
   account_->Deposit("3519f52c-46a4-4c48-9c2b-c264c0067f04",

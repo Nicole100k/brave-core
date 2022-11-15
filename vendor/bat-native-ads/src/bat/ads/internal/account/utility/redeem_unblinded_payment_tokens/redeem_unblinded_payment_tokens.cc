@@ -10,6 +10,7 @@
 
 #include "base/time/time.h"
 #include "base/values.h"
+#include "bat/ads/internal/account/utility/redeem_unblinded_payment_tokens/redeem_unblinded_payment_tokens_constants.h"
 #include "bat/ads/internal/account/utility/redeem_unblinded_payment_tokens/redeem_unblinded_payment_tokens_url_request_builder.h"
 #include "bat/ads/internal/account/utility/redeem_unblinded_payment_tokens/redeem_unblinded_payment_tokens_user_data_builder.h"
 #include "bat/ads/internal/ads_client_helper.h"
@@ -29,6 +30,7 @@ namespace ads {
 namespace {
 
 constexpr base::TimeDelta kRetryAfter = base::Minutes(1);
+
 constexpr base::TimeDelta kExpiredNextTokenRedemptionAfter = base::Minutes(1);
 constexpr int64_t kNextTokenRedemptionAfterSeconds =
     24 * base::Time::kSecondsPerHour;
@@ -114,8 +116,8 @@ void RedeemUnblindedPaymentTokens::Redeem() {
 
   is_processing_ = true;
 
-  const privacy::UnblindedPaymentTokenList& unblinded_payment_tokens =
-      privacy::GetAllUnblindedPaymentTokens();
+  const privacy::UnblindedPaymentTokenList unblinded_payment_tokens =
+      privacy::GetUnblindedPaymentTokens(kUnblindedPaymentTokenBatchSize);
 
   const RedeemUnblindedPaymentTokensUserDataBuilder user_data_builder(
       unblinded_payment_tokens);

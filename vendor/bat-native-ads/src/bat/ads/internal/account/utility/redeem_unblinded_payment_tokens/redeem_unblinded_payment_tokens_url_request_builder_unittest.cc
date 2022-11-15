@@ -7,14 +7,12 @@
 
 #include <vector>
 
-#include "base/check.h"
 #include "bat/ads/internal/account/utility/redeem_unblinded_payment_tokens/redeem_unblinded_payment_tokens_user_data_builder.h"
 #include "bat/ads/internal/account/wallet/wallet_info.h"
 #include "bat/ads/internal/common/unittest/unittest_base.h"
 #include "bat/ads/internal/common/unittest/unittest_mock_util.h"
 #include "bat/ads/internal/flags/flag_manager.h"
-#include "bat/ads/internal/privacy/challenge_bypass_ristretto/public_key.h"
-#include "bat/ads/internal/privacy/challenge_bypass_ristretto/unblinded_token.h"
+#include "bat/ads/internal/privacy/tokens/unblinded_payment_tokens/unblinded_payment_tokens_unittest_util.h"
 #include "bat/ads/sys_info.h"
 #include "url/gurl.h"
 
@@ -85,7 +83,7 @@ TEST_F(BatAdsRedeemUnblindedPaymentTokensUrlRequestBuilderTest,
       "33cea0085cfd551faa170c1dd7f6daaa903cdd3138d61ed5ab2845e224d58144";
 
   const privacy::UnblindedPaymentTokenList unblinded_payment_tokens =
-      GetUnblindedPaymentTokens(7);
+      privacy::BuildUnblindedPaymentTokens(/*count*/ 7);
 
   const RedeemUnblindedPaymentTokensUserDataBuilder user_data_builder(
       unblinded_payment_tokens);
@@ -133,7 +131,7 @@ TEST_F(BatAdsRedeemUnblindedPaymentTokensUrlRequestBuilderTest,
       "33cea0085cfd551faa170c1dd7f6daaa903cdd3138d61ed5ab2845e224d58144";
 
   const privacy::UnblindedPaymentTokenList unblinded_payment_tokens =
-      GetUnblindedPaymentTokens(7);
+      privacy::BuildUnblindedPaymentTokens(/*count*/ 7);
 
   const RedeemUnblindedPaymentTokensUserDataBuilder user_data_builder(
       unblinded_payment_tokens);

@@ -37,7 +37,7 @@ TEST_F(BatAdsCreateConfirmationUrlRequestBuilderTest,
   FlagManager::GetInstance()->SetEnvironmentTypeForTesting(
       EnvironmentType::kStaging);
 
-  privacy::SetUnblindedTokens(1);
+  privacy::BuildAndSetUnblindedTokens(/*count*/ 1);
 
   MockBuildChannel(BuildChannelType::kRelease);
 
@@ -69,7 +69,7 @@ TEST_F(BatAdsCreateConfirmationUrlRequestBuilderTest,
   FlagManager::GetInstance()->SetEnvironmentTypeForTesting(
       EnvironmentType::kStaging);
 
-  privacy::SetUnblindedTokens(1);
+  privacy::BuildAndSetUnblindedTokens(/*count*/ 1);
 
   MockBuildChannel(BuildChannelType::kRelease);
 
@@ -103,7 +103,7 @@ TEST_F(BatAdsCreateConfirmationUrlRequestBuilderTest,
   FlagManager::GetInstance()->SetEnvironmentTypeForTesting(
       EnvironmentType::kStaging);
 
-  privacy::SetUnblindedTokens(1);
+  privacy::BuildAndSetUnblindedTokens(/*count*/ 1);
 
   MockBuildChannel(BuildChannelType::kRelease);
 
@@ -137,7 +137,7 @@ TEST_F(BatAdsCreateConfirmationUrlRequestBuilderTest,
   FlagManager::GetInstance()->SetEnvironmentTypeForTesting(
       EnvironmentType::kStaging);
 
-  privacy::SetUnblindedTokens(1);
+  privacy::BuildAndSetUnblindedTokens(/*count*/ 1);
 
   MockBuildChannel(BuildChannelType::kNightly);
 
@@ -169,7 +169,7 @@ TEST_F(BatAdsCreateConfirmationUrlRequestBuilderTest,
   FlagManager::GetInstance()->SetEnvironmentTypeForTesting(
       EnvironmentType::kStaging);
 
-  privacy::SetUnblindedTokens(1);
+  privacy::BuildAndSetUnblindedTokens(/*count*/ 1);
 
   MockBuildChannel(BuildChannelType::kNightly);
 
@@ -203,7 +203,7 @@ TEST_F(BatAdsCreateConfirmationUrlRequestBuilderTest,
   FlagManager::GetInstance()->SetEnvironmentTypeForTesting(
       EnvironmentType::kStaging);
 
-  privacy::SetUnblindedTokens(1);
+  privacy::BuildAndSetUnblindedTokens(/*count*/ 1);
 
   MockBuildChannel(BuildChannelType::kNightly);
 
@@ -237,7 +237,7 @@ TEST_F(BatAdsCreateConfirmationUrlRequestBuilderTest,
   FlagManager::GetInstance()->SetEnvironmentTypeForTesting(
       EnvironmentType::kStaging);
 
-  privacy::SetUnblindedTokens(1);
+  privacy::BuildAndSetUnblindedTokens(/*count*/ 1);
 
   MockBuildChannel(BuildChannelType::kRelease);
 
@@ -269,7 +269,7 @@ TEST_F(BatAdsCreateConfirmationUrlRequestBuilderTest,
   FlagManager::GetInstance()->SetEnvironmentTypeForTesting(
       EnvironmentType::kStaging);
 
-  privacy::SetUnblindedTokens(1);
+  privacy::BuildAndSetUnblindedTokens(/*count*/ 1);
 
   MockBuildChannel(BuildChannelType::kRelease);
 
@@ -303,7 +303,7 @@ TEST_F(BatAdsCreateConfirmationUrlRequestBuilderTest,
   FlagManager::GetInstance()->SetEnvironmentTypeForTesting(
       EnvironmentType::kStaging);
 
-  privacy::SetUnblindedTokens(1);
+  privacy::BuildAndSetUnblindedTokens(/*count*/ 1);
 
   MockBuildChannel(BuildChannelType::kRelease);
 
@@ -337,7 +337,7 @@ TEST_F(BatAdsCreateConfirmationUrlRequestBuilderTest,
   FlagManager::GetInstance()->SetEnvironmentTypeForTesting(
       EnvironmentType::kStaging);
 
-  privacy::SetUnblindedTokens(1);
+  privacy::BuildAndSetUnblindedTokens(/*count*/ 1);
 
   MockBuildChannel(BuildChannelType::kNightly);
 
@@ -369,7 +369,7 @@ TEST_F(BatAdsCreateConfirmationUrlRequestBuilderTest,
   FlagManager::GetInstance()->SetEnvironmentTypeForTesting(
       EnvironmentType::kStaging);
 
-  privacy::SetUnblindedTokens(1);
+  privacy::BuildAndSetUnblindedTokens(/*count*/ 1);
 
   MockBuildChannel(BuildChannelType::kNightly);
 
@@ -403,7 +403,7 @@ TEST_F(BatAdsCreateConfirmationUrlRequestBuilderTest,
   FlagManager::GetInstance()->SetEnvironmentTypeForTesting(
       EnvironmentType::kStaging);
 
-  privacy::SetUnblindedTokens(1);
+  privacy::BuildAndSetUnblindedTokens(/*count*/ 1);
 
   MockBuildChannel(BuildChannelType::kNightly);
 

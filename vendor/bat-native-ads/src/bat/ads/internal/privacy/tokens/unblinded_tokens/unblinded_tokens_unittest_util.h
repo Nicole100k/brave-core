@@ -15,17 +15,15 @@ namespace ads::privacy {
 
 class UnblindedTokens;
 
-UnblindedTokens* GetUnblindedTokens();
-
-UnblindedTokenList SetUnblindedTokens(int count);
-
-UnblindedTokenInfo CreateUnblindedToken(
+UnblindedTokenInfo BuildUnblindedToken();
+UnblindedTokenInfo BuildUnblindedToken(
     const std::string& unblinded_token_base64);
-UnblindedTokenList CreateUnblindedTokens(
+
+UnblindedTokenList BuildUnblindedTokens(int count);
+UnblindedTokenList BuildUnblindedTokens(
     const std::vector<std::string>& unblinded_tokens_base64);
 
-UnblindedTokenList GetUnblindedTokens(int count);
-UnblindedTokenInfo GetUnblindedToken();
+UnblindedTokenList BuildAndSetUnblindedTokens(int count);
 
 }  // namespace ads::privacy
 
