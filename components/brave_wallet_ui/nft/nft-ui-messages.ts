@@ -20,7 +20,8 @@ export const enum NftUiCommand {
   UpdateNFTMetadata = 'update-nft-metadata',
   UpdateNFTMetadataError = 'update-nft-metadata-error',
   UpdateTokenNetwork = 'update-token-network',
-  ToggleNftModal = 'toggle-nft-modal'
+  ToggleNftModal = 'toggle-nft-modal',
+  IframeSize = 'iframe-size'
 }
 
 export type CommandMessage = {
@@ -61,6 +62,13 @@ export type UpdateTokenNetworkMessage = CommandMessage & {
 
 export type ToggleNftModal = CommandMessage & {
   payload: boolean
+}
+
+export type IframeSize = CommandMessage & {
+  payload: {
+    width: number
+    height: number
+  }
 }
 
 export const sendMessageToNftUiFrame = (targetWindow: Window | null, message: CommandMessage) => {
