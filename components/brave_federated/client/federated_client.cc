@@ -88,7 +88,7 @@ void FederatedClient::GetTasks() {
   request->url = GURL(kServerEndpoint);
   request->headers.SetHeader("X-Brave-FL-Federated-Learning", "?1");
   request->credentials_mode = network::mojom::CredentialsMode::kOmit;
-  request->method = net::HttpRequestHeaders::kGetMethod;
+  request->method = net::HttpRequestHeaders::kPostMethod;
 
   VLOG(2) << "Requesting Tasks list " << request->method << " " << request->url;
 
@@ -98,7 +98,7 @@ void FederatedClient::GetTasks() {
 
   url_loader_ = network::SimpleURLLoader::Create(
       std::move(request), GetNetworkTrafficAnnotationTag());
-  url_loader_->AttachStringForUpload(payload, "application/json");
+  url_loader_->AttachStringForUpload(payload, "application/protobuf");
   url_loader_->DownloadHeadersOnly(
       url_loader_factory_.get(),
       base::BindOnce(&FederatedClient::OnGetTasks, base::Unretained(this)));
@@ -127,7 +127,7 @@ void FederatedClient::PostTaskResults() {
 
   url_loader_ = network::SimpleURLLoader::Create(
       std::move(request), GetNetworkTrafficAnnotationTag());
-  url_loader_->AttachStringForUpload(payload, "application/json");
+  url_loader_->AttachStringForUpload(payload, "application/protobuf");
   url_loader_->DownloadHeadersOnly(
       url_loader_factory_.get(),
       base::BindOnce(&FederatedClient::OnPostTaskResults,
