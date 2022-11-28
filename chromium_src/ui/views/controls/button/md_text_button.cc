@@ -209,11 +209,19 @@ void MdTextButton::SetLoading(bool loading) {
 
 void MdTextButton::UpdateBackgroundColor() {
   // Handled via |UpdateColorsForBrave|.
-  if (kind_ != kOld) {
+  if (kind_ == kOld) {
+    MdTextButtonBase::UpdateBackgroundColor();
     return;
   }
 
-  MdTextButtonBase::UpdateBackgroundColor();
+  auto colors = GetButtonColors();
+
+  // SubPixelRendering doesn't work if we have any background opacity.
+  SetTextSubpixelRenderingEnabled(SkColorGetA(colors.background_color) == 0xFF);
+
+  SetBackground(
+      CreateBackgroundFromPainter(Painter::CreateRoundRectWith1PxBorderPainter(
+          colors.background_color, colors.stroke_color, GetCornerRadius())));
 }
 
 void MdTextButton::UpdateOldColorsForBrave() {
@@ -256,6 +264,38 @@ void MdTextButton::UpdateColorsForBrave() {
     return;
   }
 
+  SetTextColor(GetVisualState(), );
+}
+
+void MdTextButton::UpdateIconForBrave() {
+  if (icon_) {
+    SetImageModel(
+        ButtonState::STATE_NORMAL,
+        ui::ImageModel::FromVectorIcon(*icon_, GetCurrentTextColor()));
+  }
+}
+
+void MdTextButton::OnPaintBackground(gfx::Canvas* canvas) {
+  // Set brave-style hover colors
+  MdTextButtonBase::OnPaintBackground(canvas);
+  if (GetProminent() &&
+      (hover_animation().is_animating() || GetState() == STATE_HOVERED)) {
+    constexpr SkColor normal_color = kBraveBrandColor;
+    constexpr SkColor hover_color = SkColorSetRGB(0xff, 0x97, 0x7d);
+    const SkAlpha alpha =
+        static_cast<SkAlpha>(hover_animation().CurrentValueBetween(0x00, 0xff));
+    const SkColor current_color =
+        color_utils::AlphaBlend(hover_color, normal_color, alpha);
+    cc::PaintFlags flags;
+    flags.setColor(current_color);
+    flags.setStyle(cc::PaintFlags::kFill_Style);
+    flags.setAntiAlias(true);
+    canvas->DrawRoundRect(gfx::RectF(GetLocalBounds()), GetCornerRadius(),
+                          flags);
+  }
+}
+
+MdTextButton::ButtonColors MdTextButton::GetButtonColors() {
   // Leo buttons only have a light and dark mode.
   auto color_scheme =
       GetNativeTheme()->GetPreferredColorScheme() == ColorScheme::kDark
@@ -290,50 +330,13 @@ void MdTextButton::UpdateColorsForBrave() {
                  << ", ButtonState: " << state;
   }
   const auto& style = it->second;
-
-  SetTextColor(GetVisualState(), AddOpacity(style.text_color, opacity));
-
-  // Prefer the BgColorOverride, if there is one. Fallback to what's in our
-  // style.
-  SkColor bg_color = GetBgColorOverride().value_or(
-      style.background_color.value_or(SK_ColorTRANSPARENT));
-  SkColor stroke_color = style.border_color.value_or(SK_ColorTRANSPARENT);
-
-  // SubPixelRendering doesn't work if we have any background opacity.
-  SetTextSubpixelRenderingEnabled(opacity == 1 &&
-                                  SkColorGetA(bg_color) == 0xFF);
-  SetBackground(
-      CreateBackgroundFromPainter(Painter::CreateRoundRectWith1PxBorderPainter(
-          AddOpacity(bg_color, opacity), AddOpacity(stroke_color, opacity),
-          GetCornerRadius())));
-}
-
-void MdTextButton::UpdateIconForBrave() {
-  if (icon_) {
-    SetImageModel(
-        ButtonState::STATE_NORMAL,
-        ui::ImageModel::FromVectorIcon(*icon_, GetCurrentTextColor()));
-  }
-}
-
-void MdTextButton::OnPaintBackground(gfx::Canvas* canvas) {
-  // Set brave-style hover colors
-  MdTextButtonBase::OnPaintBackground(canvas);
-  if (GetProminent() &&
-      (hover_animation().is_animating() || GetState() == STATE_HOVERED)) {
-    constexpr SkColor normal_color = kBraveBrandColor;
-    constexpr SkColor hover_color = SkColorSetRGB(0xff, 0x97, 0x7d);
-    const SkAlpha alpha =
-        static_cast<SkAlpha>(hover_animation().CurrentValueBetween(0x00, 0xff));
-    const SkColor current_color =
-        color_utils::AlphaBlend(hover_color, normal_color, alpha);
-    cc::PaintFlags flags;
-    flags.setColor(current_color);
-    flags.setStyle(cc::PaintFlags::kFill_Style);
-    flags.setAntiAlias(true);
-    canvas->DrawRoundRect(gfx::RectF(GetLocalBounds()), GetCornerRadius(),
-                          flags);
-  }
+  return {.background_color = AddOpacity(
+              GetBgColorOverride().value_or(
+                  style.background_color.value_or(SK_ColorTRANSPARENT)),
+              opacity),
+          .stroke_color = AddOpacity(
+              style.border_color.value_or(SK_ColorTRANSPARENT), opacity),
+          .text_color = AddOpacity(style.text_color, opacity)};
 }
 
 }  // namespace views

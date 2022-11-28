@@ -6,6 +6,7 @@
 #ifndef BRAVE_CHROMIUM_SRC_UI_VIEWS_CONTROLS_BUTTON_MD_TEXT_BUTTON_H_
 #define BRAVE_CHROMIUM_SRC_UI_VIEWS_CONTROLS_BUTTON_MD_TEXT_BUTTON_H_
 
+#include "include/core/SkColor.h"
 #include "third_party/abseil-cpp/absl/types/optional.h"
 #include "ui/gfx/vector_icon_types.h"
 #include "ui/views/controls/button/label_button.h"
@@ -33,7 +34,6 @@
 #undef MdTextButton
 
 namespace views {
-
 // Make visual changes to MdTextButton in line with Brave visual style:
 //  - More rounded rectangle (for regular border, focus ring and ink drop)
 //  - Different hover text and boder color for non-prominent button
@@ -41,6 +41,12 @@ namespace views {
 //  - No shadow for prominent background
 class VIEWS_EXPORT MdTextButton : public MdTextButtonBase {
  public:
+  struct ButtonColors {
+    SkColor background_color;
+    SkColor stroke_color;
+    SkColor text_color;
+  };
+
   enum Kind { kOld, kPrimary, kSecondary, kTertiary };
 
   explicit MdTextButton(PressedCallback callback = PressedCallback(),
@@ -74,6 +80,8 @@ class VIEWS_EXPORT MdTextButton : public MdTextButtonBase {
   void OnPaintBackground(gfx::Canvas* canvas) override;
 
  private:
+  ButtonColors GetButtonColors();
+
   Kind kind_ = kOld;
   bool loading_ = false;
   raw_ptr<const gfx::VectorIcon> icon_ = nullptr;
