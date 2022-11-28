@@ -6,31 +6,25 @@
 #ifndef BRAVE_CHROMIUM_SRC_UI_VIEWS_CONTROLS_BUTTON_MD_TEXT_BUTTON_H_
 #define BRAVE_CHROMIUM_SRC_UI_VIEWS_CONTROLS_BUTTON_MD_TEXT_BUTTON_H_
 
-#include "include/core/SkColor.h"
 #include "third_party/abseil-cpp/absl/types/optional.h"
+#include "third_party/skia/include/core/SkColor.h"
 #include "ui/gfx/vector_icon_types.h"
 #include "ui/views/controls/button/label_button.h"
 
 // Rename MdTextButton to MdTextButtonBase
 #define MdTextButton MdTextButtonBase
 
-// Define a Brave-specific method to be called from UpdateColors() to extend its
-// functionality instead of defining UpdateColors() "virtual" and overriding it
-// in our version of the MdTextButton class because there are some subclasses
-// that define their own UpdateColors() method (OmniboxChipButton) now, which
-// would not work with the virtual + override approach.
-// Note: We redefine UpdateBackgroundColor because we want it to be protected.
-#define UpdateBackgroundColor              \
-  UpdateBackgroundColor_Unused();          \
-                                           \
- protected:                                \
-  virtual void UpdateColorsForBrave() = 0; \
-  virtual void UpdateIconForBrave() = 0;   \
-  void UpdateBackgroundColor
+// Redefine UpdateTextColor as protected virtual so we can override it.
+#define UpdateTextColor                  \
+  UpdateTextColor_Unused();              \
+                                         \
+ protected:                              \
+  virtual void UpdateIconForBrave() = 0; \
+  virtual void UpdateTextColor
 
 #include "src/ui/views/controls/button/md_text_button.h"
 
-#undef UpdateBackgroundColor
+#undef UpdateTextColor
 #undef MdTextButton
 
 namespace views {
@@ -66,13 +60,9 @@ class VIEWS_EXPORT MdTextButton : public MdTextButtonBase {
   bool GetLoading() const;
   void SetLoading(bool loading);
 
-  // Until we decide to update the whole UI to use the new Leo colors, we
-  // need to keep this logic around. Currently the new colors are opt-in only.
-  void UpdateOldColorsForBrave();
-
   // MdTextButtonBase:
+  void UpdateTextColor() override;
   void UpdateBackgroundColor() override;
-  void UpdateColorsForBrave() override;
   void UpdateIconForBrave() override;
 
  protected:
