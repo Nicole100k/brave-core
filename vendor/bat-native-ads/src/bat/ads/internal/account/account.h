@@ -75,6 +75,15 @@ class Account final : public PrefManagerObserver,
                       const AdType& ad_type,
                       const ConfirmationType& confirmation_type,
                       double value) const;
+  void ProcessDepositIfShouldNotRewardUser(
+      const std::string& creative_instance_id,
+      const AdType& ad_type,
+      const ConfirmationType& confirmation_type) const;
+  void ProcessDepositIfShouldRewardUser(
+      const std::string& creative_instance_id,
+      const AdType& ad_type,
+      const ConfirmationType& confirmation_type,
+      double value) const;
   void FailedToProcessDeposit(const std::string& creative_instance_id,
                               const AdType& ad_type,
                               const ConfirmationType& confirmation_type) const;
