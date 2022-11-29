@@ -24,9 +24,6 @@
 #include "ui/views/controls/highlight_path_generator.h"
 #include "ui/views/view_class_properties.h"
 
-// To be called from MdTextButtonBase::UpdateColors().
-#define BRAVE_MD_TEXT_BUTTON_UPDATE_COLORS UpdateIconForBrave();
-
 #define MdTextButton MdTextButtonBase
 #include "src/ui/views/controls/button/md_text_button.cc"
 #undef MdTextButton
@@ -271,7 +268,10 @@ void MdTextButton::UpdateBackgroundColor() {
           colors.background_color, colors.stroke_color, GetCornerRadius())));
 }
 
-void MdTextButton::UpdateIconForBrave() {
+void MdTextButton::UpdateColors() {
+  MdTextButtonBase::UpdateColors();
+
+  // Update the icon color.
   if (icon_) {
     SetImageModel(
         ButtonState::STATE_NORMAL,

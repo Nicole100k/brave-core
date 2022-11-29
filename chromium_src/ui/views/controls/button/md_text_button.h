@@ -15,15 +15,17 @@
 #define MdTextButton MdTextButtonBase
 
 // Redefine UpdateTextColor as protected virtual so we can override it.
-#define UpdateTextColor                  \
-  UpdateTextColor_Unused();              \
-                                         \
- protected:                              \
-  virtual void UpdateIconForBrave() = 0; \
+#define UpdateTextColor     \
+  UpdateTextColor_Unused(); \
+                            \
+ protected:                 \
   virtual void UpdateTextColor
+
+#define UpdateColors virtual UpdateColors
 
 #include "src/ui/views/controls/button/md_text_button.h"
 
+#undef UpdateColors
 #undef UpdateTextColor
 #undef MdTextButton
 
@@ -63,7 +65,7 @@ class VIEWS_EXPORT MdTextButton : public MdTextButtonBase {
   // MdTextButtonBase:
   void UpdateTextColor() override;
   void UpdateBackgroundColor() override;
-  void UpdateIconForBrave() override;
+  void UpdateColors() override;
 
  protected:
   // views::Views
