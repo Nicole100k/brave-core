@@ -7,18 +7,16 @@
 
 namespace flower {
 
-ClientRunner::ClientRunner(
-  const std::string& server_endpoint,
-  flwr::Client* client,
-  int grpc_max_message_length)
-  : federated_client_(client),
-    server_endpoint_(server_endpoint) {
-    DCHECK(federated_client_);
+ClientRunner::ClientRunner(const std::string& server_endpoint,
+                           flower::Client* client,
+                           int grpc_max_message_length)
+    : federated_client_(client), server_endpoint_(server_endpoint) {
+  DCHECK(federated_client_);
 
-    // net::URLRequestContextGetter url_request_context_getter({});
-    // grpc_support::BidirectionalStream* bidirectional_stream_(
-    //   new grpc_support::BidirectionalStream(url_request_context_getter,
-    //   this));
+  // net::URLRequestContextGetter url_request_context_getter({});
+  // grpc_support::BidirectionalStream* bidirectional_stream_(
+  //   new grpc_support::BidirectionalStream(url_request_context_getter,
+  //   this));
 }
 
 ClientRunner::~ClientRunner() {}

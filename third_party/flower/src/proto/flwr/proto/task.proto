@@ -15,9 +15,9 @@
 
 syntax = "proto3";
 
-package flwr.proto;
+package flower;
 
-import "flwr/proto/transport.proto";
+import "transport.proto";
 
 // ClientID messages
 message ClientID {

@@ -15,7 +15,7 @@
 
 syntax = "proto3";
 
-package flwr.proto;
+package flower;
 
 service FlowerService {
   rpc Join(stream ClientMessage) returns (stream ServerMessage) {}

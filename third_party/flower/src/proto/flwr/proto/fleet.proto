@@ -15,9 +15,9 @@
 
 syntax = "proto3";
 
-package flwr.proto;
+package flower;
 
-import "flwr/proto/task.proto";
+import "task.proto";
 
 service Fleet {
   // Get tasks
@@ -37,7 +37,10 @@ message TokenizedTask {
 message TokenizedTasks { repeated TokenizedTask tokenized_tasks = 1; }
 
 // GetTasks messages
-message GetTasksRequest { repeated ClientID cid = 1; }
+message GetTasksRequest {
+  uint64 id = 1;
+  repeated ClientID cid = 2;
+}
 message GetTasksResponse {
   oneof msg {
     TokenizedTasks tokenized_tasks = 1;
