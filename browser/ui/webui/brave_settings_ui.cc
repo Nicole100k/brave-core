@@ -39,6 +39,7 @@
 #include "content/public/browser/web_ui_data_source.h"
 #include "content/public/common/content_features.h"
 #include "extensions/buildflags/buildflags.h"
+#include "net/base/features.h"
 
 #if BUILDFLAG(ENABLE_PIN_SHORTCUT)
 #include "brave/browser/ui/webui/settings/pin_shortcut_handler.h"
@@ -131,6 +132,9 @@ void BraveSettingsUI::AddResources(content::WebUIDataSource* html_source,
       "isGoogleSignInFeatureEnabled",
       base::FeatureList::IsEnabled(
           google_sign_in_permission::features::kBraveGoogleSignInPermission));
+  html_source->AddBoolean("isForgetFirstPartyStorageFeatureEnabled",
+                          base::FeatureList::IsEnabled(
+                              net::features::kBraveForgetFirstPartyStorage));
   html_source->AddBoolean("isBraveRewardsSupported",
                           brave_rewards::IsSupportedForProfile(profile));
 

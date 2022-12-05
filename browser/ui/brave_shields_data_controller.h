@@ -64,6 +64,7 @@ class BraveShieldsDataController
   FingerprintMode GetFingerprintMode();
   CookieBlockMode GetCookieBlockMode();
   bool IsBraveShieldsManaged();
+  bool IsForgetFirstPartyStorageFeatureEnabled() const;
   bool GetHTTPSEverywhereEnabled();
   bool GetNoScriptEnabled();
   void SetAdBlockMode(AdBlockMode mode);

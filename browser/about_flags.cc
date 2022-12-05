@@ -273,6 +273,12 @@ constexpr char kBraveFirstPartyEphemeralStorageDescription[] =
     "Enable support for First Party Ephemeral Storage using SESSION_ONLY "
     "cookie setting";
 
+constexpr char kBraveForgetFirstPartyStorageName[] =
+    "Enable First Party Storage Cleanup support";
+constexpr char kBraveForgetFirstPartyStorageDescription[] =
+    "Add cookie blocking mode which allows Brave to cleanup first party "
+    "storage (Cookies, DOM Storage) on website close";
+
 #if BUILDFLAG(ENABLE_GEMINI_WALLET)
 constexpr char kBraveRewardsGeminiName[] = "Enable Gemini for Brave Rewards";
 constexpr char kBraveRewardsGeminiDescription[] =
@@ -756,6 +762,11 @@ constexpr char kRestrictEventSourcePoolDescription[] =
      flag_descriptions::kBraveRewardsVBatNoticeDescription,                 \
      kOsDesktop | kOsAndroid,                                               \
      FEATURE_VALUE_TYPE(brave_rewards::features::kVBatNoticeFeature)},      \
+    {"brave-forget-first-party-storage",                                    \
+     flag_descriptions::kBraveForgetFirstPartyStorageName,                  \
+     flag_descriptions::kBraveForgetFirstPartyStorageDescription,           \
+     kOsAll,                                                                \
+     FEATURE_VALUE_TYPE(net::features::kBraveForgetFirstPartyStorage)},     \
     {"brave-rewards-verbose-logging",                                       \
      flag_descriptions::kBraveRewardsVerboseLoggingName,                    \
      flag_descriptions::kBraveRewardsVerboseLoggingDescription,             \
