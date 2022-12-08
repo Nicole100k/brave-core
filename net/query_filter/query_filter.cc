@@ -8,6 +8,7 @@
 #include <string>
 #include <vector>
 
+#include "base/containers/cxx20_erase_vector.h"
 #include "base/containers/fixed_flat_map.h"
 #include "base/containers/fixed_flat_set.h"
 #include "base/logging.h"
@@ -137,6 +138,35 @@ absl::optional<GURL> ApplyQueryFilter(const GURL& original_url) {
     return original_url.ReplaceComponents(replacements);
   }
   return absl::nullopt;
+}
+
+void MaybeRemoveTwitterParam(
+    const absl::optional<url::Origin>& request_initiator,
+    GURL& url_to_load) {
+  if (!(url_to_load.has_query() && url_to_load.DomainIs("twitter.com") &&
+        (!request_initiator || !request_initiator->DomainIs("twitter.com")))) {
+    // Ignore anything that's not a not cross-origin request to
+    // Twitter with a query string.
+    return;
+  }
+
+  GURL url = url_to_load;
+
+  std::vector<base::StringPiece> query_params =
+      base::SplitStringPiece(url.query_piece(), "&", base::KEEP_WHITESPACE,
+                             base::SplitResult::SPLIT_WANT_ALL);
+  base::EraseIf(query_params, [](const auto& p) {
+    return base::StartsWith(p, "t=", base::CompareCase::SENSITIVE);
+  });
+
+  GURL::Replacements replacements;
+  if (query_params.empty()) {
+    replacements.ClearQuery();
+  } else {
+    std::string new_query_str = base::JoinString(query_params, "&");
+    replacements.SetQueryStr(new_query_str);
+  }
+  url_to_load = url.ReplaceComponents(replacements);
 }
 
 }  // namespace net::query_filter
