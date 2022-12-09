@@ -104,9 +104,11 @@ class PlaylistDownloadRequestManagerBrowserTest : public PlatformBrowserTest {
   std::unique_ptr<net::test_server::HttpResponse> Serve(
       const std::string& html,
       const net::test_server::HttpRequest& request) {
-    GURL absolute_url = embedded_test_server()->GetURL(request.relative_url);
-    if (absolute_url.path() != "/test")
-      return {};
+    if (base::StartsWith(request.relative_url, "/")) {
+      GURL absolute_url = embedded_test_server()->GetURL(request.relative_url);
+      if (absolute_url.path() != "/test")
+        return {};
+    }
 
     auto response = std::make_unique<net::test_server::BasicHttpResponse>();
     response->set_code(net::HTTP_OK);
@@ -186,4 +188,44 @@ IN_PROC_BROWSER_TEST_F(PlaylistDownloadRequestManagerBrowserTest,
       )html",
       {{.name = "", .thumbnail_source = "", .media_source = "/test1.mp4"},
        {.name = "", .thumbnail_source = "", .media_source = "/test2.mp4"}});
+}
+
+IN_PROC_BROWSER_TEST_F(PlaylistDownloadRequestManagerBrowserTest,
+                       OGTagImageWithAbsolutePath) {
+  using playlist::PlaylistItemInfo;
+  LoadHTMLAndCheckResult(
+      R"html(
+        <html>
+        <meta property="og:image" content="http://foo.com/img.jpg"> 
+        <body>
+          <video>
+            <source src="test1.mp4"/>
+          </video>
+        </body></html>
+      )html",
+      {
+          {PlaylistItemInfo::Title(""),
+           PlaylistItemInfo::ThumbnailPath("http://foo.com/img.jpg"),
+           PlaylistItemInfo::MediaFilePath("/test1.mp4")},
+      });
+}
+
+IN_PROC_BROWSER_TEST_F(PlaylistDownloadRequestManagerBrowserTest,
+                       OGTagImageWithRelativePath) {
+  using playlist::PlaylistItemInfo;
+  LoadHTMLAndCheckResult(
+      R"html(
+        <html>
+        <meta property="og:image" content="/img.jpg"> 
+        <body>
+          <video>
+            <source src="test1.mp4"/>
+          </video>
+        </body></html>
+      )html",
+      {
+          {PlaylistItemInfo::Title(""),
+           PlaylistItemInfo::ThumbnailPath("/img.jpg"),
+           PlaylistItemInfo::MediaFilePath("/test1.mp4")},
+      });
 }
