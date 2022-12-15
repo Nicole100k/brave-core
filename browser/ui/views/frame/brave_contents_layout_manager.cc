@@ -45,7 +45,10 @@ void BraveContentsLayoutManager::Layout(views::View* contents_container) {
     auto width = view->GetPreferredSize().width();
     const gfx::Rect bounds(taken_left_width, 0, width, contents_height);
     view->SetBoundsRect(host_->GetMirroredRect(bounds));
-    taken_left_width += width;
+    if (view == vertical_tabs_container_)
+      taken_left_width += 40;
+    else
+      taken_left_width += width;
   }
   contents_width -= taken_left_width;
 

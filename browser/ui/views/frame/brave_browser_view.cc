@@ -433,9 +433,14 @@ void BraveBrowserView::AddedToWidget() {
   BrowserView::AddedToWidget();
 
   if (vertical_tab_strip_host_view_) {
-    vertical_tab_strip_widget_delegate_view_ =
-        VerticalTabStripWidgetDelegateView::Create(
-            this, vertical_tab_strip_host_view_);
+    // vertical_tab_strip_widget_delegate_view_ =
+    //     VerticalTabStripWidgetDelegateView::Create(
+    //         this, vertical_tab_strip_host_view_);
+    vertical_tab_strip_host_view_->SetLayoutManager(
+        std::make_unique<views::FillLayout>());
+    vertical_tab_strip_host_view_->AddChildView(
+        std::make_unique<VerticalTabStripRegionView>(
+            browser(), tab_strip_region_view()))->SetPaintToLayer();
   }
 }
 
