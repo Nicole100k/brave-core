@@ -321,7 +321,7 @@ MdTextButton::ButtonColors MdTextButton::GetButtonColors() {
 
   // The enabled style is the normal button style with more opacity.
   if (!GetEnabled() || state == STATE_DISABLED) {
-    state = ButtonState::STATE_DISABLED;
+    state = ButtonState::STATE_NORMAL;
     opacity = kDisabledOpacity;
   }
 
