@@ -174,4 +174,5 @@
     <color name="notification_download_icon_color">#F0F2FF</color>
     <color name="notification_rationale_dialog_card_bg_color">#17171F</color>
 
+    <color name="playlist_warning_dialog_bg">#17171F</color>
 </resources>
