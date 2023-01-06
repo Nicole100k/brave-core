@@ -318,7 +318,7 @@ export interface PageState {
   importWalletAttempts: number
   walletTermsAcknowledged: boolean
   selectedCoinMarket: BraveWallet.CoinMarket | undefined
-  nftsPinningStatus: NftsPinningStatusType | undefined
+  nftsPinningStatus: NftsPinningStatusType
 }
 
 export interface WalletPageState {
