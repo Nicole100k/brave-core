@@ -19,9 +19,9 @@ import org.chromium.base.annotations.NativeMethods;
 import org.chromium.chrome.browser.BraveRewardsBalance;
 import org.chromium.chrome.browser.BraveRewardsHelper;
 import org.chromium.chrome.browser.BraveRewardsObserver;
-import org.chromium.chrome.browser.BraveRewardsPublisher.PublisherStatus;
 import org.chromium.chrome.browser.tab.Tab;
 import org.chromium.components.embedder_support.util.UrlConstants;
+import org.chromium.ledger.mojom.PublisherStatus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -311,7 +311,7 @@ public class BraveRewardsNativeWorker {
         }
     }
 
-    public @PublisherStatus int GetPublisherStatus(int tabId) {
+    public int GetPublisherStatus(int tabId) {
         synchronized(lock) {
             return BraveRewardsNativeWorkerJni.get().getPublisherStatus(
                     mNativeBraveRewardsNativeWorker, tabId);
@@ -587,11 +587,10 @@ public class BraveRewardsNativeWorker {
 
     @CalledByNative
     public void OnPublisherInfo(int tabId) {
-        @PublisherStatus int pubStatus = GetPublisherStatus(tabId);
-        boolean verified = (pubStatus == BraveRewardsPublisher.CONNECTED
-                                   || pubStatus == BraveRewardsPublisher.UPHOLD_VERIFIED
-                                   || pubStatus == BraveRewardsPublisher.BITFLYER_VERIFIED
-                                   || pubStatus == BraveRewardsPublisher.GEMINI_VERIFIED)
+        int pubStatus = GetPublisherStatus(tabId);
+        boolean verified = (pubStatus == PublisherStatus.UPHOLD_VERIFIED
+                                   || pubStatus == PublisherStatus.BITFLYER_VERIFIED
+                                   || pubStatus == PublisherStatus.GEMINI_VERIFIED)
                 ? true
                 : false;
         NotifyPublisherObservers(verified);
