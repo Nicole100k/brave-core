@@ -6,6 +6,7 @@
 import { loadTimeData } from '../../common/loadTimeData'
 import { BraveWallet, NFTMetadataReturnType } from '../constants/types'
 import { isComponentInStorybook } from '../utils/string-utils'
+import { PinningStatusType } from '../page/constants/action_types'
 
 const nftDisplayOrigin = loadTimeData.getString('braveWalletNftBridgeUrl') || ''
 // remove trailing /
@@ -62,7 +63,7 @@ export type UpdateTokenNetworkMessage = CommandMessage & {
 }
 
 export type UpdateNftPinningStatus = CommandMessage & {
-  payload: BraveWallet.TokenPinStatus | undefined
+  payload: PinningStatusType | undefined
 }
 
 export type ToggleNftModal = CommandMessage & {
