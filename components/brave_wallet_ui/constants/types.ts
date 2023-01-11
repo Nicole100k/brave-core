@@ -299,7 +299,7 @@ export interface PageState {
   nftMetadata: NFTMetadataReturnType | undefined
   nftMetadataError: string | undefined
   enablingAutoPin: boolean
-  autoPinEnabled: boolean
+  isAutoPinEnabled: boolean
   pinStatusOverview: BraveWallet.TokenPinOverview | undefined
   selectedAssetFiatPrice: BraveWallet.AssetPrice | undefined
   selectedAssetCryptoPrice: BraveWallet.AssetPrice | undefined
@@ -319,6 +319,7 @@ export interface PageState {
   walletTermsAcknowledged: boolean
   selectedCoinMarket: BraveWallet.CoinMarket | undefined
   nftsPinningStatus: NftsPinningStatusType
+  isLocalIpfsNodeRunning: boolean
 }
 
 export interface WalletPageState {
