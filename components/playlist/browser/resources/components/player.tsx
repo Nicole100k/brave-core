@@ -10,7 +10,7 @@ import styled from 'styled-components'
 
 import { Playlist } from 'components/definitions/playlist'
 import * as playlistActions from '../actions/playlist_action_creators'
-import * as PlaylistMojo from 'gen/brave/components/playlist/mojom/playlist.mojom.m.js'
+import * as PlaylistMojo from 'gen/brave/components/playlist/common/mojom/playlist.mojom.m.js'
 
 import { getAllActions } from '../api/getAllActions'
 

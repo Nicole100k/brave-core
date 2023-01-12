@@ -8,7 +8,7 @@ import * as React from 'react'
 import { render } from 'react-dom'
 import { Provider } from 'react-redux'
 
-import BraveCoreThemeProvider from '../../common/BraveCoreThemeProvider'
+import BraveCoreThemeProvider from '../../../common/BraveCoreThemeProvider'
 import Theme from 'brave-ui/theme/brave-default'
 import DarkTheme from 'brave-ui/theme/brave-dark'
 

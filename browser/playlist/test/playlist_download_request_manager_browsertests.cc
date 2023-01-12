@@ -124,12 +124,14 @@ class PlaylistDownloadRequestManagerBrowserTest : public PlatformBrowserTest {
 
     std::vector<playlist::mojom::PlaylistItemPtr> expected_items;
     base::ranges::for_each(expected_data, [&](auto& item) {
-      if (!item.thumbnail_source.empty()) {
+      if (!item.thumbnail_source.empty() &&
+          base::StartsWith(item.thumbnail_source, "/")) {
         item.thumbnail_source =
             embedded_test_server()->GetURL(item.thumbnail_source).spec();
       }
 
-      if (!item.media_source.empty()) {
+      if (!item.media_source.empty() &&
+          base::StartsWith(item.media_source, "/")) {
         item.media_source =
             embedded_test_server()->GetURL(item.media_source).spec();
       }
@@ -192,11 +194,10 @@ IN_PROC_BROWSER_TEST_F(PlaylistDownloadRequestManagerBrowserTest,
 
 IN_PROC_BROWSER_TEST_F(PlaylistDownloadRequestManagerBrowserTest,
                        OGTagImageWithAbsolutePath) {
-  using playlist::PlaylistItemInfo;
   LoadHTMLAndCheckResult(
       R"html(
         <html>
-        <meta property="og:image" content="http://foo.com/img.jpg"> 
+        <meta property="og:image" content="http://foo.com/img.jpg">
         <body>
           <video>
             <source src="test1.mp4"/>
@@ -204,19 +205,18 @@ IN_PROC_BROWSER_TEST_F(PlaylistDownloadRequestManagerBrowserTest,
         </body></html>
       )html",
       {
-          {PlaylistItemInfo::Title(""),
-           PlaylistItemInfo::ThumbnailPath("http://foo.com/img.jpg"),
-           PlaylistItemInfo::MediaFilePath("/test1.mp4")},
+          {.name = "",
+           .thumbnail_source = "http://foo.com/img.jpg",
+           .media_source = "/test1.mp4"},
       });
 }
 
 IN_PROC_BROWSER_TEST_F(PlaylistDownloadRequestManagerBrowserTest,
                        OGTagImageWithRelativePath) {
-  using playlist::PlaylistItemInfo;
   LoadHTMLAndCheckResult(
       R"html(
         <html>
-        <meta property="og:image" content="/img.jpg"> 
+        <meta property="og:image" content="/img.jpg">
         <body>
           <video>
             <source src="test1.mp4"/>
@@ -224,8 +224,8 @@ IN_PROC_BROWSER_TEST_F(PlaylistDownloadRequestManagerBrowserTest,
         </body></html>
       )html",
       {
-          {PlaylistItemInfo::Title(""),
-           PlaylistItemInfo::ThumbnailPath("/img.jpg"),
-           PlaylistItemInfo::MediaFilePath("/test1.mp4")},
+          {.name = "",
+           .thumbnail_source = "/img.jpg",
+           .media_source = "/test1.mp4"},
       });
 }
