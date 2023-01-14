@@ -133,3 +133,7 @@ export const getNFTTokenStandard = (token: BraveWallet.BlockchainToken) => {
 export const isComponentInStorybook = (hostname: string = window.location.hostname) => {
   return ['localhost', '127.0.0.1'].includes(window.location.hostname)
 }
+
+export const isNftPinnable = (tokenLogo: string) => {
+  return reverseHttpifiedIpfsUrl(stripERC20TokenImageURL(tokenLogo)).startsWith('ipfs://')
+}
