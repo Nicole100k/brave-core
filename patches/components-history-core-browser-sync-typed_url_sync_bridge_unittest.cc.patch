@@ -1,0 +1,20 @@
+diff --git a/components/history/core/browser/sync/typed_url_sync_bridge_unittest.cc b/components/history/core/browser/sync/typed_url_sync_bridge_unittest.cc
+index 202d83dbe2d976f61ef064b3853078b94ce87424..6d8aa082f642e7862e8986427fa154a666d6cf89 100644
+--- a/components/history/core/browser/sync/typed_url_sync_bridge_unittest.cc
++++ b/components/history/core/browser/sync/typed_url_sync_bridge_unittest.cc
+@@ -328,6 +328,7 @@ class MockHistoryBackendClient : public HistoryBackendClient {
+ class TypedURLSyncBridgeTest : public testing::Test {
+  public:
+   void SetUp() override {
++    BRAVE_SCOPED_FEATURE_LIST_INIT
+     auto history_backend_client =
+         std::make_unique<NiceMock<MockHistoryBackendClient>>();
+     history_backend_client_ = history_backend_client.get();
+@@ -553,6 +554,7 @@ class TypedURLSyncBridgeTest : public testing::Test {
+   scoped_refptr<TestHistoryBackendForSync> fake_history_backend_;
+   raw_ptr<TypedURLSyncBridge> typed_url_sync_bridge_ = nullptr;
+   NiceMock<MockModelTypeChangeProcessor> mock_processor_;
++  BRAVE_SCOPED_FEATURE_LIST_DECLARE
+ };
+ 
+ // Add two typed urls locally and verify bridge can get them from GetAllData.
