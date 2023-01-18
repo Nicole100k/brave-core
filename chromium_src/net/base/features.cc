@@ -57,7 +57,7 @@ BASE_FEATURE(kBravePartitionHSTS,
 // website is closed.
 BASE_FEATURE(kBraveForgetFirstPartyStorage,
              "BraveForgetFirstPartyStorage",
-             base::FEATURE_ENABLED_BY_DEFAULT);
+             base::FEATURE_DISABLED_BY_DEFAULT);
 
 const base::FeatureParam<int>
     kBraveForgetFirstPartyStorageKeepAliveTimeInSeconds = {
