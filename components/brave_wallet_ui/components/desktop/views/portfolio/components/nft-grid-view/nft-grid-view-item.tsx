@@ -15,11 +15,15 @@ import { NftIcon } from '../../../../../shared/nft-icon/nft-icon'
 
 // Styled Components
 import {
-  NFTButton,
+  NFTWrapper,
   NFTText,
   IconWrapper,
+  VerticalMenuIcon,
+  VerticalMenu,
   DIVForClickableArea
 } from './style'
+import { NftMorePopup } from '../nft-more-popup/nft-more-popup'
+import { EditNftModal } from '../../../../popup-modals/edit-nft-modal/edit-nft-modal'
 
 interface Props {
   token: UserAssetInfoType
@@ -28,21 +32,63 @@ interface Props {
 
 export const NFTGridViewItem = (props: Props) => {
   const { token, onSelectAsset } = props
-  const tokenImageURL = stripERC20TokenImageURL(token.asset.logo)
+  const { asset } = token
+
+  // state
+  const [showMore, setShowMore] = React.useState<boolean>(false)
+  const [showEditModal, setShowEditModal] = React.useState<boolean>(false)
+
+  // methods
+  const onToggleShowMore = React.useCallback((event: React.MouseEvent<HTMLButtonElement>) => {
+    event?.stopPropagation()
+    setShowMore((currentValue) => !currentValue)
+  }, [])
+
+  const onHideModal = React.useCallback(() => {
+    setShowEditModal(false)
+  }, [])
+
+  const onEditNft = React.useCallback(() => {
+    setShowEditModal(true)
+    setShowMore(false)
+  }, [])
+
+  // memos
+  const tokenImageURL = React.useMemo(() => {
+    return stripERC20TokenImageURL(token.asset.logo)
+  }, [token.asset.logo])
 
   const remoteImage = React.useMemo(() => {
     return httpifyIpfsUrl(tokenImageURL)
   }, [tokenImageURL])
 
   return (
-    <NFTButton
-      onClick={onSelectAsset}
-    >
-      <IconWrapper>
-        <DIVForClickableArea />
-        <NftIcon icon={remoteImage} responsive={true} />
-      </IconWrapper>
-      <NFTText>{token.asset.name} {token.asset.tokenId ? '#' + new Amount(token.asset.tokenId).toNumber() : ''}</NFTText>
-    </NFTButton>
+    <>
+      <NFTWrapper>
+        <VerticalMenu onClick={onToggleShowMore}>
+          <VerticalMenuIcon />
+        </VerticalMenu>
+        {showMore &&
+          <NftMorePopup
+            onEditNft={onEditNft}
+            onHideNft={() => {}}
+          />
+        }
+        <DIVForClickableArea onClick={onSelectAsset}/>
+        <IconWrapper>
+          <NftIcon icon={remoteImage} responsive={true} />
+        </IconWrapper>
+        <NFTText>{asset.name} {asset.tokenId ? '#' + new Amount(asset.tokenId).toNumber() : ''}</NFTText>
+      </NFTWrapper>
+      {showEditModal &&
+        <EditNftModal
+          nftToken={asset}
+          onHideForm={onHideModal}
+          onChangeContractAddress={(address) => {}}
+          onTokenFound={(address) => {}}
+          onClose={onHideModal}
+        />
+      }
+    </>
   )
 }

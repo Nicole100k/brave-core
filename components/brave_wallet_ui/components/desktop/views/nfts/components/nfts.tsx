@@ -78,6 +78,10 @@ export const Nfts = (props: Props) => {
     })
   }, [searchValue, nftList])
 
+  const sortedNfts = React.useMemo(() => {
+    return filteredNfts.sort((a, b) => a.name.localeCompare(b.name))
+  }, [filteredNfts])
+
   const emptyStateMessage = React.useMemo(() => {
     return getLocale(searchValue === '' ? 'braveWalletNftsEmptyState' : 'braveWalletNftsEmptyStateSearch')
   }, [searchValue])
@@ -92,10 +96,10 @@ export const Nfts = (props: Props) => {
         />
         <NetworkFilterSelector networkListSubset={networks} />
       </FilterTokenRow>
-      {filteredNfts.length === 0
+      {sortedNfts.length === 0
         ? <EmptyStateText>{emptyStateMessage}</EmptyStateText>
         : <NftGrid>
-          {filteredNfts.map(nft => (
+          {sortedNfts.map(nft => (
             <NFTGridViewItem
               key={`${nft.tokenId}-${nft.contractAddress}`}
               token={{ asset: nft, assetBalance: '' }}

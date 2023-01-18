@@ -83,6 +83,7 @@ export const FormRow = styled.div`
   align-items: center;
   justify-content: space-between;
   width: 100%;
+  gap: 17px;
 `
 
 export const FormColumn = styled.div`
