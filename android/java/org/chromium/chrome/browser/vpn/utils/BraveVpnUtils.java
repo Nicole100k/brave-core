@@ -45,6 +45,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class BraveVpnUtils {
     private static final String TAG = "BraveVPN";
@@ -279,5 +281,12 @@ public class BraveVpnUtils {
         // ...and then reset the timestamps so we don't report the same session again.
         BraveVpnPrefUtils.setSessionStartTimeMs(-1);
         BraveVpnPrefUtils.setSessionEndTimeMs(-1);
+    }
+
+    public static boolean isBase64UrlEncoded(String value) {
+        String pattern = "^[A-Za-z0-9_-]+$";
+        Pattern r = Pattern.compile(pattern);
+        Matcher m = r.matcher(value);
+        return m.find();
     }
 }

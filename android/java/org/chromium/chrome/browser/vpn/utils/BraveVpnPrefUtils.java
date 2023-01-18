@@ -160,8 +160,14 @@ public class BraveVpnPrefUtils {
         SharedPreferences.Editor sharedPreferencesEditor = mSharedPreferences.edit();
         sharedPreferencesEditor.putString(PREF_BRAVE_VPN_PURCHASE_TOKEN, value);
         sharedPreferencesEditor.apply();
+        String[] purchaseTokenParts = value.split(".");
+        String purchaseToken = (purchaseTokenParts.length == 2
+                                       && BraveVpnUtils.isBase64UrlEncoded(purchaseTokenParts[0])
+                                       && BraveVpnUtils.isBase64UrlEncoded(purchaseTokenParts[1]))
+                ? value
+                : "";
         UserPrefs.get(Profile.getLastUsedRegularProfile())
-                .setString(BravePref.BRAVE_VPN_PURCHASE_TOKEN_ANDROID, value);
+                .setString(BravePref.BRAVE_VPN_PURCHASE_TOKEN_ANDROID, purchaseToken);
         UserPrefs.get(Profile.getLastUsedRegularProfile())
                 .setString(BravePref.BRAVE_VPN_PACKAGE_ANDROID,
                         ContextUtils.getApplicationContext().getPackageName());
