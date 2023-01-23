@@ -49,7 +49,6 @@ function DefaultPage (props: Props) {
       gridSitesData={gridSitesData}
       actions={actions}
       saveShowBackgroundImage={PreferencesAPI.saveShowBackgroundImage}
-      saveShowToday={PreferencesAPI.saveShowToday}
       saveShowRewards={PreferencesAPI.saveShowRewards}
       saveShowBraveTalk={PreferencesAPI.saveShowBraveTalk}
       saveBrandedWallpaperOptIn={PreferencesAPI.saveBrandedWallpaperOptIn}
