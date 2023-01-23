@@ -19,7 +19,16 @@ rust_lib_output_path =
 
 template("rust_ffi") {
   static_library(target_name) {
-    libs = [ rust_lib_output_path ]
+    libs = []
+    deps = []
+    if (is_apple && !is_component_build) {
+      # The chromium personality function in base (renamed to
+      # rust_eh_personality) needs to be listed first when linking so it gets
+      # picked by the linker when resolving the symbol
+      libs += [ "$root_build_dir/obj/base/libbase.a" ]
+      deps += [ "//base" ]
+    }
+    libs += [ rust_lib_output_path ]
 
     if (is_mac) {
       frameworks = [ "Security.framework" ]
@@ -31,7 +40,7 @@ template("rust_ffi") {
       libs += [ "bcrypt.lib" ]
     }
 
-    deps = [ "//brave/build/rust:rust_lib" ]
+    deps += [ "//brave/build/rust:rust_lib" ]
     if (is_apple) {
       deps += [ "//brave/build/rust:generate_unexport_list" ]
     }

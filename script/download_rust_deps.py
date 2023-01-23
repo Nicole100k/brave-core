@@ -19,7 +19,7 @@ except ImportError:  # For Py3 compatibility
     from urllib.error import URLError  # pylint: disable=no-name-in-module,import-error
 
 from deps_config import DEPS_PACKAGES_URL, RUST_DEPS_PACKAGE_VERSION
-from lib.config import BRAVE_CORE_ROOT
+from lib.config import BRAVE_CORE_ROOT, CHROMIUM_ROOT
 
 RUSTUP_PATH = os.path.join(BRAVE_CORE_ROOT, 'build', 'rustup')
 RUSTUP_HOME = os.path.join(RUSTUP_PATH, RUST_DEPS_PACKAGE_VERSION)
@@ -184,7 +184,7 @@ def main():
         rustup_add_target('aarch64-apple-darwin')
 
     cxx_path = os.path.abspath(
-        os.path.join(BRAVE_CORE_ROOT, 'third_party', 'rust', 'cxx', 'v1'))
+        os.path.join(CHROMIUM_ROOT, 'third_party', 'rust', 'cxx', 'v1'))
 
     with open(os.path.join(cxx_path, "README.chromium")) as readme_file:
         _VERSION_PREFIX = "Version: "
