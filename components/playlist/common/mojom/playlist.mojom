@@ -88,6 +88,7 @@ interface PlaylistService {
   RemovePlaylist(string id);
 
   GetDefaultPlaylistId() => (string playlist_id);
+  SetDefaultPlaylistId(string playlist_id);
 };
 
 // UI-side handler for response from the service.

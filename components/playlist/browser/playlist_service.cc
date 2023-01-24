@@ -567,6 +567,16 @@ void PlaylistService::GetDefaultPlaylistId(
   std::move(callback).Run(GetDefaultSaveTargetListID());
 }
 
+void PlaylistService::SetDefaultPlaylistId(const std::string& playlist_id) {
+  // auto id = prefs_->GetString(kPlaylistDefaultSaveTargetListID);
+  // if (!prefs_->GetDict(kPlaylistsPref).contains(id)) {
+  //   prefs_->SetString(kPlaylistDefaultSaveTargetListID, kDefaultPlaylistID);
+  //   id = kDefaultPlaylistID;
+  // }
+  // return id;
+  prefs_->SetString(kPlaylistDefaultSaveTargetListID, playlist_id);
+}
+
 void PlaylistService::RecoverLocalDataForItem(const std::string& id) {
   const auto* item_value = prefs_->GetDict(kPlaylistItemsPref).FindDict(id);
   if (!item_value) {
