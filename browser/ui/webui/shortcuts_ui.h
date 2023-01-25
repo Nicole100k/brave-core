@@ -11,8 +11,11 @@
 
 #include "base/memory/weak_ptr.h"
 #include "brave/components/playlist/common/mojom/playlist.mojom.h"
+#include "brave/components/shortcuts/common/shortcuts.mojom.h"
 #include "content/public/browser/web_ui_controller.h"
 #include "content/public/browser/webui_config.h"
+#include "mojo/public/cpp/bindings/pending_receiver.h"
+#include "mojo/public/cpp/bindings/receiver.h"
 #include "mojo/public/cpp/bindings/receiver_set.h"
 #include "ui/webui/mojo_bubble_web_ui_controller.h"
 #include "ui/webui/untrusted_web_ui_controller.h"
@@ -25,14 +28,21 @@ class GURL;
 
 namespace shortcuts {
 
-class ShortcutsUI : public content::WebUIController {
+class ShortcutsUI : public content::WebUIController, public ShortcutsService {
  public:
   ShortcutsUI(content::WebUI* web_ui, const std::string& host);
   ~ShortcutsUI() override;
   ShortcutsUI(const ShortcutsUI&) = delete;
   ShortcutsUI& operator=(const ShortcutsUI&) = delete;
 
+  void BindInterface(mojo::PendingReceiver<ShortcutsService> pending_receiver);
+
+  // ShortcutsService:
+  void GetCommands(GetCommandsCallback callback) override;
+
  private:
+  mojo::Receiver<ShortcutsService> receiver_{this};
+
   WEB_UI_CONTROLLER_TYPE_DECL();
 };
 

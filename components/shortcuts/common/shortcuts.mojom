@@ -3,11 +3,18 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this file,
 // You can obtain one at https://mozilla.org/MPL/2.0/.
 
-struct Shortcut {
+struct Command {
+  string name;
+  uint32 id;
+
+  array<Accelerator> accelerators;
+};
+
+struct Accelerator {
   string keycode;
   array<string> modifiers;
 };
 
 interface ShortcutsService {
-  GetShortcuts() => (array<Shortcut> shortcuts);
+  GetCommands() => (array<Command> commands);
 };
