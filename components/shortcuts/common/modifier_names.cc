@@ -122,12 +122,26 @@ std::string GetKeyName(ui::KeyboardCode code) {
       return "9";
     case ui::VKEY_NUMPAD0:
       return "0";
+    case ui::VKEY_SUBTRACT:
     case ui::VKEY_OEM_MINUS:
       return "-";
+    case ui::VKEY_ADD:
     case ui::VKEY_OEM_PLUS:
       return "+";
     case ui::VKEY_SPACE:
       return "Space";
+    case ui::VKEY_LEFT:
+      return "Left";
+    case ui::VKEY_RIGHT:
+      return "Right";
+    case ui::VKEY_UP:
+      return "Up";
+    case ui::VKEY_DOWN:
+      return "Down";
+    case ui::VKEY_HOME:
+      return "Home";
+    case ui::VKEY_END:
+      return "End";
     default:
       std::string result;
       result = toupper(ui::GetUnicodeCharacterFromXKeySym(code));

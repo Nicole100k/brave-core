@@ -36,7 +36,7 @@ function Accelerator({
 }) {
   return (
     <div>
-      {[accelerator.keycode, ...accelerator.modifiers].map((k, i) => (
+      {[...accelerator.modifiers, accelerator.keycode].map((k, i) => (
         <React.Fragment key={i}>
           {i !== 0 && <span>+</span>}
           <Kbd>{k}</Kbd>
