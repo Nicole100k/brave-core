@@ -74,12 +74,14 @@ TEST_F(NTPP3AHelperImplTest, OneEventTypeCountReported) {
   histogram_tester_->ExpectTotalCount(histogram_name, 0);
 
   // Mock a P3A rotation to trigger just-in-time collection of metrics
-  ntp_p3a_helper_->OnP3ARotation(brave::MetricLogType::kExpress, /*is_star*/ false);
+  ntp_p3a_helper_->OnP3ARotation(brave::MetricLogType::kExpress,
+                                 /*is_star*/ false);
 
   histogram_tester_->ExpectBucketCount(histogram_name, 1, 1);
 
   ntp_p3a_helper_->RecordView(kTestCreativeMetricId);
-  ntp_p3a_helper_->OnP3ARotation(brave::MetricLogType::kExpress, /*is_star*/ false);
+  ntp_p3a_helper_->OnP3ARotation(brave::MetricLogType::kExpress,
+                                 /*is_star*/ false);
 
   histogram_tester_->ExpectBucketCount(histogram_name, 2, 1);
   ASSERT_TRUE(
@@ -103,7 +105,8 @@ TEST_F(NTPP3AHelperImplTest, OneEventTypeCountReportedWhileInflight) {
 
   histogram_tester_->ExpectTotalCount(histogram_name, 0);
 
-  ntp_p3a_helper_->OnP3ARotation(brave::MetricLogType::kExpress, /*is_star*/ false);
+  ntp_p3a_helper_->OnP3ARotation(brave::MetricLogType::kExpress,
+                                 /*is_star*/ false);
 
   histogram_tester_->ExpectBucketCount(histogram_name, 2, 1);
 
@@ -114,7 +117,8 @@ TEST_F(NTPP3AHelperImplTest, OneEventTypeCountReportedWhileInflight) {
   ASSERT_TRUE(
       p3a_service_->GetDynamicMetricLogType(histogram_name).has_value());
 
-  ntp_p3a_helper_->OnP3ARotation(brave::MetricLogType::kExpress, /*is_star*/ false);
+  ntp_p3a_helper_->OnP3ARotation(brave::MetricLogType::kExpress,
+                                 /*is_star*/ false);
   histogram_tester_->ExpectBucketCount(histogram_name, 1, 1);
 
   ntp_p3a_helper_->OnP3AMetricCycled(histogram_name, /*is_star*/ false);
@@ -144,7 +148,8 @@ TEST_F(NTPP3AHelperImplTest, LandCountReported) {
 
   histogram_tester_->ExpectTotalCount(histogram_name, 0);
 
-  ntp_p3a_helper_->OnP3ARotation(brave::MetricLogType::kExpress, /*is_star*/ false);
+  ntp_p3a_helper_->OnP3ARotation(brave::MetricLogType::kExpress,
+                                 /*is_star*/ false);
   ASSERT_TRUE(
       p3a_service_->GetDynamicMetricLogType(histogram_name).has_value());
   histogram_tester_->ExpectBucketCount(histogram_name, 1, 1);
@@ -161,7 +166,8 @@ TEST_F(NTPP3AHelperImplTest, LandCountReported) {
 
   task_environment_.FastForwardBy(base::Seconds(5));
 
-  ntp_p3a_helper_->OnP3ARotation(brave::MetricLogType::kExpress, /*is_star*/ false);
+  ntp_p3a_helper_->OnP3ARotation(brave::MetricLogType::kExpress,
+                                 /*is_star*/ false);
   histogram_tester_->ExpectBucketCount(histogram_name, 1, 2);
 
   ASSERT_TRUE(
