@@ -4,12 +4,29 @@ import styled from "styled-components";
 
 const Grid = styled.div`
   display: grid;
-  grid-template-columns: 2 1fr;
+  grid-template-columns: repeat(2, 1fr);
+  align-items: center;
+  padding: 4px;
+  min-height: 32px;
+
+  &:hover {
+    background-color: lightgray;
+  }
 `;
 
 const Column = styled.div`
   display: flex;
   flex-direction: column;
+  gap: 4px;
+`;
+
+const Kbd = styled.div`
+  display: inline-block;
+  border-radius: 4px;
+  padding: 4px;
+  background-color: #f6f8fa;
+  border: 1px solid rgba(174, 184, 193, 0.2);
+  box-shadow: inset 0 -1px 0 rgba(174, 184, 193, 0.2);
 `;
 
 function Accelerator({
@@ -20,7 +37,10 @@ function Accelerator({
   return (
     <div>
       {[accelerator.keycode, ...accelerator.modifiers].map((k, i) => (
-        <kbd key={i}>{k}</kbd>
+        <React.Fragment key={i}>
+          {i !== 0 && <span>+</span>}
+          <Kbd>{k}</Kbd>
+        </React.Fragment>
       ))}
     </div>
   );
