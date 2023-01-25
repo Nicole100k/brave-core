@@ -122,6 +122,9 @@ repack("resources") {
     sources += [ "$root_gen_dir/brave/components/playlist/browser/resources/playlist_generated.pak" ]
   }
 
+  deps += [ "//brave/components/shortcuts/browser/resources:generated_resources" ]
+  sources += [ "$root_gen_dir/brave/components/shortcuts/browser/resources/shortcuts_generated.pak" ]
+
   output = "$root_gen_dir/components/brave_components_resources.pak"
 }
 

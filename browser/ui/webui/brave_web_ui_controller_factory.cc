@@ -16,6 +16,7 @@
 #include "brave/browser/ui/webui/brave_rewards_internals_ui.h"
 #include "brave/browser/ui/webui/brave_rewards_page_ui.h"
 #include "brave/browser/ui/webui/brave_tip_ui.h"
+#include "brave/browser/ui/webui/shortcuts_ui.h"
 #include "brave/browser/ui/webui/webcompat_reporter_ui.h"
 #include "brave/components/brave_federated/features.h"
 #include "brave/components/brave_rewards/common/rewards_util.h"
@@ -93,6 +94,8 @@ WebUIController* NewWebUI(WebUI* web_ui, const GURL& url) {
     return new IPFSUI(web_ui, url.host());
 #endif
 #if !BUILDFLAG(IS_ANDROID)
+  } else if (host == kShortcutsHost) {
+    return new shortcuts::ShortcutsUI(web_ui, url.host());
   } else if (host == kWalletPageHost &&
              // We don't want to check for supported profile type here because
              // we want private windows to redirect to the regular profile.
@@ -193,6 +196,7 @@ WebUIFactoryFunction GetWebUIFactoryFunction(WebUI* web_ui, const GURL& url) {
       url.host_piece() == kTipHost ||
       url.host_piece() == kBraveRewardsPanelHost ||
       url.host_piece() == kSpeedreaderPanelHost ||
+      url.host_piece() == kShortcutsHost ||
 #endif
 #if BUILDFLAG(ENABLE_TOR)
       url.host_piece() == kTorInternalsHost ||

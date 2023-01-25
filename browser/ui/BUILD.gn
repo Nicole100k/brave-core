@@ -61,6 +61,8 @@ source_set("ui") {
     "webui/brave_webui_source.h",
     "webui/webcompat_reporter_ui.cc",
     "webui/webcompat_reporter_ui.h",
+    "webui/shortcuts_ui.cc",
+    "webui/shortcuts_ui.h",
   ]
 
   if (enable_ipfs) {
