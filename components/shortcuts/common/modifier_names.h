@@ -8,9 +8,12 @@
 
 #include <string>
 #include <vector>
+
 #include "ui/events/event_constants.h"
+#include "ui/events/keycodes/keyboard_codes_posix.h"
 
 namespace shortcuts {
+std::string GetKeyName(ui::KeyboardCode code);
 std::vector<std::string> GetModifierName(ui::KeyEventFlags flags);
 }
 
