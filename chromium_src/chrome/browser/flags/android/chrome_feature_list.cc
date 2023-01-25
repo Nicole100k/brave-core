@@ -6,6 +6,7 @@
 #include "base/feature_override.h"
 #include "brave/browser/android/preferences/features.h"
 #include "brave/browser/android/safe_browsing/features.h"
+#include "brave/browser/android/speedreader/features.h"
 #include "brave/components/brave_rewards/common/features.h"
 #include "brave/components/brave_search_conversion/features.h"
 #include "brave/components/brave_today/common/features.h"
@@ -28,6 +29,7 @@
     &playlist::features::kPlaylist,                          \
     &preferences::features::kBraveBackgroundVideoPlayback,   \
     &safe_browsing::features::kBraveAndroidSafeBrowsing,     \
+    &speedreader::features::kBraveAndroidSpeedReader,     \
     &debounce::features::kBraveDebounce
 // clang-format on
 

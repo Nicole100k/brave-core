@@ -59,6 +59,7 @@
 #if BUILDFLAG(IS_ANDROID)
 #include "brave/browser/android/preferences/features.h"
 #include "brave/browser/android/safe_browsing/features.h"
+#include "brave/browser/android/speedreader/features.h"
 #endif
 
 using brave_shields::features::kBraveAdblockCnameUncloaking;
@@ -86,6 +87,7 @@ using ntp_background_images::features::kBraveNTPSuperReferralWallpaper;
 #if BUILDFLAG(IS_ANDROID)
 using preferences::features::kBraveBackgroundVideoPlayback;
 using safe_browsing::features::kBraveAndroidSafeBrowsing;
+using speedreader::features::kBraveAndroidSpeedReader;
 #endif
 
 namespace flag_descriptions {
@@ -439,6 +441,9 @@ constexpr char kBraveAndroidSafeBrowsingName[] = "Safe Browsing";
 constexpr char kBraveAndroidSafeBrowsingDescription[] =
     "Enables Google Safe Browsing for determining whether a URL has been "
     "marked as a known threat.";
+constexpr char kBraveAndroidSpeedReaderName[] = "SpeedReader Android";
+constexpr char kBraveAndroidSpeedReaderDescription[] =
+    "Enables faster loading of simplified article-style web pages on Android.";
 #endif
 
 #if BUILDFLAG(IS_LINUX)
@@ -636,9 +641,16 @@ constexpr char kRestrictEventSourcePoolDescription[] =
      flag_descriptions::kBraveAndroidSafeBrowsingDescription,     \
      kOsAndroid,                                                  \
      FEATURE_VALUE_TYPE(kBraveAndroidSafeBrowsing)},
+#define BRAVE_SPEEDREADER_ANDROID                               \
+    {"brave-speedreader-android",                                       \
+     flag_descriptions::kBraveAndroidSpeedReaderName,            \
+     flag_descriptions::kBraveAndroidSpeedReaderDescription,     \
+     kOsAndroid,                                                  \
+     FEATURE_VALUE_TYPE(kBraveAndroidSpeedReader)},
 #else
 #define BRAVE_BACKGROUND_VIDEO_PLAYBACK_ANDROID
 #define BRAVE_SAFE_BROWSING_ANDROID
+#define BRAVE_SPEEDREADER_ANDROID
 #endif  // BUILDFLAG(IS_ANDROID)
 
 #define BRAVE_ABOUT_FLAGS_FEATURE_ENTRIES                                   \
@@ -833,4 +845,5 @@ constexpr char kRestrictEventSourcePoolDescription[] =
     BRAVE_VERTICAL_TABS_FEATURE_ENTRY                                       \
     BRAVE_BACKGROUND_VIDEO_PLAYBACK_ANDROID                                 \
     BRAVE_SAFE_BROWSING_ANDROID                                             \
-    BRAVE_CHANGE_ACTIVE_TAB_ON_SCROLL_EVENT_FEATURE_ENTRIES
+    BRAVE_CHANGE_ACTIVE_TAB_ON_SCROLL_EVENT_FEATURE_ENTRIES                                             \
+    BRAVE_SPEEDREADER_ANDROID
