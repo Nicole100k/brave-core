@@ -621,6 +621,8 @@ provideStrings({
   braveWalletNotDomain: 'Domain is not registered',
   braveWalletSameAddressError: 'The receiving address is your own address',
   braveWalletContractAddressError: 'The receiving address is a tokens contract address',
+  braveWalletChecksumErrorTitle: 'Checksum verification failed',
+  braveWalletChecksumWarningTitle: 'Missing checksum information',
   braveWalletAddressMissingChecksumInfoWarning: 'This address cannot be verified (missing checksum). Proceed?',
   braveWalletNotValidChecksumAddressError: 'Address did not pass verification (invalid checksum). Please try again, replacing lowercase letters with uppercase.',
   braveWalletMissingGasLimitError: 'Missing gas limit',

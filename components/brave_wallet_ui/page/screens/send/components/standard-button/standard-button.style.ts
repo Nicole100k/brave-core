@@ -12,7 +12,7 @@ import { LoaderIcon } from 'brave-ui/components/icons'
 import { StyledButton, Icon } from '../../shared.styles'
 
 export interface StandardButtonStyleProps {
-  buttonType?: 'primary' | 'secondary' | 'danger'
+  buttonType?: 'primary' | 'secondary' | 'danger' | 'warning'
   buttonWidth?: 'dynamic' | 'full'
   disabled?: boolean
   marginRight?: number
@@ -30,8 +30,13 @@ export const Button = styled(StyledButton) <StandardButtonStyleProps>`
   --button-background: ${(p) =>
     p.buttonType === 'secondary'
       ? p.theme.color.background01
-      : 'var(--button-background-primary)'};
-  --button-background-hover: ${(p) => p.theme.color.interactive04};
+      : p.buttonType === 'warning'
+        ? p.theme.color.warningBackground
+        : 'var(--button-background-primary)'};
+  --button-background-hover: ${(p) =>
+    p.buttonType === 'warning'
+      ? p.theme.color.warningBorder
+      : p.theme.color.interactive04};
   background-color: var(--button-background);
   border-radius: 48px;
   border: ${(p) =>

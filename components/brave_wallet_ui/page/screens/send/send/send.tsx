@@ -6,7 +6,7 @@
 import * as React from 'react'
 
 // Messages
-import { ENSOffchainLookupMessage } from '../send-ui-messages'
+import { ENSOffchainLookupMessage, FailedChecksumMessage, MissingChecksumMessage } from '../send-ui-messages'
 
 // Types
 import { BraveWallet, SendOptionTypes, AddressMessageInfo } from '../../../../constants/types'
@@ -223,7 +223,11 @@ export const Send = (props: Props) => {
           ? getLocale('braveWalletDecimalPlacesError')
           : insufficientFundsError
             ? getLocale('braveWalletNotEnoughFunds')
-            : (addressError !== undefined && addressError !== '')
+            : (
+              addressError !== undefined &&
+              addressError !== '' &&
+              addressError !== getLocale('braveWalletNotValidChecksumAddressError')
+            )
               ? addressError
               : (addressWarning !== undefined && addressWarning !== '')
                 ? addressWarning
@@ -250,17 +254,21 @@ export const Send = (props: Props) => {
   const hasAddressError = React.useMemo(() => {
     return searchingForDomain
       ? false
-      : !!addressError || !!addressWarning
-  }, [searchingForDomain, addressError, addressWarning])
+      : !!addressError
+  }, [searchingForDomain, addressError])
 
   const addressMessageInformation: AddressMessageInfo | undefined = React.useMemo(() => {
-    // ToDo: Implement Invalid Checksum warning and other longer warnings here in the future.
-    // https://github.com/brave/brave-browser/issues/26957
     if (showEnsOffchainWarning) {
       return ENSOffchainLookupMessage
     }
+    if (addressError === getLocale('braveWalletNotValidChecksumAddressError')) {
+      return FailedChecksumMessage
+    }
+    if (addressWarning === getLocale('braveWalletAddressMissingChecksumInfoWarning')) {
+      return MissingChecksumMessage
+    }
     return undefined
-  }, [showEnsOffchainWarning])
+  }, [showEnsOffchainWarning, addressError, addressWarning])
 
   const showResolvedDomain = React.useMemo(() => {
     return (addressError === undefined ||
@@ -392,7 +400,11 @@ export const Send = (props: Props) => {
             </Row>
           }
         </SectionBox>
-        <SectionBox hasError={hasAddressError} noPadding={true}>
+        <SectionBox
+          hasError={hasAddressError}
+          hasWarning={addressWarning !== undefined && addressWarning !== ''}
+          noPadding={true}
+        >
           <InputRow
             rowWidth='full'
             verticalAlign='center'
@@ -423,7 +435,7 @@ export const Send = (props: Props) => {
         <StandardButton
           buttonText={reviewButtonText}
           onClick={onClickReviewOrENSConsent}
-          buttonType='primary'
+          buttonType={addressWarning ? 'warning' : 'primary'}
           buttonWidth='full'
           isLoading={searchingForDomain}
           disabled={isReviewButtonDisabled}

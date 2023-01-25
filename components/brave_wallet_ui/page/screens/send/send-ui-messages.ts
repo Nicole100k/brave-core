@@ -10,3 +10,15 @@ export const ENSOffchainLookupMessage: AddressMessageInfo = {
   description: 'braveWalletEnsOffChainLookupDescription',
   url: 'https://github.com/brave/brave-browser/wiki/ENS-offchain-lookup'
 }
+
+export const FailedChecksumMessage: AddressMessageInfo = {
+  title: 'braveWalletChecksumErrorTitle',
+  description: 'braveWalletNotValidChecksumAddressError',
+  url: 'https://support.brave.com/hc/en-us/articles/4441999049101'
+}
+
+export const MissingChecksumMessage: AddressMessageInfo = {
+  title: 'braveWalletChecksumWarningTitle',
+  description: 'braveWalletAddressMissingChecksumInfoWarning',
+  url: 'https://support.brave.com/hc/en-us/articles/4441999049101'
+}
