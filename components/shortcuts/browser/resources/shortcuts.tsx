@@ -30,20 +30,35 @@ function usePromise<T>(getPromise: () => Promise<T>, deps: any[]) {
 
 function App() {
   const [filter, setFilter] = React.useState("");
+  const [withAccelerator, setWithAccelerator] = React.useState(false);
   const commands = usePromise(
     () => api.getCommands().then((r) => r.commands),
     []
   );
 
-  const filteredCommands = React.useMemo(() => commands?.filter(c => {
-    const lowerFilter = filter.toLowerCase();
-    if (c.id == parseInt(filter)) return true;
-    if (c.name.toLocaleLowerCase().includes(lowerFilter)) return true;
-    return false;
-  }), [filter, commands])
+  const filteredCommands = React.useMemo(
+    () =>
+      commands
+        ?.filter((c) => {
+          const lowerFilter = filter.toLowerCase();
+          if (c.id == parseInt(filter)) return true;
+          if (c.name.toLocaleLowerCase().includes(lowerFilter)) return true;
+          return false;
+        })
+        .filter((c) => !withAccelerator || c.accelerators.length),
+    [filter, withAccelerator, commands]
+  );
   return (
     <CommandsContainer>
       <FilterBox value={filter} onChange={(e) => setFilter(e.target.value)} />
+      <label>
+        <input
+          type="checkbox"
+          checked={withAccelerator}
+          onChange={(e) => setWithAccelerator(e.target.checked)}
+        />
+        Only with accelerator
+      </label>
       {filteredCommands?.map((c) => (
         <Command key={c.id} command={c} />
       ))}
