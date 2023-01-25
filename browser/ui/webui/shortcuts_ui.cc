@@ -14,6 +14,7 @@
 #include "components/grit/brave_components_resources.h"
 #include "content/public/browser/web_ui_controller.h"
 #include "ui/base/accelerators/accelerator.h"
+#include "ui/events/keycodes/keysym_to_unicode.h"
 
 namespace shortcuts {
 ShortcutsUI::ShortcutsUI(content::WebUI* web_ui, const std::string& name)
@@ -48,13 +49,14 @@ void ShortcutsUI::GetCommands(GetCommandsCallback callback) {
         continue;
 
       ui::Accelerator accel(entry.keycode, entry.modifiers);
-      auto key_code = accel.KeyCodeToName();
 
+      char keycode = toupper(ui::GetUnicodeCharacterFromXKeySym(entry.keycode));
       auto a = Accelerator::New();
-      a->keycode = base::UTF16ToUTF8(key_code);
+      a->keycode = keycode;
       a->modifiers = shortcuts::GetModifierName(entry.modifiers);
 
-      if (!a->modifiers.size() || a->keycode.empty()) continue;
+      if (!a->modifiers.size() || a->keycode.empty())
+        continue;
       command->accelerators.push_back(std::move(a));
     }
     result.push_back(std::move(command));
