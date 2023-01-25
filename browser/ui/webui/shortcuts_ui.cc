@@ -9,6 +9,7 @@
 #include "brave/app/command_utils.h"
 #include "brave/browser/ui/webui/brave_webui_source.h"
 #include "brave/components/shortcuts/browser/resources/grit/shortcuts_generated_map.h"
+#include "brave/components/shortcuts/common/modifier_names.h"
 #include "chrome/browser/ui/views/accelerator_table.h"
 #include "components/grit/brave_components_resources.h"
 #include "content/public/browser/web_ui_controller.h"
@@ -51,16 +52,7 @@ void ShortcutsUI::GetCommands(GetCommandsCallback callback) {
 
       auto a = Accelerator::New();
       a->keycode = base::UTF16ToUTF8(key_code);
-      if (accel.IsCtrlDown())
-        a->modifiers.push_back("Ctrl");
-      if (accel.IsAltDown())
-        a->modifiers.push_back("Alt");
-      if (accel.IsCmdDown())
-        a->modifiers.push_back("Cmd");
-      if (accel.IsShiftDown())
-        a->modifiers.push_back("Shift");
-      if (accel.IsFunctionDown())
-        a->modifiers.push_back("Fn");
+      a->modifiers = shortcuts::GetModifierName(entry.modifiers);
 
       if (!a->modifiers.size() || a->keycode.empty()) continue;
       command->accelerators.push_back(std::move(a));

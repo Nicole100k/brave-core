@@ -9,17 +9,17 @@ namespace shortcuts {
 std::vector<std::string> GetModifierName(ui::KeyEventFlags flags) {
   std::vector<std::string> result;
 
+  if (flags & ui::EF_COMMAND_DOWN)
+    result.push_back("Cmd");
+
   if (flags & ui::EF_CONTROL_DOWN)
     result.push_back("Ctrl");
-
-  if (flags & ui::EF_SHIFT_DOWN)
-    result.push_back("Shift");
 
   if (flags & ui::EF_ALT_DOWN)
     result.push_back("Alt");
 
-  if (flags & ui::EF_COMMAND_DOWN)
-    result.push_back("Cmd");
+  if (flags & ui::EF_SHIFT_DOWN)
+    result.push_back("Shift");
 
   if (flags & ui::EF_FUNCTION_DOWN)
     result.push_back("Fn");
