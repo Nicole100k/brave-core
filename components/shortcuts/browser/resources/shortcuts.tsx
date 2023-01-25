@@ -7,4 +7,4 @@ function App() {
   </div>
 }
 
-render(<App/>, document.getElementById('root'))
+document.addEventListener('DOMContentLoaded', () => render(<App/>, document.getElementById('root')))
