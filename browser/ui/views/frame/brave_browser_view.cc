@@ -16,7 +16,7 @@
 #include "brave/browser/ui/sidebar/sidebar_utils.h"
 #include "brave/browser/ui/views/brave_actions/brave_actions_container.h"
 #include "brave/browser/ui/views/brave_actions/brave_shields_action_view.h"
-#include "brave/browser/ui/views/brave_help_bubble/brave_help_bubble_view.h"
+#include "brave/browser/ui/views/brave_help_bubble/brave_help_bubble_host_view.h"
 #include "brave/browser/ui/views/brave_shields/cookie_list_opt_in_bubble_host.h"
 #include "brave/browser/ui/views/frame/brave_contents_layout_manager.h"
 #include "brave/browser/ui/views/frame/vertical_tab_strip_region_view.h"
@@ -440,7 +440,7 @@ void BraveBrowserView::AddedToWidget() {
   }
 }
 
-void BraveBrowserView::ShowBraveHelpBubbleView(const std::u16string text) {
+void BraveBrowserView::ShowBraveHelpBubbleView(const std::string& text) {
   auto* shields_action_view =
       static_cast<BraveLocationBarView*>(GetLocationBarView())
           ->brave_actions_contatiner_view()
@@ -448,7 +448,7 @@ void BraveBrowserView::ShowBraveHelpBubbleView(const std::u16string text) {
 
   if (shields_action_view && !brave_help_bubble_view_) {
     brave_help_bubble_view_ =
-        BraveHelpBubbleView::Create(shields_action_view, text);
+        BraveHelpBubbleHostView::Create(shields_action_view, text);
     AddChildView(brave_help_bubble_view_.get());
   }
 }
