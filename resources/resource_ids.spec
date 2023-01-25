@@ -182,6 +182,10 @@
     "META": {"sizes": {"includes": [250]}},
     "includes": [59270]
   },
+  "<(SHARED_INTERMEDIATE_DIR)/brave/web-ui-shortcuts/shortcuts.grd": {
+    "META": {"sizes": {"includes": [250]}},
+    "includes": [59280]
+  },
   "<(SHARED_INTERMEDIATE_DIR)/brave/web-ui-ledger_bridge/ledger_bridge.grd": {
     "META": {"sizes": {"includes": [250]}},
     "includes": [59520]

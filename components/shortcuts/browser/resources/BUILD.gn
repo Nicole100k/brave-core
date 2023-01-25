@@ -1,0 +1,26 @@
+# Copyright (c) 2023 The Brave Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/.
+
+import("//brave/components/common/typescript.gni")
+
+transpile_web_ui("shortcuts_ui") {
+  entry_points = [ [
+        "shortcuts",
+        rebase_path("shortcuts.tsx"),
+      ] ]
+
+  public_deps = [
+    "//brave/components/shortcuts/common:mojom_js",
+    "//mojo/public/mojom/base",
+  ]
+
+  resource_name = "shortcuts"
+}
+
+pack_web_resources("generated_resources") {
+  resource_name = "shortcuts"
+  output_dir = "$root_gen_dir/brave/components/shortcuts/browser/resources"
+  deps = [ ":shortcuts_ui" ]
+}
