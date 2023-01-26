@@ -3,6 +3,7 @@ import { render } from "react-dom";
 import * as CommandsMojo from "gen/brave/components/commands/common/commands.mojom.m.js";
 import Command from "./components/Command";
 import styled from "styled-components";
+import { match } from "./utils/match";
 
 const CommandsContainer = styled.div`
   display: flex;
@@ -39,12 +40,7 @@ function App() {
   const filteredCommands = React.useMemo(
     () =>
       commands
-        ?.filter((c) => {
-          const lowerFilter = filter.toLowerCase();
-          if (c.id == parseInt(filter)) return true;
-          if (c.name.toLocaleLowerCase().includes(lowerFilter)) return true;
-          return false;
-        })
+        ?.filter((c) => match(filter, c))
         .filter((c) => !withAccelerator || c.accelerators.length),
     [filter, withAccelerator, commands]
   );
