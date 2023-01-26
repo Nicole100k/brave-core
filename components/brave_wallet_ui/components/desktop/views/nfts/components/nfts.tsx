@@ -12,22 +12,28 @@ import {
   WalletRoutes
 } from '../../../../../constants/types'
 
+// actions
+import { WalletPageActions } from '../../../../../page/actions'
+
 // utils
 import { getLocale } from '$web-common/locale'
+import Amount from '../../../../../utils/amount'
 
 // components
 import SearchBar from '../../../../shared/search-bar'
 import NetworkFilterSelector from '../../../network-filter-selector'
+import { NftGalleryMorePopup } from '../../portfolio/components/nft-gallery-more-popup/nft-more-popup'
+import { NFTGridViewItem } from '../../portfolio/components/nft-grid-view/nft-grid-view-item'
 
 // styles
 import {
   EmptyStateText,
   FilterTokenRow,
-  NftGrid
+  NftGrid,
+  MoreButton,
+  MoreIcon
 } from './nfts.styles'
-import { NFTGridViewItem } from '../../portfolio/components/nft-grid-view/nft-grid-view-item'
-import { WalletPageActions } from '../../../../../page/actions'
-import Amount from '../../../../../utils/amount'
+import { AddOrEditNftModal } from '../../../popup-modals/add-edit-nft-modal/add-edit-nft-modal'
 
 interface Props {
   networks: BraveWallet.NetworkInfo[]
@@ -42,6 +48,8 @@ export const Nfts = (props: Props) => {
 
   // state
   const [searchValue, setSearchValue] = React.useState<string>('')
+  const [morePopupVisible, setMorePopupVisible] = React.useState<boolean>(false)
+  const [showAddNftModal, setShowAddNftModal] = React.useState<boolean>(false)
 
   // hooks
   const history = useHistory()
@@ -57,6 +65,15 @@ export const Nfts = (props: Props) => {
     // reset nft metadata
     dispatch(WalletPageActions.updateNFTMetadata(undefined))
   }, [dispatch])
+
+  const toggleMorePopup = React.useCallback((e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation()
+    setMorePopupVisible(value => !value)
+  }, [])
+
+  const toggleShowAddNftModal = React.useCallback(() => {
+    setShowAddNftModal(value => !value)
+  }, [])
 
   // memos
   const filteredNfts = React.useMemo(() => {
@@ -87,7 +104,7 @@ export const Nfts = (props: Props) => {
   }, [searchValue])
 
   return (
-    <>
+    <div onClick={() => setMorePopupVisible(false)}>
       <FilterTokenRow>
         <SearchBar
           placeholder={getLocale('braveWalletSearchText')}
@@ -95,6 +112,12 @@ export const Nfts = (props: Props) => {
           value={searchValue}
         />
         <NetworkFilterSelector networkListSubset={networks} />
+        <MoreButton onClick={toggleMorePopup}>
+          <MoreIcon />
+        </MoreButton>
+        {morePopupVisible &&
+          <NftGalleryMorePopup onImportNft={toggleShowAddNftModal} />
+        }
       </FilterTokenRow>
       {sortedNfts.length === 0
         ? <EmptyStateText>{emptyStateMessage}</EmptyStateText>
@@ -108,6 +131,12 @@ export const Nfts = (props: Props) => {
           ))}
         </NftGrid>
       }
-    </>
+      {showAddNftModal &&
+        <AddOrEditNftModal
+          onClose={toggleShowAddNftModal}
+          onHideForm={toggleShowAddNftModal}
+        />
+      }
+    </div>
   )
 }

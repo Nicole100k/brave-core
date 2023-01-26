@@ -10,13 +10,6 @@ export const StyledWrapper = styled.div`
   align-items: center;
   justify-content: flex-start;
   width: 100%;
-  padding: 0px 15px 15px 15px;
+  padding: 0px 24px 46px 24px;
   min-height: 320px;
-`
-
-export const EditWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding-bottom: 24px;
 `

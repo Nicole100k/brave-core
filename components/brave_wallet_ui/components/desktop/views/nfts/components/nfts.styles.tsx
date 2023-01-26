@@ -3,6 +3,8 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this file,
 // you can obtain one at https://mozilla.org/MPL/2.0/.
 import styled from 'styled-components'
+import { WalletButton } from '../../../../shared/style'
+import MoreCircles from '../../../../../assets/svg-icons/more-circles.svg'
 
 export const FilterTokenRow = styled.div`
   display: flex;
@@ -11,6 +13,7 @@ export const FilterTokenRow = styled.div`
   flex-direction: row;
   width: 100%;
   gap: 14px;
+  position: relative;
 `
 
 export const NftGrid = styled.div`
@@ -37,4 +40,30 @@ export const EmptyStateText = styled.div`
   color: ${p => p.theme.color.text03};
   font-size: 14px;
   font-family: Poppins;
+`
+
+export const MoreButton = styled(WalletButton)`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+  width: 38px;
+  height:38px;
+  border: 1px solid ${p => p.theme.color.interactive08};
+  background-color: ${(p) => p.theme.color.background02};
+  border-radius: 6px;
+  align-self: flex-start;
+  cursor: pointer;
+`
+
+export const MoreIcon = styled.div`
+  width: 20px;
+  height: 20px;
+  background-color: ${(p) => p.theme.color.interactive07};
+  mask-image: url(${MoreCircles});
+  background-color: #656565;
+  mask-size: contain;
+  mask-repeat: no-repeat;
+  mask-position: center;
 `

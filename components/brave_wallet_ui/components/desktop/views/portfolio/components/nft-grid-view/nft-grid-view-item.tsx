@@ -23,7 +23,7 @@ import {
   DIVForClickableArea
 } from './style'
 import { NftMorePopup } from '../nft-more-popup/nft-more-popup'
-import { EditNftModal } from '../../../../popup-modals/edit-nft-modal/edit-nft-modal'
+import { AddOrEditNftModal } from '../../../../popup-modals/add-edit-nft-modal/add-edit-nft-modal'
 
 interface Props {
   token: UserAssetInfoType
@@ -71,7 +71,6 @@ export const NFTGridViewItem = (props: Props) => {
         {showMore &&
           <NftMorePopup
             onEditNft={onEditNft}
-            onHideNft={() => {}}
           />
         }
         <DIVForClickableArea onClick={onSelectAsset}/>
@@ -81,11 +80,9 @@ export const NFTGridViewItem = (props: Props) => {
         <NFTText>{asset.name} {asset.tokenId ? '#' + new Amount(asset.tokenId).toNumber() : ''}</NFTText>
       </NFTWrapper>
       {showEditModal &&
-        <EditNftModal
+        <AddOrEditNftModal
           nftToken={asset}
           onHideForm={onHideModal}
-          onChangeContractAddress={(address) => {}}
-          onTokenFound={(address) => {}}
           onClose={onHideModal}
         />
       }

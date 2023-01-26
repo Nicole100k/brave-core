@@ -10,23 +10,23 @@ import {
   StyledWrapper,
   PopupButton,
   PopupButtonText,
-  EditIcon
+  PlusIcon
 } from './nft-more-popup.styles'
 
 interface Props {
-  onEditNft: () => void
+  onImportNft: () => void
 }
 
-export const NftMorePopup = (props: Props) => {
+export const NftGalleryMorePopup = (props: Props) => {
   const {
-    onEditNft
+    onImportNft
   } = props
 
   return (
     <StyledWrapper>
-      <PopupButton onClick={onEditNft}>
-        <EditIcon />
-        <PopupButtonText>Edit</PopupButtonText>
+      <PopupButton onClick={onImportNft}>
+        <PlusIcon />
+        <PopupButtonText>Import NFT</PopupButtonText>
       </PopupButton>
     </StyledWrapper>
   )

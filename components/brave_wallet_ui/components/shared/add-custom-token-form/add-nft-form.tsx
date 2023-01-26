@@ -29,10 +29,10 @@ import { FormErrorsList } from './form-errors-list'
 // styles
 import {
   ButtonRow,
+  ButtonRowSpacer,
   ErrorText,
-  FormColumn,
-  FormRow,
   FormWrapper,
+  FullWidthFormColumn,
   Input,
   InputLabel
 } from './add-custom-token-form-styles'
@@ -43,8 +43,8 @@ interface Props {
   contractAddress: string
   selectedAsset?: BraveWallet.BlockchainToken
   onHideForm: () => void
-  onTokenFound: (contractAddress: string) => void
-  onChangeContractAddress: (contractAddress: string) => void
+  onTokenFound?: (contractAddress: string) => void
+  onChangeContractAddress?: (contractAddress: string) => void
 }
 
 export const AddNftForm = (props: Props) => {
@@ -109,13 +109,17 @@ export const AddNftForm = (props: Props) => {
 
   const handleTokenAddressChanged = React.useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     setHasError(false)
-    onChangeContractAddress(event.target.value)
+    if (onChangeContractAddress) {
+      onChangeContractAddress(event.target.value)
+    }
   }, [onChangeContractAddress])
 
   // methods
   const resetInputFields = React.useCallback(() => {
     setTokenName('')
-    onChangeContractAddress('')
+    if (onChangeContractAddress) {
+      onChangeContractAddress('')
+    }
     setTokenSymbol('')
     setTokenID('')
   }, [onChangeContractAddress])
@@ -245,59 +249,60 @@ export const AddNftForm = (props: Props) => {
       const network = networks.find(network => network.chainId.toLowerCase() === foundTokenInfoByContractAddress.chainId.toLowerCase())
       if (network) setCustomAssetsNetwork(network)
     }
-    if (foundTokenInfoByContractAddress?.isErc20) {
+    if (foundTokenInfoByContractAddress?.isErc20 && onTokenFound) {
       onTokenFound(tokenContractAddress)
     }
   }, [foundTokenInfoByContractAddress, onFindTokenInfoByContractAddress, tokenContractAddress, resetInputFields, networks, onTokenFound])
 
   return (
     <FormWrapper onClick={onHideNetworkDropDown}>
-      <FormRow>
-        <FormColumn>
-          <InputLabel>{getLocale('braveWalletWatchListTokenAddress')}</InputLabel>
-          <Input
-            value={tokenContractAddress}
-            onChange={handleTokenAddressChanged}
-          />
-        </FormColumn>
-        <FormColumn>
-          <InputLabel>{getLocale('braveWalletSelectNetwork')}</InputLabel>
-          <SelectNetworkDropdown
-            selectedNetwork={customAssetsNetwork}
-            onClick={onShowNetworkDropDown}
-            showNetworkDropDown={showNetworkDropDown}
-            onSelectCustomNetwork={onSelectCustomNetwork}
-          />
-        </FormColumn>
-      </FormRow>
-      <FormRow>
-        <FormColumn>
-          <InputLabel>{getLocale('braveWalletWatchListTokenName')}</InputLabel>
-          <Input
-            value={tokenName}
-            onChange={handleTokenNameChanged}
-          />
-        </FormColumn>
-        <FormColumn>
-          <InputLabel>{getLocale('braveWalletWatchListTokenSymbol')}</InputLabel>
-          <Input
-            value={tokenSymbol}
-            onChange={handleTokenSymbolChanged}
-          />
-        </FormColumn>
-      </FormRow>
-      <FormRow>
+      <FullWidthFormColumn>
+        <InputLabel>{getLocale('braveWalletWatchListTokenAddress')}</InputLabel>
+        <Input
+          value={tokenContractAddress}
+          onChange={handleTokenAddressChanged}
+          width='100%'
+        />
+      </FullWidthFormColumn>
+      <FullWidthFormColumn>
+        <InputLabel>{getLocale('braveWalletSelectNetwork')}</InputLabel>
+        <SelectNetworkDropdown
+          selectedNetwork={customAssetsNetwork}
+          onClick={onShowNetworkDropDown}
+          showNetworkDropDown={showNetworkDropDown}
+          onSelectCustomNetwork={onSelectCustomNetwork}
+          useWithSearch={false}
+        />
+      </FullWidthFormColumn>
+      <FullWidthFormColumn>
+        <InputLabel>{getLocale('braveWalletWatchListTokenName')}</InputLabel>
+        <Input
+          value={tokenName}
+          onChange={handleTokenNameChanged}
+          width='100%'
+        />
+      </FullWidthFormColumn>
+      <FullWidthFormColumn>
+        <InputLabel>{getLocale('braveWalletWatchListTokenSymbol')}</InputLabel>
+        <Input
+          value={tokenSymbol}
+          onChange={handleTokenSymbolChanged}
+          width='100%'
+        />
+      </FullWidthFormColumn>
+      <FullWidthFormColumn>
         {customAssetsNetwork?.coin !== BraveWallet.CoinType.SOL &&
-          <FormColumn>
+          <>
             <InputLabel>{getLocale('braveWalletWatchListTokenId')}</InputLabel>
             <Input
               value={tokenID}
               onChange={handleTokenIDChanged}
               type='number'
+              width='100%'
             />
-          </FormColumn>
+          </>
         }
-      </FormRow>
+      </FullWidthFormColumn>
       <>
         {showTokenIDRequired &&
           <ErrorText>{getLocale('braveWalletWatchListTokenIdError')}</ErrorText>
@@ -306,6 +311,7 @@ export const AddNftForm = (props: Props) => {
       {hasError &&
         <ErrorText>{getLocale('braveWalletWatchListError')}</ErrorText>
       }
+      <ButtonRowSpacer />
       <ButtonRow style={{ justifyContent: selectedAsset ? 'center' : 'flex-start' }}>
         <NavButton
           onSubmit={onClickCancel}
