@@ -31,6 +31,12 @@ const Kbd = styled.div`
   box-shadow: inset 0 -1px 0 rgba(174, 184, 193, 0.2);
 `;
 
+let isSure = false
+const ifSure = () => {
+  if (isSure) return true
+  return isSure = window.confirm('This is experimental. Executing commands may cause your browser to crash. Continue?')
+}
+
 function Accelerator({
   accelerator
 }: {
@@ -56,7 +62,7 @@ export default function Command({
   return (
     <Grid>
       <div>{command.name}</div>
-      <button onClick={() => api.tryExecuteCommand(command.id)}>Execute</button>
+      <button onClick={() => ifSure() && api.tryExecuteCommand(command.id)}>Execute</button>
       <Column>
         {command.accelerators.map((a, i) => (
           <Accelerator key={i} accelerator={a} />
