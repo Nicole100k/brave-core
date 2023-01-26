@@ -5,6 +5,7 @@
 
 #include "bat/ads/internal/account/utility/redeem_unblinded_payment_tokens/redeem_unblinded_payment_tokens_url_request_builder.h"
 
+#include <utility>
 #include <vector>
 
 #include "base/check.h"
@@ -124,7 +125,7 @@ TEST_F(BatAdsRedeemUnblindedPaymentTokensUrlRequestBuilderTest,
   // Act
   user_data_builder.Build(base::BindOnce(
       [](const privacy::UnblindedPaymentTokenList& unblinded_payment_tokens,
-         const base::Value::Dict& user_data) {
+         base::Value::Dict user_data) {
         WalletInfo wallet;
         wallet.id = "d4ed0af0-bfa9-464b-abd7-67b29d891b8b";
         wallet.secret_key =
@@ -132,7 +133,7 @@ TEST_F(BatAdsRedeemUnblindedPaymentTokensUrlRequestBuilderTest,
             "33cea0085cfd551faa170c1dd7f6daaa903cdd3138d61ed5ab2845e224d58144";
 
         RedeemUnblindedPaymentTokensUrlRequestBuilder url_request_builder(
-            wallet, unblinded_payment_tokens, user_data);
+            wallet, unblinded_payment_tokens, std::move(user_data));
 
         const mojom::UrlRequestInfoPtr url_request =
             url_request_builder.Build();
@@ -176,7 +177,7 @@ TEST_F(BatAdsRedeemUnblindedPaymentTokensUrlRequestBuilderTest,
   // Act
   user_data_builder.Build(base::BindOnce(
       [](const privacy::UnblindedPaymentTokenList& unblinded_payment_tokens,
-         const base::Value::Dict& user_data) {
+         base::Value::Dict user_data) {
         WalletInfo wallet;
         wallet.id = "d4ed0af0-bfa9-464b-abd7-67b29d891b8b";
         wallet.secret_key =
@@ -184,7 +185,7 @@ TEST_F(BatAdsRedeemUnblindedPaymentTokensUrlRequestBuilderTest,
             "33cea0085cfd551faa170c1dd7f6daaa903cdd3138d61ed5ab2845e224d58144";
 
         RedeemUnblindedPaymentTokensUrlRequestBuilder url_request_builder(
-            wallet, unblinded_payment_tokens, user_data);
+            wallet, unblinded_payment_tokens, std::move(user_data));
 
         const mojom::UrlRequestInfoPtr url_request =
             url_request_builder.Build();
