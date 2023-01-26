@@ -5,6 +5,8 @@
 
 #include "bat/ads/internal/ads/serving/targeting/user_model_builder.h"
 
+#include <utility>
+
 #include "base/functional/bind.h"
 #include "bat/ads/internal/ads/serving/targeting/models/behavioral/bandits/epsilon_greedy_bandit_model.h"
 #include "bat/ads/internal/ads/serving/targeting/models/behavioral/purchase_intent/purchase_intent_model.h"

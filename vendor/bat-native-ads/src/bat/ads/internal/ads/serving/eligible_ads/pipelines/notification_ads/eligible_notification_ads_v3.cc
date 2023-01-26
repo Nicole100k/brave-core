@@ -5,6 +5,8 @@
 
 #include "bat/ads/internal/ads/serving/eligible_ads/pipelines/notification_ads/eligible_notification_ads_v3.h"
 
+#include <utility>
+
 #include "absl/types/optional.h"
 #include "base/bind.h"
 #include "bat/ads/internal/ads/ad_events/ad_events_database_table.h"
