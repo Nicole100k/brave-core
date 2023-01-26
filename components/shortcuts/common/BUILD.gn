@@ -7,8 +7,8 @@ import("//mojo/public/tools/bindings/mojom.gni")
 
 static_library("common") {
   sources = [
-    "modifier_names.cc",
-    "modifier_names.h"
+    "key_names.cc",
+    "key_names.h"
   ]
 
   deps = [

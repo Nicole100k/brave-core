@@ -10,7 +10,7 @@
 #include "brave/browser/ui/views/frame/brave_browser_view.h"
 #include "brave/browser/ui/webui/brave_webui_source.h"
 #include "brave/components/shortcuts/browser/resources/grit/shortcuts_generated_map.h"
-#include "brave/components/shortcuts/common/modifier_names.h"
+#include "brave/components/shortcuts/common/key_names.h"
 #include "chrome/browser/ui/browser_finder.h"
 #include "components/grit/brave_components_resources.h"
 #include "content/public/browser/web_ui_controller.h"
