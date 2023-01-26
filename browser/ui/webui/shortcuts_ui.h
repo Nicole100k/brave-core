@@ -10,6 +10,7 @@
 #include <string>
 
 #include "base/memory/weak_ptr.h"
+#include "brave/browser/ui/views/frame/brave_browser_view.h"
 #include "brave/components/playlist/common/mojom/playlist.mojom.h"
 #include "brave/components/shortcuts/common/shortcuts.mojom.h"
 #include "content/public/browser/web_ui_controller.h"
@@ -42,6 +43,7 @@ class ShortcutsUI : public content::WebUIController, public ShortcutsService {
 
  private:
   mojo::Receiver<ShortcutsService> receiver_{this};
+  BraveBrowserView* browser_view_;
 
   WEB_UI_CONTROLLER_TYPE_DECL();
 };

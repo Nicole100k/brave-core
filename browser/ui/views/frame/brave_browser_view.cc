@@ -6,6 +6,7 @@
 #include "brave/browser/ui/views/frame/brave_browser_view.h"
 
 #include <utility>
+#include <vector>
 
 #include "base/bind.h"
 #include "brave/browser/brave_rewards/rewards_panel/rewards_panel_coordinator.h"
@@ -40,6 +41,7 @@
 #include "chrome/common/pref_names.h"
 #include "extensions/buildflags/buildflags.h"
 #include "third_party/abseil-cpp/absl/types/optional.h"
+#include "ui/base/accelerators/accelerator.h"
 #include "ui/events/event_observer.h"
 #include "ui/views/bubble/bubble_dialog_delegate_view.h"
 #include "ui/views/event_monitor.h"
@@ -81,9 +83,7 @@ class BraveBrowserView::TabCyclingEventHandler : public ui::EventObserver,
     Start();
   }
 
-  ~TabCyclingEventHandler() override {
-    Stop();
-  }
+  ~TabCyclingEventHandler() override { Stop(); }
 
   TabCyclingEventHandler(const TabCyclingEventHandler&) = delete;
   TabCyclingEventHandler& operator=(const TabCyclingEventHandler&) = delete;
@@ -110,17 +110,14 @@ class BraveBrowserView::TabCyclingEventHandler : public ui::EventObserver,
   }
 
   // Handle Browser widget closing while tab Cycling is in-progress.
-  void OnWidgetClosing(views::Widget* widget) override {
-    Stop();
-  }
+  void OnWidgetClosing(views::Widget* widget) override { Stop(); }
 
   void Start() {
     // Add the event handler
     auto* widget = browser_view_->GetWidget();
     if (widget->GetNativeWindow()) {
       monitor_ = views::EventMonitor::CreateWindowMonitor(
-          this,
-          widget->GetNativeWindow(),
+          this, widget->GetNativeWindow(),
           {ui::ET_MOUSE_PRESSED, ui::ET_KEY_RELEASED});
     }
 
@@ -402,6 +399,15 @@ views::View* BraveBrowserView::GetWalletButtonAnchorView() {
       ->GetAsAnchorView();
 }
 
+std::map<int, std::vector<ui::Accelerator>>
+BraveBrowserView::GetAcceleratedCommands() {
+  std::map<int, std::vector<ui::Accelerator>> result;
+  for (const auto& [accelerator, command] : accelerator_table_) {
+    result[command].push_back(accelerator);
+  }
+  return result;
+}
+
 void BraveBrowserView::CreateWalletBubble() {
   DCHECK(GetWalletButton());
   GetWalletButton()->ShowWalletBubble();
@@ -556,6 +562,6 @@ void BraveBrowserView::StartTabCycling() {
 
 void BraveBrowserView::StopTabCycling() {
   tab_cycling_event_handler_.reset();
-  static_cast<BraveTabStripModel*>(browser()->tab_strip_model())->
-      StopMRUCycling();
+  static_cast<BraveTabStripModel*>(browser()->tab_strip_model())
+      ->StopMRUCycling();
 }

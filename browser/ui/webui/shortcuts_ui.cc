@@ -7,10 +7,11 @@
 #include <utility>
 #include "base/strings/utf_string_conversions.h"
 #include "brave/app/command_utils.h"
+#include "brave/browser/ui/views/frame/brave_browser_view.h"
 #include "brave/browser/ui/webui/brave_webui_source.h"
 #include "brave/components/shortcuts/browser/resources/grit/shortcuts_generated_map.h"
 #include "brave/components/shortcuts/common/modifier_names.h"
-#include "chrome/browser/ui/views/accelerator_table.h"
+#include "chrome/browser/ui/browser_finder.h"
 #include "components/grit/brave_components_resources.h"
 #include "content/public/browser/web_ui_controller.h"
 #include "ui/base/accelerators/accelerator.h"
@@ -19,7 +20,10 @@
 
 namespace shortcuts {
 ShortcutsUI::ShortcutsUI(content::WebUI* web_ui, const std::string& name)
-    : content::WebUIController(web_ui) {
+    : content::WebUIController(web_ui),
+      browser_view_(static_cast<BraveBrowserView*>(
+          chrome::FindBrowserWithWebContents(web_ui->GetWebContents())
+              ->window())) {
   // auto* source =
   CreateAndAddWebUIDataSource(web_ui, name, kShortcutsGenerated,
                               kShortcutsGeneratedSize, IDR_SHORTCUTS_HTML);
@@ -37,7 +41,7 @@ void ShortcutsUI::BindInterface(
 
 void ShortcutsUI::GetCommands(GetCommandsCallback callback) {
   auto command_ids = shortcuts::GetCommands();
-  auto accelerators = GetAcceleratorList();
+  auto accelerated_commands = browser_view_->GetAcceleratedCommands();
 
   std::vector<CommandPtr> result;
   for (const auto& command_id : command_ids) {
@@ -45,19 +49,18 @@ void ShortcutsUI::GetCommands(GetCommandsCallback callback) {
     command->id = command_id;
     command->name = shortcuts::GetCommandName(command_id);
 
-    for (const auto& entry : accelerators) {
-      if (command_id != entry.command_id)
-        continue;
+    auto it = accelerated_commands.find(command_id);
+    if (it != accelerated_commands.end()) {
+      for (const auto& accel : it->second) {
+        auto a = Accelerator::New();
+        a->keycode = shortcuts::GetKeyName(accel.key_code());
+        a->modifiers = shortcuts::GetModifierName(accel.modifiers());
 
-      ui::Accelerator accel(entry.keycode, entry.modifiers);
-
-      auto a = Accelerator::New();
-      a->keycode = shortcuts::GetKeyName(entry.keycode);
-      a->modifiers = shortcuts::GetModifierName(entry.modifiers);
-
-      if ((!a->modifiers.size() && entry.modifiers != ui::EF_NONE) || a->keycode.empty())
-        continue;
-      command->accelerators.push_back(std::move(a));
+        if ((!a->modifiers.size() && accel.modifiers() != ui::EF_NONE) ||
+            a->keycode.empty())
+          continue;
+        command->accelerators.push_back(std::move(a));
+      }
     }
     result.push_back(std::move(command));
   }

@@ -4,8 +4,6 @@
 // You can obtain one at https://mozilla.org/MPL/2.0/.
 
 #include "brave/components/shortcuts/common/modifier_names.h"
-#include "ui/events/keycodes/keyboard_codes_posix.h"
-#include "ui/events/keycodes/keysym_to_unicode.h"
 
 namespace shortcuts {
 std::string GetKeyName(ui::KeyboardCode code) {
@@ -97,29 +95,39 @@ std::string GetKeyName(ui::KeyboardCode code) {
     case ui::VKEY_TAB:
       return "Tab";
     case ui::VKEY_NEXT:
-      return "Next";
+      return "PgDn";
     case ui::VKEY_PRIOR:
-      return "Prev";
+      return "PgUp";
     case ui::VKEY_RETURN:
       return "Enter";
+    case ui::VKEY_1:
     case ui::VKEY_NUMPAD1:
       return "1";
+    case ui::VKEY_2:
     case ui::VKEY_NUMPAD2:
       return "2";
+    case ui::VKEY_3:
     case ui::VKEY_NUMPAD3:
       return "3";
+    case ui::VKEY_4:
     case ui::VKEY_NUMPAD4:
       return "4";
+    case ui::VKEY_5:
     case ui::VKEY_NUMPAD5:
       return "5";
+    case ui::VKEY_6:
     case ui::VKEY_NUMPAD6:
       return "6";
+    case ui::VKEY_7:
     case ui::VKEY_NUMPAD7:
       return "7";
+    case ui::VKEY_8:
     case ui::VKEY_NUMPAD8:
       return "8";
+    case ui::VKEY_9:
     case ui::VKEY_NUMPAD9:
       return "9";
+    case ui::VKEY_0:
     case ui::VKEY_NUMPAD0:
       return "0";
     case ui::VKEY_SUBTRACT:
@@ -142,12 +150,110 @@ std::string GetKeyName(ui::KeyboardCode code) {
       return "Home";
     case ui::VKEY_END:
       return "End";
+    case ui::VKEY_CAPITAL:
+      return "Caps";
+    case ui::VKEY_A:
+      return "A";
+    case ui::VKEY_B:
+      return "B";
+    case ui::VKEY_C:
+      return "C";
+    case ui::VKEY_D:
+      return "D";
+    case ui::VKEY_E:
+      return "E";
+    case ui::VKEY_F:
+      return "F";
+    case ui::VKEY_G:
+      return "G";
+    case ui::VKEY_H:
+      return "H";
+    case ui::VKEY_I:
+      return "I";
+    case ui::VKEY_J:
+      return "J";
+    case ui::VKEY_K:
+      return "K";
+    case ui::VKEY_L:
+      return "L";
+    case ui::VKEY_M:
+      return "M";
+    case ui::VKEY_N:
+      return "N";
+    case ui::VKEY_O:
+      return "O";
+    case ui::VKEY_P:
+      return "P";
+    case ui::VKEY_Q:
+      return "Q";
+    case ui::VKEY_R:
+      return "R";
+    case ui::VKEY_S:
+      return "S";
+    case ui::VKEY_T:
+      return "T";
+    case ui::VKEY_U:
+      return "U";
+    case ui::VKEY_V:
+      return "V";
+    case ui::VKEY_W:
+      return "W";
+    case ui::VKEY_X:
+      return "X";
+    case ui::VKEY_Y:
+      return "Y";
+    case ui::VKEY_Z:
+      return "Z";
+    case ui::VKEY_CANCEL:
+      return "Cancel";
+    case ui::VKEY_BACKTAB:
+      return "Backtab";
+    case ui::VKEY_CLEAR:
+      return "Clear";
+    case ui::VKEY_SHIFT:
+      return "Shift";
+    case ui::VKEY_CONTROL:
+      return "Ctrk";
+    case ui::VKEY_PAUSE:
+      return "Pause";
+    case ui::VKEY_KANA:
+      return "Kana";
+    case ui::VKEY_PASTE:
+      return "Paste";
+    case ui::VKEY_JUNJA:
+      return "Junja";
+    case ui::VKEY_FINAL:
+      return "Final";
+    case ui::VKEY_HANJA:
+      return "Hanja";
+    case ui::VKEY_CONVERT:
+      return "Convert";
+    case ui::VKEY_NONCONVERT:
+      return "Non Convert";
+    case ui::VKEY_ACCEPT:
+      return "";
+    case ui::VKEY_MODECHANGE:
+      return "Mode";
+    case ui::VKEY_SELECT:
+      return "Select";
+    case ui::VKEY_PRINT:
+      return "Print";
+    case ui::VKEY_EXECUTE:
+      return "Execute";
+    case ui::VKEY_SNAPSHOT:
+      return "PrtScn";
+    case ui::VKEY_INSERT:
+      return "Ins";
+    case ui::VKEY_HELP:
+      return "Help";
+    case ui::VKEY_RWIN:
+    case ui::VKEY_COMMAND:
+      return "Cmd";
     default:
-      std::string result;
-      result = toupper(ui::GetUnicodeCharacterFromXKeySym(code));
-      return result;
+      return "Unknown";
   }
 }
+
 std::vector<std::string> GetModifierName(ui::KeyEventFlags flags) {
   std::vector<std::string> result;
 

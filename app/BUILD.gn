@@ -13,6 +13,7 @@ import("//build/config/locales.gni")
 
 source_set("command_ids") {
   sources = [ "brave_command_ids.h", "command_utils.cc", "command_utils.h" ]
+  deps = [ "//base", "//chrome/app:command_ids" ]
 }
 
 brave_grit("brave_generated_resources_grit") {

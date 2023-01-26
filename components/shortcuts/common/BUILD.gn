@@ -13,6 +13,8 @@ static_library("common") {
 
   deps = [
     "//base",
+    "//ui/events:event_constants",
+    "//ui/events:events_base"
   ]
 
   public_deps = [
