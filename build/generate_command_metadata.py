@@ -48,7 +48,7 @@ def generate_cpp_header(commands, path):
 #include <string>
 #include <vector>
 
-namespace shortcuts {{
+namespace commands {{
 
 std::vector<uint16_t> GetCommands(); 
 std::string GetCommandName(int command_id);
@@ -81,7 +81,7 @@ def generate_cpp_source(commands, path):
 
 {command_includes}
 
-namespace shortcuts {{
+namespace commands {{
 std::vector<uint16_t> GetCommands() {{
   return std::vector<uint16_t> {{{", ".join(map(lambda x: x[0], commands))}}};
 }}

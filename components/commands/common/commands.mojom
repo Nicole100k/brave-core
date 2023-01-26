@@ -15,6 +15,6 @@ struct Accelerator {
   array<string> modifiers;
 };
 
-interface ShortcutsService {
+interface CommandsService {
   GetCommands() => (array<Command> commands);
 };

@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<grit-part>
-  <include name="IDR_SHORTCUTS_HTML" file="../shortcuts/browser/resources/shortcuts.html" type="BINDATA" />
-</grit-part>

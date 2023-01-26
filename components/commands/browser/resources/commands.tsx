@@ -1,6 +1,6 @@
 import * as React from "react";
 import { render } from "react-dom";
-import * as ShortcutsMojo from "gen/brave/components/shortcuts/common/shortcuts.mojom.m.js";
+import * as CommandsMojo from "gen/brave/components/commands/common/commands.mojom.m.js";
 import Command from "./components/Command";
 import styled from "styled-components";
 
@@ -16,7 +16,7 @@ const FilterBox = styled.input`
   border: 1px solid lightgray;
 `;
 
-const api = ShortcutsMojo.ShortcutsService.getRemote();
+const api = CommandsMojo.CommandsService.getRemote();
 api.getCommands().then(console.log);
 
 function usePromise<T>(getPromise: () => Promise<T>, deps: any[]) {

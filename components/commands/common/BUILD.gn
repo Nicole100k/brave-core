@@ -23,7 +23,7 @@ static_library("common") {
 }
 
 mojom("mojom") {
-  sources = [ "shortcuts.mojom" ]
+  sources = [ "commands.mojom" ]
   public_deps = [
     "//mojo/public/mojom/base"
   ]

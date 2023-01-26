@@ -182,7 +182,7 @@
     "META": {"sizes": {"includes": [250]}},
     "includes": [59270]
   },
-  "<(SHARED_INTERMEDIATE_DIR)/brave/web-ui-shortcuts/shortcuts.grd": {
+  "<(SHARED_INTERMEDIATE_DIR)/brave/web-ui-commands/commands.grd": {
     "META": {"sizes": {"includes": [250]}},
     "includes": [59280]
   },

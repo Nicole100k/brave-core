@@ -5,22 +5,22 @@
 
 import("//brave/components/common/typescript.gni")
 
-transpile_web_ui("shortcuts_ui") {
+transpile_web_ui("commands_ui") {
   entry_points = [ [
-        "shortcuts",
-        rebase_path("shortcuts.tsx"),
+        "commands",
+        rebase_path("commands.tsx"),
       ] ]
 
   public_deps = [
-    "//brave/components/shortcuts/common:mojom_js",
+    "//brave/components/commands/common:mojom_js",
     "//mojo/public/mojom/base",
   ]
 
-  resource_name = "shortcuts"
+  resource_name = "commands"
 }
 
 pack_web_resources("generated_resources") {
-  resource_name = "shortcuts"
-  output_dir = "$root_gen_dir/brave/components/shortcuts/browser/resources"
-  deps = [ ":shortcuts_ui" ]
+  resource_name = "commands"
+  output_dir = "$root_gen_dir/brave/components/commands/browser/resources"
+  deps = [ ":commands_ui" ]
 }

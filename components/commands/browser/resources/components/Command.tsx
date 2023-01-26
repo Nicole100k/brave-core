@@ -1,5 +1,5 @@
 import * as React from "react";
-import * as ShortcutsMojo from "gen/brave/components/shortcuts/common/shortcuts.mojom.m.js";
+import * as CommandsMojo from "gen/brave/components/commands/common/commands.mojom.m.js";
 import styled from "styled-components";
 
 const Grid = styled.div`
@@ -32,7 +32,7 @@ const Kbd = styled.div`
 function Accelerator({
   accelerator
 }: {
-  accelerator: ShortcutsMojo.Accelerator;
+  accelerator: CommandsMojo.Accelerator;
 }) {
   return (
     <div>
@@ -49,7 +49,7 @@ function Accelerator({
 export default function Command({
   command
 }: {
-  command: ShortcutsMojo.Command;
+  command: CommandsMojo.Command;
 }) {
   return (
     <Grid>

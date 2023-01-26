@@ -61,8 +61,8 @@ source_set("ui") {
     "webui/brave_webui_source.h",
     "webui/webcompat_reporter_ui.cc",
     "webui/webcompat_reporter_ui.h",
-    "webui/shortcuts_ui.cc",
-    "webui/shortcuts_ui.h",
+    "webui/commands_ui.cc",
+    "webui/commands_ui.h",
   ]
 
   if (enable_ipfs) {
@@ -416,7 +416,7 @@ source_set("ui") {
     "//brave/components/ntp_widget_utils/browser",
     "//brave/components/p3a:buildflags",
     "//brave/components/playlist/common/buildflags",
-    "//brave/components/shortcuts/common",
+    "//brave/components/commands/browser",
     "//brave/components/resources:static_resources",
     "//brave/components/text_recognition/common/buildflags",
     "//brave/components/time_period_storage",
@@ -780,7 +780,7 @@ source_set("ui") {
       "//brave/components/brave_wallet_ui/trezor:trezor_bridge_generated",
       "//brave/components/resources:strings_grit",
       "//components/permissions",
-      "//brave/components/shortcuts/browser/resources:generated_resources",
+      "//brave/components/commands/browser/resources:generated_resources",
 
     ]
   }

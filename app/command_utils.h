@@ -10,7 +10,7 @@
 #include <string>
 #include <vector>
 
-namespace shortcuts {
+namespace commands {
 
 std::vector<uint16_t> GetCommands(); 
 std::string GetCommandName(int command_id);
