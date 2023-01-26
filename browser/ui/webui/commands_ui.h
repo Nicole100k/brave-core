@@ -42,9 +42,12 @@ class CommandsUI : public content::WebUIController, public CommandsService {
   void GetCommands(GetCommandsCallback callback) override;
   void TryExecuteCommand(uint32_t command_id) override;
 
+ protected:
+  Browser* browser();
+  BraveBrowserView* browser_view();
+
  private:
   mojo::Receiver<CommandsService> receiver_{this};
-  BraveBrowserView* browser_view_;
 
   WEB_UI_CONTROLLER_TYPE_DECL();
 };

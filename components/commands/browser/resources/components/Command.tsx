@@ -5,7 +5,8 @@ import { api } from "../commands";
 
 const Grid = styled.div`
   display: grid;
-  grid-template-columns: 250px min-content auto;
+  grid-template-columns: 200px min-content auto;
+  gap: 16px;
   align-items: center;
   padding: 4px;
   min-height: 32px;
@@ -55,7 +56,7 @@ export default function Command({
   return (
     <Grid>
       <div>{command.name}</div>
-      <button onClick={() => api.tryExecuteCommand(command.id)}>Execute</button>
+      <button disabled={!command.enabled} onClick={() => api.tryExecuteCommand(command.id)}>Execute</button>
       <Column>
         {command.accelerators.map((a, i) => (
           <Accelerator key={i} accelerator={a} />

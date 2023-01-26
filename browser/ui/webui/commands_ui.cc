@@ -24,11 +24,7 @@
 
 namespace commands {
 CommandsUI::CommandsUI(content::WebUI* web_ui, const std::string& name)
-    : content::WebUIController(web_ui),
-      browser_view_(static_cast<BraveBrowserView*>(
-          chrome::FindBrowserWithWebContents(web_ui->GetWebContents())
-              ->window())) {
-  // auto* source =
+    : content::WebUIController(web_ui) {
   CreateAndAddWebUIDataSource(web_ui, name, kCommandsGenerated,
                               kCommandsGeneratedSize, IDR_COMMANDS_HTML);
 }
@@ -45,13 +41,18 @@ void CommandsUI::BindInterface(
 
 void CommandsUI::GetCommands(GetCommandsCallback callback) {
   auto command_ids = commands::GetCommands();
-  auto accelerated_commands = browser_view_->GetAcceleratedCommands();
+  auto accelerated_commands = browser_view()->GetAcceleratedCommands();
 
   std::vector<CommandPtr> result;
   for (const auto& command_id : command_ids) {
+    if (!chrome::SupportsCommand(browser(), command_id))
+      continue;
+
     auto command = Command::New();
     command->id = command_id;
     command->name = commands::GetCommandName(command_id);
+    command->enabled =
+        chrome::IsCommandEnabled(browser_view()->browser(), command_id);
 
     auto it = accelerated_commands.find(command_id);
     if (it != accelerated_commands.end()) {
@@ -73,7 +74,15 @@ void CommandsUI::GetCommands(GetCommandsCallback callback) {
 }
 
 void CommandsUI::TryExecuteCommand(uint32_t command_id) {
-  chrome::ExecuteCommand(browser_view_->browser(), command_id);
+  chrome::ExecuteCommand(browser(), command_id);
+}
+
+Browser* CommandsUI::browser() {
+  return chrome::FindBrowserWithWebContents(web_ui()->GetWebContents());
+}
+
+BraveBrowserView* CommandsUI::browser_view() {
+  return static_cast<BraveBrowserView*>(browser()->window());
 }
 
 WEB_UI_CONTROLLER_TYPE_IMPL(CommandsUI)
