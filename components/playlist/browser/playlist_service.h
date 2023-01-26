@@ -150,6 +150,9 @@ class PlaylistService : public KeyedService,
   void RemovePlaylist(const std::string& playlist_id) override;
   void GetDefaultPlaylistId(GetDefaultPlaylistIdCallback callback) override;
   void SetDefaultPlaylistId(const std::string& playlist_id) override;
+  void GetPlaylistCacheByDefault(
+      GetPlaylistCacheByDefaultCallback callback) override;
+  void SetPlaylistCacheByDefault(const bool is_enabled) override;
 
  private:
   friend class ::CosmeticFilteringPlaylistFlagEnabledTest;
