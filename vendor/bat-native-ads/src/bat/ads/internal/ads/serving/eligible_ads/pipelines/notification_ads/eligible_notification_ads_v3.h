@@ -10,6 +10,7 @@
 #include "bat/ads/internal/ads/serving/eligible_ads/exclusion_rules/exclusion_rule_alias.h"
 #include "bat/ads/internal/ads/serving/eligible_ads/pipelines/notification_ads/eligible_notification_ads_base.h"
 #include "bat/ads/internal/creatives/notification_ads/creative_notification_ad_info.h"
+#include "bat/ads/internal/segments/segment_alias.h"
 
 namespace ads {
 
@@ -33,10 +34,16 @@ class EligibleAdsV3 final : public EligibleAdsBase {
                 resource::AntiTargeting* anti_targeting);
 
   void GetForUserModel(
-      const targeting::UserModelInfo& user_model,
+      targeting::UserModelInfo user_model,
       GetEligibleAdsCallback<CreativeNotificationAdList> callback) override;
 
  private:
+  void OnGetForUserModel(
+      targeting::UserModelInfo user_model,
+      GetEligibleAdsCallback<CreativeNotificationAdList> callback,
+      bool success,
+      const AdEventList& ad_events);
+
   void GetBrowsingHistory(
       const targeting::UserModelInfo& user_model,
       const AdEventList& ad_events,
@@ -47,6 +54,15 @@ class EligibleAdsV3 final : public EligibleAdsBase {
       const AdEventList& ad_events,
       GetEligibleAdsCallback<CreativeNotificationAdList> callback,
       const BrowsingHistoryList& browsing_history);
+
+  void OnGetEligibleAds(
+      const targeting::UserModelInfo& user_model,
+      const AdEventList& ad_events,
+      const BrowsingHistoryList& browsing_history,
+      GetEligibleAdsCallback<CreativeNotificationAdList> callback,
+      bool success,
+      const SegmentList& segments,
+      const CreativeNotificationAdList& creative_ads);
 
   CreativeNotificationAdList FilterCreativeAds(
       const CreativeNotificationAdList& creative_ads,

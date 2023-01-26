@@ -5,8 +5,8 @@
 
 #include "bat/ads/internal/ads/serving/notification_ad_serving.h"
 
+#include "base/bind.h"
 #include "base/check.h"
-#include "base/functional/bind.h"
 #include "base/rand_util.h"
 #include "base/time/time.h"
 #include "bat/ads/internal/ads/serving/eligible_ads/pipelines/notification_ads/eligible_notification_ads_base.h"
@@ -103,15 +103,18 @@ void Serving::MaybeServeAd() {
     return;
   }
 
-  targeting::BuildUserModel([=](const targeting::UserModelInfo user_model) {
-    DCHECK(eligible_ads_);
-    eligible_ads_->GetForUserModel(
-        user_model, base::BindOnce(&Serving::OnGetForUserModel,
-                                  base::Unretained(this), user_model));
-    }
+  targeting::BuildUserModel(
+      base::BindOnce(&Serving::OnBuildUserModel, base::Unretained(this)));
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+
+void Serving::OnBuildUserModel(const targeting::UserModelInfo& user_model) {
+  DCHECK(eligible_ads_);
+  eligible_ads_->GetForUserModel(
+      user_model, base::BindOnce(&Serving::OnGetForUserModel,
+                                 base::Unretained(this), user_model));
+}
 
 void Serving::OnGetForUserModel(
     const targeting::UserModelInfo& user_model,

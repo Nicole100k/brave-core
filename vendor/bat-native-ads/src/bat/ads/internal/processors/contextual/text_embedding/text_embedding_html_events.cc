@@ -5,6 +5,7 @@
 
 #include "bat/ads/internal/processors/contextual/text_embedding/text_embedding_html_events.h"
 
+#include "base/functional/bind.h"
 #include "base/time/time.h"
 #include "bat/ads/internal/common/logging_util.h"
 #include "bat/ads/internal/processors/contextual/text_embedding/text_embedding_html_event_info.h"
@@ -46,18 +47,22 @@ void PurgeStaleTextEmbeddingHtmlEvents(
 }
 
 void GetTextEmbeddingHtmlEventsFromDatabase(
-    const database::table::GetTextEmbeddingHtmlEventsCallback& callback) {
+    database::table::GetTextEmbeddingHtmlEventsCallback callback) {
   const database::table::TextEmbeddingHtmlEvents database_table;
-  database_table.GetAll(
-      [=](const bool success,
-          const TextEmbeddingHtmlEventList& text_embedding_html_events) {
-        if (!success) {
-          BLOG(1, "Failed to get text embedding HTML events");
-          callback(success, /* text_embedding_html_events */ {});
-          return;
-        }
-        callback(success, text_embedding_html_events);
-      });
+  database_table.GetAll(base::BindOnce(
+      &OnGetTextEmbeddingHtmlEventsFromDatabase, std::move(callback)));
+}
+
+void OnGetTextEmbeddingHtmlEventsFromDatabase(
+    database::table::GetTextEmbeddingHtmlEventsCallback callback,
+    const bool success,
+    const TextEmbeddingHtmlEventList& text_embedding_html_events) {
+  if (!success) {
+    BLOG(1, "Failed to get text embedding HTML events");
+    std::move(callback).Run(success, /* text_embedding_html_events */ {});
+    return;
+  }
+  std::move(callback).Run(success, text_embedding_html_events);
 }
 
 }  // namespace ads

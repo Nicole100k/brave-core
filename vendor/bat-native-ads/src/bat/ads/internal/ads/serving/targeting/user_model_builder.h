@@ -8,13 +8,22 @@
 
 #include <functional>
 
+#include "base/bind.h"
+#include "bat/ads/internal/processors/contextual/text_embedding/text_embedding_html_event_info.h"
+
 namespace ads::targeting {
 
 struct UserModelInfo;
 
-using GetUserModelCallback = std::function<void(const UserModelInfo)>;
+using GetUserModelCallback =
+    base::OnceCallback<void(const targeting::UserModelInfo& user_model)>;
 
 void BuildUserModel(GetUserModelCallback callback);
+void OnGetTextEmbeddingHtmlEvents(
+    UserModelInfo& user_model,
+    GetUserModelCallback callback,
+    bool success,
+    const TextEmbeddingHtmlEventList& text_embedding_html_events);
 
 }  // namespace ads::targeting
 

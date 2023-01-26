@@ -14,10 +14,10 @@
 #include "base/strings/string_util.h"
 #include "base/strings/stringprintf.h"
 #include "bat/ads/internal/ads_client_helper.h"
-#include "bat/ads/internal/base/database/database_bind_util.h"
-#include "bat/ads/internal/base/database/database_table_util.h"
-#include "bat/ads/internal/base/database/database_transaction_util.h"
-#include "bat/ads/internal/base/strings/string_conversions_util.h"
+#include "bat/ads/internal/common/database/database_bind_util.h"
+#include "bat/ads/internal/common/database/database_table_util.h"
+#include "bat/ads/internal/common/database/database_transaction_util.h"
+#include "bat/ads/internal/common/strings/string_conversions_util.h"
 
 namespace ads::database::table {
 

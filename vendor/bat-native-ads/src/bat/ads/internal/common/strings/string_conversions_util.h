@@ -11,6 +11,8 @@
 namespace ads {
 
 std::string BoolToString(bool value);
+std::vector<float> ConvertStringToVector(std::string string);
+std::string ConvertVectorToString(std::vector<float> vector);
 
 }  // namespace ads
 

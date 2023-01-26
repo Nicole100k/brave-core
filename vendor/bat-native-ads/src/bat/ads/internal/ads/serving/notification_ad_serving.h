@@ -63,6 +63,7 @@ class Serving final : public PrefManagerObserver {
   void MaybeServeAd();
 
  private:
+  void OnBuildUserModel(const targeting::UserModelInfo& user_model);
   void OnGetForUserModel(const targeting::UserModelInfo& user_model,
                          bool had_opportunity,
                          const CreativeNotificationAdList& creative_ads);

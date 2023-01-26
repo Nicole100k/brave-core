@@ -13,6 +13,7 @@
 #include "bat/ads/internal/ads/serving/eligible_ads/exclusion_rules/exclusion_rule_alias.h"
 #include "bat/ads/internal/ads/serving/eligible_ads/pipelines/inline_content_ads/eligible_inline_content_ads_base.h"
 #include "bat/ads/internal/creatives/inline_content_ads/creative_inline_content_ad_info.h"
+#include "bat/ads/internal/segments/segment_alias.h"
 
 namespace ads {
 
@@ -36,11 +37,18 @@ class EligibleAdsV3 final : public EligibleAdsBase {
                 resource::AntiTargeting* anti_targeting);
 
   void GetForUserModel(
-      const targeting::UserModelInfo& user_model,
+      targeting::UserModelInfo user_model,
       const std::string& dimensions,
       GetEligibleAdsCallback<CreativeInlineContentAdList> callback) override;
 
  private:
+  void OnGetForUserModel(
+      targeting::UserModelInfo user_model,
+      const std::string& dimensions,
+      GetEligibleAdsCallback<CreativeInlineContentAdList> callback,
+      bool success,
+      const AdEventList& ad_events);
+
   void GetBrowsingHistory(
       const targeting::UserModelInfo& user_model,
       const AdEventList& ad_events,
@@ -53,6 +61,14 @@ class EligibleAdsV3 final : public EligibleAdsBase {
       const std::string& dimensions,
       GetEligibleAdsCallback<CreativeInlineContentAdList> callback,
       const BrowsingHistoryList& browsing_history);
+
+  void OnGetEligibleAds(
+      const targeting::UserModelInfo& user_model,
+      const AdEventList& ad_events,
+      const BrowsingHistoryList& browsing_history,
+      GetEligibleAdsCallback<CreativeInlineContentAdList> callback,
+      bool success,
+      const CreativeInlineContentAdList& creative_ads);
 
   CreativeInlineContentAdList FilterCreativeAds(
       const CreativeInlineContentAdList& creative_ads,

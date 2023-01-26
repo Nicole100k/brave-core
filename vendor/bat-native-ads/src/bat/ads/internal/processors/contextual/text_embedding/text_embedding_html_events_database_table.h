@@ -9,6 +9,7 @@
 #include <functional>
 #include <string>
 
+#include "base/functional/callback_forward.h"
 #include "bat/ads/ads_client_callback.h"
 #include "bat/ads/internal/database/database_table_interface.h"
 #include "bat/ads/internal/processors/contextual/text_embedding/text_embedding_html_event_info.h"
@@ -16,8 +17,9 @@
 
 namespace ads::database::table {
 
-using GetTextEmbeddingHtmlEventsCallback =
-    std::function<void(const bool, const TextEmbeddingHtmlEventList&)>;
+using GetTextEmbeddingHtmlEventsCallback = base::OnceCallback<void(
+    const bool success,
+    const TextEmbeddingHtmlEventList& text_embedding_html_events)>;
 
 class TextEmbeddingHtmlEvents final : public TableInterface {
  public:

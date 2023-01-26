@@ -7,6 +7,7 @@
 
 #include <utility>
 
+#include "base/bind.h"
 #include "base/check.h"
 #include "base/rand_util.h"
 #include "bat/ads/internal/ads/serving/eligible_ads/pipelines/new_tab_page_ads/eligible_new_tab_page_ads_base.h"
@@ -67,13 +68,17 @@ void Serving::MaybeServeAd(MaybeServeNewTabPageAdCallback callback) {
     return;
   }
 
-  targeting::BuildUserModel([=](const targeting::UserModelInfo user_model) {
-    DCHECK(eligible_ads_);
-    eligible_ads_->GetForUserModel(
-        user_model,
-        base::BindOnce(&Serving::OnGetForUserModel, base::Unretained(this),
-                      std::move(callback), user_model));
-  }
+  targeting::BuildUserModel(base::BindOnce(
+      &Serving::OnBuildUserModel, base::Unretained(this), std::move(callback)));
+}
+
+void Serving::OnBuildUserModel(MaybeServeNewTabPageAdCallback callback,
+                               const targeting::UserModelInfo& user_model) {
+  DCHECK(eligible_ads_);
+  eligible_ads_->GetForUserModel(
+      user_model,
+      base::BindOnce(&Serving::OnGetForUserModel, base::Unretained(this),
+                     std::move(callback), user_model));
 }
 
 void Serving::OnGetForUserModel(MaybeServeNewTabPageAdCallback callback,

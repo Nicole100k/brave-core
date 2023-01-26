@@ -21,6 +21,7 @@
 #include "bat/ads/internal/common/database/database_column_util.h"
 #include "bat/ads/internal/common/database/database_table_util.h"
 #include "bat/ads/internal/common/database/database_transaction_util.h"
+#include "bat/ads/internal/common/strings/string_conversions_util.h"
 #include "bat/ads/internal/common/logging_util.h"
 #include "bat/ads/internal/common/time/time_formatting_util.h"
 #include "bat/ads/internal/creatives/campaigns_database_table.h"

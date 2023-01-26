@@ -27,7 +27,12 @@ void LogTextEmbeddingHtmlEvent(
 void PurgeStaleTextEmbeddingHtmlEvents(TextEmbeddingHtmlEventCallback callback);
 
 void GetTextEmbeddingHtmlEventsFromDatabase(
-    const database::table::GetTextEmbeddingHtmlEventsCallback& callback);
+    database::table::GetTextEmbeddingHtmlEventsCallback callback);
+
+void OnGetTextEmbeddingHtmlEventsFromDatabase(
+    database::table::GetTextEmbeddingHtmlEventsCallback callback,
+    bool success,
+    const TextEmbeddingHtmlEventList& text_embedding_html_events);
 
 }  // namespace ads
 
