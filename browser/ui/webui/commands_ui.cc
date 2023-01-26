@@ -14,6 +14,7 @@
 #include "brave/components/commands/browser/resources/grit/commands_generated_map.h"
 #include "brave/components/commands/common/commands.mojom.h"
 #include "brave/components/commands/common/key_names.h"
+#include "chrome/browser/ui/browser_commands.h"
 #include "chrome/browser/ui/browser_finder.h"
 #include "components/grit/brave_components_resources.h"
 #include "content/public/browser/web_ui_controller.h"
@@ -71,6 +72,10 @@ void CommandsUI::GetCommands(GetCommandsCallback callback) {
   std::move(callback).Run(std::move(result));
 }
 
+void CommandsUI::TryExecuteCommand(uint32_t command_id) {
+  chrome::ExecuteCommand(browser_view_->browser(), command_id);
+}
+
 WEB_UI_CONTROLLER_TYPE_IMPL(CommandsUI)
 
-}  // namespace shortcuts
+}  // namespace commands

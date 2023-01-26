@@ -17,4 +17,5 @@ struct Accelerator {
 
 interface CommandsService {
   GetCommands() => (array<Command> commands);
+  TryExecuteCommand(uint32 command_id);
 };

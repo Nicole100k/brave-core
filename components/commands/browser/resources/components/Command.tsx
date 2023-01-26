@@ -1,10 +1,11 @@
 import * as React from "react";
 import * as CommandsMojo from "gen/brave/components/commands/common/commands.mojom.m.js";
 import styled from "styled-components";
+import { api } from "../commands";
 
 const Grid = styled.div`
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: 250px min-content auto;
   align-items: center;
   padding: 4px;
   min-height: 32px;
@@ -54,6 +55,7 @@ export default function Command({
   return (
     <Grid>
       <div>{command.name}</div>
+      <button onClick={() => api.tryExecuteCommand(command.id)}>Execute</button>
       <Column>
         {command.accelerators.map((a, i) => (
           <Accelerator key={i} accelerator={a} />

@@ -17,7 +17,7 @@ const FilterBox = styled.input`
   border: 1px solid lightgray;
 `;
 
-const api = CommandsMojo.CommandsService.getRemote();
+export const api = CommandsMojo.CommandsService.getRemote();
 api.getCommands().then(console.log);
 
 function usePromise<T>(getPromise: () => Promise<T>, deps: any[]) {

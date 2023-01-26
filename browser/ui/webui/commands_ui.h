@@ -40,6 +40,7 @@ class CommandsUI : public content::WebUIController, public CommandsService {
 
   // CommandsService:
   void GetCommands(GetCommandsCallback callback) override;
+  void TryExecuteCommand(uint32_t command_id) override;
 
  private:
   mojo::Receiver<CommandsService> receiver_{this};
