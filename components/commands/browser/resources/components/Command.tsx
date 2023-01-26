@@ -56,7 +56,7 @@ export default function Command({
   return (
     <Grid>
       <div>{command.name}</div>
-      <button disabled={!command.enabled} onClick={() => api.tryExecuteCommand(command.id)}>Execute</button>
+      <button onClick={() => api.tryExecuteCommand(command.id)}>Execute</button>
       <Column>
         {command.accelerators.map((a, i) => (
           <Accelerator key={i} accelerator={a} />
