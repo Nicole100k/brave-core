@@ -19,6 +19,7 @@
 #include "brave/components/brave_today/common/features.h"
 #include "brave/components/brave_vpn/common/buildflags/buildflags.h"
 #include "brave/components/brave_wallet/common/features.h"
+#include "brave/components/commands/common/features.h"
 #include "brave/components/de_amp/common/features.h"
 #include "brave/components/debounce/common/features.h"
 #include "brave/components/google_sign_in_permission/features.h"
@@ -207,6 +208,9 @@ constexpr char kBraveBlockScreenFingerprintingName[] =
 constexpr char kBraveBlockScreenFingerprintingDescription[] =
     "Prevents JavaScript and CSS from learning the user's screen dimensions "
     "or window position.";
+
+constexpr char kBraveCommandsName[] = "Brave Commands";
+constexpr char kBraveCommandsDescription[] = "Enable experimental page for viewing and executing commands in Brave";
 
 constexpr char kBraveTorWindowsHttpsOnlyName[] =
     "Use HTTPS-Only Mode in Private Windows with Tor";
@@ -596,6 +600,13 @@ constexpr char kBraveChangeActiveTabOnScrollEventDescription[] =
 #define PLAYLIST_FEATURE_ENTRIES
 #endif
 
+#define BRAVE_COMMANDS_FEATURE_ENTRIES                   \
+    {"brave-commands",                                   \
+    flag_descriptions::kBraveCommandsName,               \
+    flag_descriptions::kBraveCommandsDescription,       \
+    kOsDesktop,                                          \
+    FEATURE_VALUE_TYPE(commands::features::kBraveCommandsFeature)},
+
 #if defined(TOOLKIT_VIEWS)
 #define BRAVE_VERTICAL_TABS_FEATURE_ENTRY                   \
     {"brave-vertical-tabs",                                 \
@@ -820,6 +831,7 @@ constexpr char kBraveChangeActiveTabOnScrollEventDescription[] =
     SPEEDREADER_FEATURE_ENTRIES                                             \
     BRAVE_FEDERATED_FEATURE_ENTRIES                                         \
     PLAYLIST_FEATURE_ENTRIES                                                \
+    BRAVE_COMMANDS_FEATURE_ENTRIES                                          \
     BRAVE_VERTICAL_TABS_FEATURE_ENTRY                                       \
     BRAVE_BACKGROUND_VIDEO_PLAYBACK_ANDROID                                 \
     BRAVE_SAFE_BROWSING_ANDROID                                             \
