@@ -21,6 +21,7 @@
 #include "brave/components/brave_federated/features.h"
 #include "brave/components/brave_rewards/common/rewards_util.h"
 #include "brave/components/brave_shields/common/features.h"
+#include "brave/components/commands/common/features.h"
 #include "brave/components/constants/pref_names.h"
 #include "brave/components/constants/webui_url_constants.h"
 #include "brave/components/ipfs/buildflags/buildflags.h"
@@ -94,7 +95,9 @@ WebUIController* NewWebUI(WebUI* web_ui, const GURL& url) {
     return new IPFSUI(web_ui, url.host());
 #endif
 #if !BUILDFLAG(IS_ANDROID)
-  } else if (host == kCommandsHost) {
+  } else if (host == kCommandsHost &&
+             base::FeatureList::IsEnabled(
+                 commands::features::kBraveCommandsFeature)) {
     return new commands::CommandsUI(web_ui, url.host());
   } else if (host == kWalletPageHost &&
              // We don't want to check for supported profile type here because

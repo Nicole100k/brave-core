@@ -59,6 +59,7 @@
 #include "brave/components/brave_wallet/common/brave_wallet.mojom.h"
 #include "brave/components/brave_webtorrent/browser/buildflags/buildflags.h"
 #include "brave/components/commands/common/commands.mojom.h"
+#include "brave/components/commands/common/features.h"
 #include "brave/components/constants/pref_names.h"
 #include "brave/components/constants/webui_url_constants.h"
 #include "brave/components/cosmetic_filters/browser/cosmetic_filters_resources.h"
@@ -498,7 +499,9 @@ void BraveContentBrowserClient::RegisterWebUIInterfaceBrokers(
   }
 #endif
 
-  registry.ForWebUI<commands::CommandsUI>().Add<CommandsService>();
+  if (base::FeatureList::IsEnabled(commands::features::kBraveCommandsFeature)) {
+    registry.ForWebUI<commands::CommandsUI>().Add<CommandsService>();
+  }
 }
 
 bool BraveContentBrowserClient::AllowWorkerFingerprinting(
