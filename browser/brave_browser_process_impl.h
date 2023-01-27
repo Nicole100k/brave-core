@@ -74,7 +74,7 @@ class SpeedreaderRewriterService;
 }
 
 namespace brave_ads {
-class BraveStatsUpdaterHelper;
+class BraveStatsHelper;
 class ResourceComponent;
 }
 
@@ -115,6 +115,7 @@ class BraveBrowserProcessImpl : public BraveBrowserProcess,
   brave::BraveP3AService* brave_p3a_service() override;
   brave::BraveReferralsService* brave_referrals_service() override;
   brave_stats::BraveStatsUpdater* brave_stats_updater() override;
+  brave_ads::BraveStatsHelper* ads_brave_stats_helper() override;
   ntp_background_images::NTPBackgroundImagesService*
   ntp_background_images_service() override;
   brave_ads::ResourceComponent* resource_component() override;
@@ -144,7 +145,7 @@ class BraveBrowserProcessImpl : public BraveBrowserProcess,
   void UpdateBraveDarkMode();
   void OnBraveDarkModeChanged();
 
-  void InitBraveStatsUpdaterHelper();
+  void InitBraveStatsHelper();
 
   brave_component_updater::BraveComponent::Delegate*
   brave_component_updater_delegate();
@@ -195,8 +196,7 @@ class BraveBrowserProcessImpl : public BraveBrowserProcess,
 
   std::unique_ptr<brave::BraveFarblingService> brave_farbling_service_;
   std::unique_ptr<misc_metrics::MenuMetrics> menu_metrics_;
-  std::unique_ptr<brave_ads::BraveStatsUpdaterHelper>
-      brave_stats_updater_helper_;
+  std::unique_ptr<brave_ads::BraveStatsHelper> brave_stats_helper_;
 
   SEQUENCE_CHECKER(sequence_checker_);
 };

@@ -77,6 +77,7 @@ class SpeedreaderRewriterService;
 }
 
 namespace brave_ads {
+class BraveStatsHelper;
 class ResourceComponent;
 }
 
@@ -108,6 +109,7 @@ class BraveBrowserProcess {
   virtual brave::BraveP3AService* brave_p3a_service() = 0;
   virtual brave::BraveReferralsService* brave_referrals_service() = 0;
   virtual brave_stats::BraveStatsUpdater* brave_stats_updater() = 0;
+  virtual brave_ads::BraveStatsHelper* ads_brave_stats_helper() = 0;
   virtual ntp_background_images::NTPBackgroundImagesService*
   ntp_background_images_service() = 0;
 #if BUILDFLAG(ENABLE_SPEEDREADER)
