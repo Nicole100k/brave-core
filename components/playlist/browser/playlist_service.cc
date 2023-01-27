@@ -562,28 +562,40 @@ void PlaylistService::RemovePlaylist(const std::string& playlist_id) {
       {PlaylistChangeParams::Type::kListRemoved, playlist_id});
 }
 
+void PlaylistService::RenamePlaylist(const std::string& playlist_id,
+                                     const std::string& playlist_name,
+                                     RenamePlaylistCallback callback) {
+  ScopedDictPrefUpdate playlists_update(prefs_, kPlaylistsPref);
+  auto target_playlist_id =
+      playlist_id.empty() ? kDefaultPlaylistID : playlist_id;
+  base::Value::Dict* playlist_value =
+      playlists_update->FindDict(target_playlist_id);
+  DCHECK(playlist_value) << " Playlist " << playlist_id << " not found";
+
+  auto target_playlist = ConvertValueToPlaylist(
+      *playlist_value, prefs_->GetDict(kPlaylistItemsPref));
+
+  target_playlist->name = playlist_name;
+  playlists_update->Set(playlist_id, ConvertPlaylistToValue(target_playlist));
+  std::move(callback).Run(target_playlist.Clone());
+}
+
 void PlaylistService::GetDefaultPlaylistId(
     GetDefaultPlaylistIdCallback callback) {
   std::move(callback).Run(GetDefaultSaveTargetListID());
 }
 
 void PlaylistService::SetDefaultPlaylistId(const std::string& playlist_id) {
-  if (!prefs_) {
-    prefs_->SetString(kPlaylistDefaultSaveTargetListID, playlist_id);
-  }
+  prefs_->SetString(kPlaylistDefaultSaveTargetListID, playlist_id);
 }
 
 void PlaylistService::GetPlaylistCacheByDefault(
     GetPlaylistCacheByDefaultCallback callback) {
-  if (!prefs_) {
-    std::move(callback).Run(prefs_->GetBoolean(kPlaylistCacheByDefault));
-  }
+  std::move(callback).Run(prefs_->GetBoolean(kPlaylistCacheByDefault));
 }
 
 void PlaylistService::SetPlaylistCacheByDefault(const bool is_enabled) {
-  if (!prefs_) {
-    prefs_->SetBoolean(kPlaylistCacheByDefault, is_enabled);
-  }
+  prefs_->SetBoolean(kPlaylistCacheByDefault, is_enabled);
 }
 
 void PlaylistService::RecoverLocalDataForItem(const std::string& id) {
