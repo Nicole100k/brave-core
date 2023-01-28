@@ -12,8 +12,6 @@
 #include "base/logging.h"
 #include "base/notreached.h"
 #include "base/strings/string_number_conversions.h"
-#include "brave/browser/brave_browser_process.h"
-#include "brave/components/brave_component_updater/browser/https_upgrade_exceptions_service.h"
 #include "brave/components/brave_shields/browser/brave_shields_p3a.h"
 #include "brave/components/brave_shields/common/brave_shield_constants.h"
 #include "brave/components/brave_shields/common/brave_shield_utils.h"
@@ -22,6 +20,7 @@
 #include "brave/components/constants/pref_names.h"
 #include "brave/components/content_settings/core/common/content_settings_util.h"
 #include "brave/components/debounce/common/features.h"
+#include "brave/components/https_upgrade_exceptions/browser/https_upgrade_exceptions_service.h"
 #include "components/content_settings/core/browser/cookie_settings.h"
 #include "components/content_settings/core/browser/host_content_settings_map.h"
 #include "components/content_settings/core/common/content_settings.h"
@@ -637,8 +636,9 @@ void SetHttpsUpgradeControlType(HostContentSettingsMap* map,
                                 const GURL& url,
                                 PrefService* local_state) {
   auto primary_pattern = GetPatternFromURL(url);
-  if (!primary_pattern.IsValid())
+  if (!primary_pattern.IsValid()) {
     return;
+  }
 
   ContentSetting setting;
   if (type == ControlType::ALLOW) {
@@ -685,35 +685,37 @@ ControlType GetHttpsUpgradeControlType(HostContentSettingsMap* map,
   }
 }
 
-bool ShouldUpgradeToHttps(HostContentSettingsMap* map, const GURL& url) {
+bool ShouldUpgradeToHttps(
+    HostContentSettingsMap* map,
+    const GURL& url,
+    https_upgrade_exceptions::HttpsUpgradeExceptionsService*
+        https_upgrade_exceptions_service) {
   // Don't upgrade if feature is disabled.
   if (!IsHttpsByDefaultFeatureEnabled()) {
     return false;
   }
+  DCHECK(https_upgrade_exceptions_service);
   // Don't upgrade if shields are down.
-  if (!brave_shields::GetBraveShieldsEnabled(map, url)) {
+  if (!GetBraveShieldsEnabled(map, url)) {
     return false;
   }
-  const ControlType controlType =
-      brave_shields::GetHttpsUpgradeControlType(map, url);
+  const ControlType controlType = GetHttpsUpgradeControlType(map, url);
   // Always upgrade for Strict HTTPS Upgrade.
   if (controlType == ControlType::BLOCK) {
     return true;
   }
   // Upgrade for Standard HTTPS upgrade if host is not on the exceptions list.
   if (controlType == ControlType::BLOCK_THIRD_PARTY &&
-      g_brave_browser_process->https_upgrade_exceptions_service() &&
-      g_brave_browser_process->https_upgrade_exceptions_service()
-          ->CanUpgradeToHTTPS(url)) {
+      https_upgrade_exceptions_service &&
+      https_upgrade_exceptions_service->CanUpgradeToHTTPS(url)) {
     return true;
   }
   return false;
 }
 
 bool ShouldForceHttps(HostContentSettingsMap* map, const GURL& url) {
-  return brave_shields::GetBraveShieldsEnabled(map, url) &&
-         brave_shields::GetHttpsUpgradeControlType(map, url) ==
-             ControlType::BLOCK;
+  return GetBraveShieldsEnabled(map, url) &&
+         GetHttpsUpgradeControlType(map, url) == ControlType::BLOCK;
 }
 
 void SetNoScriptControlType(HostContentSettingsMap* map,

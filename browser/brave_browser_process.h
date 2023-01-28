@@ -29,7 +29,6 @@ namespace brave_component_updater {
 #if BUILDFLAG(ENABLE_EXTENSIONS)
 class ExtensionWhitelistService;
 #endif
-class HttpsUpgradeExceptionsService;
 class LocalDataFilesService;
 }  // namespace brave_component_updater
 
@@ -37,6 +36,10 @@ namespace brave_shields {
 class AdBlockService;
 class HTTPSEverywhereService;
 }  // namespace brave_shields
+
+namespace https_upgrade_exceptions {
+class HttpsUpgradeExceptionsService;
+}  // namespace https_upgrade_exceptions
 
 namespace brave_stats {
 class BraveStatsUpdater;
@@ -59,7 +62,7 @@ class NTPBackgroundImagesService;
 namespace tor {
 class BraveTorClientUpdater;
 class BraveTorPluggableTransportUpdater;
-}
+}  // namespace tor
 
 namespace ipfs {
 class BraveIpfsClientUpdater;
@@ -83,7 +86,7 @@ class BraveBrowserProcess {
   virtual brave_component_updater::ExtensionWhitelistService*
   extension_whitelist_service() = 0;
 #endif
-  virtual brave_component_updater::HttpsUpgradeExceptionsService*
+  virtual https_upgrade_exceptions::HttpsUpgradeExceptionsService*
   https_upgrade_exceptions_service() = 0;
 #if BUILDFLAG(ENABLE_GREASELION)
   virtual greaselion::GreaselionDownloadService*

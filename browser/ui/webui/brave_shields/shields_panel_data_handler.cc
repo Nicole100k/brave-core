@@ -101,8 +101,9 @@ void ShieldsPanelDataHandler::SetCookieBlockMode(CookieBlockMode mode) {
 }
 
 void ShieldsPanelDataHandler::SetHttpsUpgradeMode(HttpsUpgradeMode mode) {
-  if (!active_shields_data_controller_)
+  if (!active_shields_data_controller_) {
     return;
+  }
 
   active_shields_data_controller_->SetHttpsUpgradeMode(mode);
 }

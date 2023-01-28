@@ -32,7 +32,6 @@ namespace brave_component_updater {
 #if BUILDFLAG(ENABLE_EXTENSIONS)
 class ExtensionWhitelistService;
 #endif
-class HttpsUpgradeExceptionsService;
 class LocalDataFilesService;
 }  // namespace brave_component_updater
 
@@ -40,6 +39,10 @@ namespace brave_shields {
 class AdBlockService;
 class HTTPSEverywhereService;
 }  // namespace brave_shields
+
+namespace https_upgrade_exceptions {
+class HttpsUpgradeExceptionsService;
+}  // namespace https_upgrade_exceptions
 
 namespace brave_stats {
 class BraveStatsUpdater;
@@ -62,7 +65,7 @@ class NTPBackgroundImagesService;
 namespace tor {
 class BraveTorClientUpdater;
 class BraveTorPluggableTransportUpdater;
-}
+}  // namespace tor
 
 namespace ipfs {
 class BraveIpfsClientUpdater;
@@ -97,7 +100,7 @@ class BraveBrowserProcessImpl : public BraveBrowserProcess,
   brave_component_updater::ExtensionWhitelistService*
   extension_whitelist_service() override;
 #endif
-  brave_component_updater::HttpsUpgradeExceptionsService*
+  https_upgrade_exceptions::HttpsUpgradeExceptionsService*
   https_upgrade_exceptions_service() override;
 #if BUILDFLAG(ENABLE_GREASELION)
   greaselion::GreaselionDownloadService* greaselion_download_service() override;
@@ -158,7 +161,7 @@ class BraveBrowserProcessImpl : public BraveBrowserProcess,
   std::unique_ptr<brave_component_updater::ExtensionWhitelistService>
       extension_whitelist_service_;
 #endif
-  std::unique_ptr<brave_component_updater::HttpsUpgradeExceptionsService>
+  std::unique_ptr<https_upgrade_exceptions::HttpsUpgradeExceptionsService>
       https_upgrade_exceptions_service_;
 #if BUILDFLAG(ENABLE_GREASELION)
   std::unique_ptr<greaselion::GreaselionDownloadService>

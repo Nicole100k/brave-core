@@ -33,6 +33,7 @@
 #include "brave/components/constants/pref_names.h"
 #include "brave/components/debounce/browser/debounce_component_installer.h"
 #include "brave/components/debounce/common/features.h"
+#include "brave/components/https_upgrade_exceptions/browser/https_upgrade_exceptions_service.h"
 #include "brave/components/ntp_background_images/browser/ntp_background_images_service.h"
 #include "brave/components/p3a/brave_p3a_service.h"
 #include "brave/components/p3a/buildflags.h"
@@ -62,8 +63,6 @@
 #include "brave/common/extensions/whitelist.h"
 #include "brave/components/brave_component_updater/browser/extension_whitelist_service.h"
 #endif
-
-#include "brave/components/brave_component_updater/browser/https_upgrade_exceptions_service.h"
 
 #if BUILDFLAG(ENABLE_GREASELION)
 #include "brave/components/greaselion/browser/greaselion_download_service.h"
@@ -260,11 +259,11 @@ BraveBrowserProcessImpl::extension_whitelist_service() {
 }
 #endif
 
-brave_component_updater::HttpsUpgradeExceptionsService*
+https_upgrade_exceptions::HttpsUpgradeExceptionsService*
 BraveBrowserProcessImpl::https_upgrade_exceptions_service() {
   if (!https_upgrade_exceptions_service_) {
     https_upgrade_exceptions_service_ =
-        brave_component_updater::HttpsUpgradeExceptionsServiceFactory(
+        https_upgrade_exceptions::HttpsUpgradeExceptionsServiceFactory(
             local_data_files_service());
   }
   return https_upgrade_exceptions_service_.get();

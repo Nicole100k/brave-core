@@ -870,6 +870,7 @@ test("brave_browser_tests") {
     "//brave/components/de_amp/common:common",
     "//brave/components/debounce/browser",
     "//brave/components/debounce/common",
+    "//brave/components/https_upgrade_exceptions/browser:browser",
     "//brave/components/ipfs/buildflags",
     "//brave/components/l10n/common",
     "//brave/components/l10n/common:test_support",

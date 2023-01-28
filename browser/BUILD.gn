@@ -23,7 +23,6 @@ if (enable_sparkle && !build_sparkle) {
 source_set("browser_process") {
   visibility = [
     "//brave/browser/*",
-    "//brave/components/brave_shields/*",
     "//chrome/browser/*",
   ]
 

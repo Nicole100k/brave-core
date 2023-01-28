@@ -68,7 +68,6 @@ if (!is_ios) {
 
     deps = [
       "//base",
-      "//brave/browser:browser_process",
       "//brave/components/adblock_rust_ffi",
       "//brave/components/brave_component_updater/browser",
       "//brave/components/brave_shields/common",
@@ -77,6 +76,7 @@ if (!is_ios) {
       "//brave/components/content_settings/core/common",
       "//brave/components/debounce/common",
       "//brave/components/ephemeral_storage",
+      "//brave/components/https_upgrade_exceptions/browser:browser",
       "//brave/components/l10n/common",
       "//brave/components/p3a",
       "//brave/components/p3a_utils",

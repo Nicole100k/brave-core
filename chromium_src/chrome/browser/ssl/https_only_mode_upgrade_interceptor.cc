@@ -5,6 +5,7 @@
 
 #include "chrome/browser/ssl/https_only_mode_upgrade_interceptor.h"
 
+#include "brave/browser/brave_browser_process.h"
 #include "brave/components/brave_shields/browser/brave_shields_util.h"
 #include "chrome/browser/content_settings/host_content_settings_map_factory.h"
 #include "chrome/browser/profiles/profile.h"
@@ -26,7 +27,8 @@ bool ShouldUpgradeToHttps(content::BrowserContext* context, const GURL& url) {
   }
   HostContentSettingsMap* map =
       HostContentSettingsMapFactory::GetForProfile(context);
-  return brave_shields::ShouldUpgradeToHttps(map, url);
+  return brave_shields::ShouldUpgradeToHttps(
+      map, url, g_brave_browser_process->https_upgrade_exceptions_service());
 }
 
 }  // namespace

@@ -7,6 +7,7 @@
 
 #include "base/threading/sequenced_task_runner_handle.h"
 #include "base/time/time.h"
+#include "brave/browser/brave_browser_process.h"
 #include "brave/components/brave_shields/browser/brave_shields_util.h"
 #include "chrome/browser/content_settings/host_content_settings_map_factory.h"
 #include "chrome/browser/profiles/profile.h"
@@ -36,7 +37,8 @@ bool ShouldUpgradeToHttps(content::NavigationHandle* handle) {
   const GURL& url = handle->GetURL();
   HostContentSettingsMap* map =
       HostContentSettingsMapFactory::GetForProfile(context);
-  return brave_shields::ShouldUpgradeToHttps(map, url);
+  return brave_shields::ShouldUpgradeToHttps(
+      map, url, g_brave_browser_process->https_upgrade_exceptions_service());
 }
 
 bool IsTor(content::NavigationHandle* handle) {

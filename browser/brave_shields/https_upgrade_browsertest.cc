@@ -4,8 +4,8 @@
  * You can obtain one at https://mozilla.org/MPL/2.0/. */
 
 #include "brave/browser/brave_browser_process.h"
-#include "brave/components/brave_component_updater/browser/https_upgrade_exceptions_service.h"
 #include "brave/components/brave_shields/browser/brave_shields_util.h"
+#include "brave/components/https_upgrade_exceptions/browser/https_upgrade_exceptions_service.h"
 #include "chrome/browser/browser_process.h"
 #include "chrome/browser/content_settings/host_content_settings_map_factory.h"
 #include "chrome/browser/interstitials/security_interstitial_page_test_utils.h"
@@ -27,6 +27,31 @@
 
 using blink::features::kHttpsByDefault;
 using brave_shields::ControlType;
+
+namespace {
+
+enum PageResult { HTTP, HTTPS, INTERSTITIAL };
+
+struct TestStruct {
+  bool init_secure;
+  const char* domain;
+  ControlType control_type;
+  PageResult expected_result;
+};
+
+const TestStruct test_combinations[] = {
+    {false, "insecure1.test", ControlType::ALLOW, PageResult::HTTP},
+    {false, "insecure2.test", ControlType::BLOCK_THIRD_PARTY, PageResult::HTTP},
+    {false, "insecure3.test", ControlType::BLOCK, PageResult::INTERSTITIAL},
+    {false, "upgradable1.test", ControlType::ALLOW, PageResult::HTTP},
+    {false, "upgradable2.test", ControlType::BLOCK_THIRD_PARTY,
+     PageResult::HTTPS},
+    {false, "upgradable3.test", ControlType::BLOCK, PageResult::HTTPS},
+    {true, "secure1.test", ControlType::ALLOW, PageResult::HTTPS},
+    {true, "secure2.test", ControlType::BLOCK_THIRD_PARTY, PageResult::HTTPS},
+    {true, "secure3.test", ControlType::BLOCK, PageResult::HTTPS}};
+
+}  // namespace
 
 class HttpsUpgradeBrowserTest : public InProcessBrowserTest {
  public:
@@ -105,27 +130,6 @@ class HttpsUpgradeBrowserTest : public InProcessBrowserTest {
   net::EmbeddedTestServer https_server_{net::EmbeddedTestServer::TYPE_HTTPS};
   content::ContentMockCertVerifier mock_cert_verifier_;
 };
-
-enum PageResult { HTTP, HTTPS, INTERSTITIAL };
-
-struct TestStruct {
-  bool init_secure;
-  const char* domain;
-  ControlType control_type;
-  PageResult expected_result;
-};
-
-const TestStruct test_combinations[] = {
-    {false, "insecure1.test", ControlType::ALLOW, PageResult::HTTP},
-    {false, "insecure2.test", ControlType::BLOCK_THIRD_PARTY, PageResult::HTTP},
-    {false, "insecure3.test", ControlType::BLOCK, PageResult::INTERSTITIAL},
-    {false, "upgradable1.test", ControlType::ALLOW, PageResult::HTTP},
-    {false, "upgradable2.test", ControlType::BLOCK_THIRD_PARTY,
-     PageResult::HTTPS},
-    {false, "upgradable3.test", ControlType::BLOCK, PageResult::HTTPS},
-    {true, "secure1.test", ControlType::ALLOW, PageResult::HTTPS},
-    {true, "secure2.test", ControlType::BLOCK_THIRD_PARTY, PageResult::HTTPS},
-    {true, "secure3.test", ControlType::BLOCK, PageResult::HTTPS}};
 
 // If the user navigates to an HTTP URL for a site that supports HTTPS, the
 // navigation should end up on the HTTPS version of the URL.

@@ -13,6 +13,10 @@
 #include "components/content_settings/core/common/content_settings_types.h"
 #include "services/network/public/mojom/referrer_policy.mojom.h"
 
+namespace https_upgrade_exceptions {
+class HttpsUpgradeExceptionsService;
+}
+
 namespace content {
 struct Referrer;
 }
@@ -118,7 +122,11 @@ void SetHttpsUpgradeControlType(HostContentSettingsMap* map,
                                 PrefService* local_state = nullptr);
 ControlType GetHttpsUpgradeControlType(HostContentSettingsMap* map,
                                        const GURL& url);
-bool ShouldUpgradeToHttps(HostContentSettingsMap* map, const GURL& url);
+bool ShouldUpgradeToHttps(
+    HostContentSettingsMap* map,
+    const GURL& url,
+    https_upgrade_exceptions::HttpsUpgradeExceptionsService*
+        https_upgrade_exceptions_service);
 bool ShouldForceHttps(HostContentSettingsMap* map, const GURL& url);
 
 void SetNoScriptControlType(HostContentSettingsMap* map,
