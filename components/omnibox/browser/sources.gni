@@ -27,6 +27,8 @@ brave_components_omnibox_browser_sources = [
   "//brave/components/omnibox/browser/topsites_provider.cc",
   "//brave/components/omnibox/browser/topsites_provider.h",
   "//brave/components/omnibox/browser/topsites_provider_data.cc",
+  "//brave/components/omnibox/browser/commander_provider.cc",
+  "//brave/components/omnibox/browser/commander_provider.h",
 ]
 
 brave_components_omnibox_browser_deps = [

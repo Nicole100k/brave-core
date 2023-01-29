@@ -6,25 +6,27 @@
 #ifndef BRAVE_COMPONENTS_OMNIBOX_BROWSER_COMMANDER_PROVIDER_H_
 #define BRAVE_COMPONENTS_OMNIBOX_BROWSER_COMMANDER_PROVIDER_H_
 
-#include "chrome/browser/ui/commander/commander_frontend.h"
-#include "chrome/browser/ui/webui/commander/commander_handler.h"
-#include "components/omnibox/browser/autocomplete_input.h"
-#include "components/omnibox/browser/autocomplete_match.h"
+#include "base/memory/weak_ptr.h"
+#include "chrome/browser/ui/commander/commander_view_model.h"
 #include "components/omnibox/browser/autocomplete_provider.h"
 #include "components/omnibox/browser/autocomplete_provider_client.h"
 #include "components/omnibox/browser/autocomplete_provider_listener.h"
-
-class CommanderProvider : public CommanderHandler::Delegate,
-                          public AutocompleteProvider {
+class CommanderProvider : public AutocompleteProvider {
  public:
-  explicit CommanderProvider(AutocompleteProviderClient* client,
-                             AutocompleteProviderListener* listener);
-  ~CommanderProvider() override;
+  CommanderProvider(AutocompleteProviderClient* client,
+                    AutocompleteProviderListener* listener);
   CommanderProvider(const CommanderProvider&) = delete;
   CommanderProvider& operator=(const CommanderProvider&) = delete;
 
+  // AutocompleteProvider:
   void Start(const AutocompleteInput& input, bool minimal_changes) override;
-  void DeleteMatch(const AutocompleteMatch& match) override;
+
+ private:
+  ~CommanderProvider() override;
+
+  void OnCommandsReceived(commander::CommanderViewModel view_model);
+
+  base::WeakPtrFactory<CommanderProvider> weak_ptr_factory_{this};
 };
 
 #endif  // BRAVE_COMPONENTS_OMNIBOX_BROWSER_COMMANDER_PROVIDER_H_
