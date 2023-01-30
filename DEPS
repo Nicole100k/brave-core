@@ -1,9 +1,9 @@
 use_relative_paths = True
 
 deps = {
-  "components/playlist/browser/resources/media_detector": {
+  "components/playlist/browser/resources/playlist-component": {
     "url": "https://github.com/brave/playlist-component.git@5434730bf7342f1ba5c057f1640882bb38604a85",
-    "condition": "checkout_win or checkout_linux or checkout_mac or checkout_android",
+    "condition": "not checkout_ios",
   },
   "third_party/argon2/src": "https://github.com/P-H-C/phc-winner-argon2.git@62358ba2123abd17fccf2a108a301d4b52c01a7c",
   "third_party/bitcoin-core/src": "https://github.com/bitcoin/bitcoin.git@95ea54ba089610019a74c1176a2c7c0dba144b1c",
@@ -21,7 +21,8 @@ deps = {
   "vendor/python-patch": "https://github.com/brave/python-patch@d8880110be6554686bc08261766538c2926d4e82",
   "vendor/requests": "https://github.com/kennethreitz/requests@e4d59bedfd3c7f4f254f4f5d036587bcd8152458",
   "vendor/sparkle": {
-    "url": "https://github.com/brave/Sparkle.git@8721f93f694244f9ff41fe975a92617ac5f63f9a", "condition": "checkout_mac",
+    "url": "https://github.com/brave/Sparkle.git@8721f93f694244f9ff41fe975a92617ac5f63f9a",
+    "condition": "checkout_mac",
   },
   "vendor/web-discovery-project": "https://github.com/brave/web-discovery-project@0dd9da0a40152bdc89b8b56c9c22af40e178806d",
 }
