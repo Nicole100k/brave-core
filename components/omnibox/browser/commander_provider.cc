@@ -4,11 +4,13 @@
 // You can obtain one at https://mozilla.org/MPL/2.0/.
 
 #include "brave/components/omnibox/browser/commander_provider.h"
+#include <cmath>
 #include <string>
 #include <utility>
 #include "base/functional/bind.h"
 #include "base/functional/callback_helpers.h"
 #include "base/strings/string_util.h"
+#include "base/strings/utf_string_conversions.h"
 #include "chrome/browser/ui/browser_finder.h"
 #include "chrome/browser/ui/commander/commander.h"
 #include "chrome/browser/ui/commander/commander_backend.h"
@@ -31,8 +33,6 @@ CommanderProvider::~CommanderProvider() {
 
 void CommanderProvider::Start(const AutocompleteInput& input,
                               bool minimal_changes) {
-  matches_.clear();
-
   if (base::StartsWith(input.text(), u":> ")) {
     auto* backend = commander::Commander::Get()->backend();
     auto* browser = chrome::FindLastActive();
@@ -43,7 +43,8 @@ void CommanderProvider::Start(const AutocompleteInput& input,
         base::BindRepeating(&CommanderProvider::OnCommandsReceived,
                             weak_ptr_factory_.GetWeakPtr()));
 
-    backend->OnTextChanged(input.text().substr(3), browser);
+    std::u16string text(base::TrimWhitespace(input.text().substr(2), base::TrimPositions::TRIM_LEADING));
+    backend->OnTextChanged(text, browser);
   }
 }
 
@@ -51,15 +52,26 @@ void CommanderProvider::OnCommandsReceived(
     commander::CommanderViewModel view_model) {
   matches_.clear();
 
+  int rank = 100000000;
   for (const auto& option : view_model.items) {
-    AutocompleteMatch match(this, 0, false,
-                            AutocompleteMatchType::NAVSUGGEST_PERSONALIZED);
-    match.contents = u":> " + option.title;
-    match.contents_class = {
+    AutocompleteMatch match(this, rank++, false,
+                            AutocompleteMatchType::BOOKMARK_TITLE);
+    // match.additional_text = option.annotation;
+    // match.description = option.annotation;
+    match.contents = option.annotation;
+    if (!option.annotation.empty()) {
+      match.contents_class = {
+          ACMatchClassification(0, ACMatchClassification::DIM)};
+    }
+    match.keyword = u":> ";
+    match.description = u":> " + option.title;
+    match.allowed_to_be_default_match = true;
+    match.scoring_signals.set_total_title_match_length(3);
+    match.description_class = {
         ACMatchClassification(0, ACMatchClassification::DIM),
         ACMatchClassification(2, ACMatchClassification::MATCH)};
     matches_.push_back(match);
   }
 
-  listeners_.front()->OnProviderUpdate(true, this);
+  NotifyListeners(true);
 }
