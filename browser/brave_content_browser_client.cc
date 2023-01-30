@@ -6,6 +6,7 @@
 #include "brave/browser/brave_content_browser_client.h"
 
 #include <algorithm>
+#include <memory>
 #include <string>
 #include <utility>
 #include <vector>
@@ -33,6 +34,7 @@
 #include "brave/browser/profiles/brave_renderer_updater_factory.h"
 #include "brave/browser/profiles/profile_util.h"
 #include "brave/browser/skus/skus_service_factory.h"
+#include "brave/browser/ui/commander/commander_throttle.h"
 #include "brave/components/brave_ads/common/features.h"
 #include "brave/components/brave_federated/features.h"
 #include "brave/components/brave_rewards/browser/rewards_protocol_handler.h"
@@ -935,6 +937,8 @@ BraveContentBrowserClient::CreateThrottlesForNavigation(
       NewTabShowsNavigationThrottle::MaybeCreateThrottleFor(handle);
   if (ntp_shows_navigation_throttle)
     throttles.push_back(std::move(ntp_shows_navigation_throttle));
+
+  throttles.push_back(std::make_unique<CommanderThrottle>(handle));
 #endif
 
 #if BUILDFLAG(ENABLE_BRAVE_WEBTORRENT)

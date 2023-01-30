@@ -35,26 +35,33 @@ CommanderProvider::~CommanderProvider() {
 
 void CommanderProvider::Start(const AutocompleteInput& input,
                               bool minimal_changes) {
-  matches_.clear();
+  // matches_.clear();
   if (base::StartsWith(input.text(), u":>")) {
     auto* backend = commander::Commander::Get()->backend();
     auto* browser = chrome::FindLastActive();
     if (!browser || !backend) {
       return;
     }
-    backend->SetUpdateCallback(
-        base::BindRepeating(&CommanderProvider::OnCommandsReceived,
-                            weak_ptr_factory_.GetWeakPtr()));
+    if (!set_handler_) {
+      backend->SetUpdateCallback(
+          base::BindRepeating(&CommanderProvider::OnCommandsReceived,
+                              weak_ptr_factory_.GetWeakPtr()));
+      set_handler_ = true;
+    }
 
     std::u16string text(base::TrimWhitespace(
         input.text().substr(2), base::TrimPositions::TRIM_LEADING));
+    if (text == last_text_) {
+      return;
+    }
+    last_text_ = text;
     backend->OnTextChanged(text, browser);
   }
 }
 
 void CommanderProvider::OnCommandsReceived(
     commander::CommanderViewModel view_model) {
-
+  matches_.clear();
   int rank = 100000000;
   for (uint32_t i = 0; i < view_model.items.size(); ++i) {
     const auto& option = view_model.items[i];
@@ -71,7 +78,9 @@ void CommanderProvider::OnCommandsReceived(
     match.description = u":> " + option.title;
     match.allowed_to_be_default_match = true;
     match.scoring_signals.set_total_title_match_length(3);
-    match.destination_url = GURL("brave-command://" + std::to_string(view_model.result_set_id) + "/" + std::to_string(i));
+    match.destination_url =
+        GURL("brave-command://" + std::to_string(view_model.result_set_id + 1) +
+             "/" + std::to_string(i));
     match.description_class = {
         ACMatchClassification(0, ACMatchClassification::DIM),
         ACMatchClassification(2, ACMatchClassification::MATCH)};

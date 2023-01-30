@@ -6,6 +6,7 @@
 #ifndef BRAVE_COMPONENTS_OMNIBOX_BROWSER_COMMANDER_PROVIDER_H_
 #define BRAVE_COMPONENTS_OMNIBOX_BROWSER_COMMANDER_PROVIDER_H_
 
+#include <string>
 #include "base/memory/weak_ptr.h"
 #include "chrome/browser/ui/commander/commander_view_model.h"
 #include "components/omnibox/browser/autocomplete_provider.h"
@@ -26,6 +27,8 @@ class CommanderProvider : public AutocompleteProvider {
 
   void OnCommandsReceived(commander::CommanderViewModel view_model);
 
+  std::u16string last_text_;
+  bool set_handler_{false};
   base::WeakPtrFactory<CommanderProvider> weak_ptr_factory_{this};
 };
 
