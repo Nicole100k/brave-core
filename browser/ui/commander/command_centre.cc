@@ -8,7 +8,11 @@
 #include "base/functional/bind.h"
 #include "base/functional/callback_helpers.h"
 #include "chrome/browser/ui/browser.h"
+#include "chrome/browser/ui/browser_finder.h"
+#include "chrome/browser/ui/browser_window.h"
 #include "chrome/browser/ui/commander/commander_view_model.h"
+#include "chrome/browser/ui/location_bar/location_bar.h"
+#include "components/omnibox/browser/omnibox_view.h"
 
 CommandCentre::CommandCentre(commander::CommanderBackend* backend)
     : backend_(backend) {
@@ -29,18 +33,36 @@ void CommandCentre::RemoveObserver(Observer* observer) {
 }
 
 void CommandCentre::ToggleForBrowser(Browser* browser) {
-  browser->SetFocusToLocationBar();
+  LOG(ERROR) << "Toggle";
+  backend_->Reset();
+
+  auto* omnibox = browser->window()->GetLocationBar()->GetOmniboxView();
+  omnibox->SetFocus(true);
+  omnibox->SetUserText(u":> ");
+  omnibox->SetCaretPos(3);
 }
 
 void CommandCentre::Show(Browser* browser) {
-  browser->SetFocusToLocationBar();
+  LOG(ERROR) << "Show";
+  auto* omnibox = browser->window()->GetLocationBar()->GetOmniboxView();
+  omnibox->SetFocus(true);
+  omnibox->SetUserText(u":> ");
+  omnibox->SetCaretPos(3);
 }
 
 void CommandCentre::Hide() {
+  backend_->Reset();
+  // auto* omnibox = browser->window()->GetLocationBar()->GetOmniboxView();
+  // omnibox->RevertAll();
+  // omnibox->CloseOmniboxPopup();
   // no op
-}
+  LOG(ERROR) << "Should hide now!"
+;}
 
 void CommandCentre::OnViewModelUpdated(commander::CommanderViewModel model) {
+  if (model.action == commander::CommanderViewModel::kPrompt) {
+    Show(chrome::FindLastActive());
+  }
   for (auto& observer : observers_) {
     observer.OnViewModelUpdated(model);
   }

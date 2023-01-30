@@ -36,7 +36,13 @@ CommanderProvider::CommanderProvider(AutocompleteProviderClient* client,
   }
 }
 
-CommanderProvider::~CommanderProvider() = default;
+CommanderProvider::~CommanderProvider() {
+    auto* frontend =
+      static_cast<CommandCentre*>(commander::Commander::Get()->frontend());
+  if (frontend) {
+    frontend->RemoveObserver(this);
+  }
+}
 
 void CommanderProvider::Start(const AutocompleteInput& input,
                               bool minimal_changes) {
