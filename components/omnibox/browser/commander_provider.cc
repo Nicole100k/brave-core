@@ -4,9 +4,11 @@
 // You can obtain one at https://mozilla.org/MPL/2.0/.
 
 #include "brave/components/omnibox/browser/commander_provider.h"
+
 #include <cmath>
 #include <string>
 #include <utility>
+
 #include "base/functional/bind.h"
 #include "base/functional/callback_helpers.h"
 #include "base/strings/string_util.h"
