@@ -33,7 +33,8 @@ CommanderProvider::~CommanderProvider() {
 
 void CommanderProvider::Start(const AutocompleteInput& input,
                               bool minimal_changes) {
-  if (base::StartsWith(input.text(), u":> ")) {
+  matches_.clear();
+  if (base::StartsWith(input.text(), u":>")) {
     auto* backend = commander::Commander::Get()->backend();
     auto* browser = chrome::FindLastActive();
     if (!browser || !backend) {
@@ -43,14 +44,14 @@ void CommanderProvider::Start(const AutocompleteInput& input,
         base::BindRepeating(&CommanderProvider::OnCommandsReceived,
                             weak_ptr_factory_.GetWeakPtr()));
 
-    std::u16string text(base::TrimWhitespace(input.text().substr(2), base::TrimPositions::TRIM_LEADING));
+    std::u16string text(base::TrimWhitespace(
+        input.text().substr(2), base::TrimPositions::TRIM_LEADING));
     backend->OnTextChanged(text, browser);
   }
 }
 
 void CommanderProvider::OnCommandsReceived(
     commander::CommanderViewModel view_model) {
-  matches_.clear();
 
   int rank = 100000000;
   for (const auto& option : view_model.items) {
