@@ -56,7 +56,8 @@ void CommanderProvider::OnCommandsReceived(
     commander::CommanderViewModel view_model) {
 
   int rank = 100000000;
-  for (const auto& option : view_model.items) {
+  for (uint32_t i = 0; i < view_model.items.size(); ++i) {
+    const auto& option = view_model.items[i];
     AutocompleteMatch match(this, rank++, false,
                             AutocompleteMatchType::BOOKMARK_TITLE);
     // match.additional_text = option.annotation;
@@ -70,6 +71,7 @@ void CommanderProvider::OnCommandsReceived(
     match.description = u":> " + option.title;
     match.allowed_to_be_default_match = true;
     match.scoring_signals.set_total_title_match_length(3);
+    match.destination_url = GURL("brave-command://" + std::to_string(view_model.result_set_id) + "/" + std::to_string(i));
     match.description_class = {
         ACMatchClassification(0, ACMatchClassification::DIM),
         ACMatchClassification(2, ACMatchClassification::MATCH)};
