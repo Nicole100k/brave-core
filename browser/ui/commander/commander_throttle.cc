@@ -48,15 +48,3 @@ CommanderThrottle::WillStartRequest() {
 const char* CommanderThrottle::GetNameForLogging() {
   return kCommanderThrottleName;
 }
-
-void CommanderThrottle::ToggleForBrowser(Browser* browser) {
-  browser->SetFocusToLocationBar();
-}
-
-void CommanderThrottle::Show(Browser* browser) {
-  browser->SetFocusToLocationBar();
-}
-
-void CommanderThrottle::Hide() {
-  // no op
-}

@@ -8,11 +8,12 @@
 
 #include <string>
 #include "base/memory/weak_ptr.h"
+#include "brave/browser/ui/commander/command_centre.h"
 #include "chrome/browser/ui/commander/commander_view_model.h"
 #include "components/omnibox/browser/autocomplete_provider.h"
 #include "components/omnibox/browser/autocomplete_provider_client.h"
 #include "components/omnibox/browser/autocomplete_provider_listener.h"
-class CommanderProvider : public AutocompleteProvider {
+class CommanderProvider : public AutocompleteProvider, public CommandCentre::Observer {
  public:
   CommanderProvider(AutocompleteProviderClient* client,
                     AutocompleteProviderListener* listener);
@@ -25,10 +26,9 @@ class CommanderProvider : public AutocompleteProvider {
  private:
   ~CommanderProvider() override;
 
-  void OnCommandsReceived(commander::CommanderViewModel view_model);
+  void OnViewModelUpdated(const commander::CommanderViewModel& view_model) override;
 
   std::u16string last_text_;
-  bool set_handler_{false};
   base::WeakPtrFactory<CommanderProvider> weak_ptr_factory_{this};
 };
 

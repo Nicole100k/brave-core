@@ -13,6 +13,7 @@
 #include "base/functional/callback_helpers.h"
 #include "base/strings/string_util.h"
 #include "base/strings/utf_string_conversions.h"
+#include "brave/browser/ui/commander/command_centre.h"
 #include "chrome/browser/ui/browser_finder.h"
 #include "chrome/browser/ui/commander/commander.h"
 #include "chrome/browser/ui/commander/commander_backend.h"
@@ -27,11 +28,15 @@ CommanderProvider::CommanderProvider(AutocompleteProviderClient* client,
     // TODO: Might need to change this
     : AutocompleteProvider(AutocompleteProvider::TYPE_BUILTIN) {
   AddListener(listener);
+
+  auto* frontend =
+      static_cast<CommandCentre*>(commander::Commander::Get()->frontend());
+  if (frontend) {
+    frontend->AddObserver(this);
+  }
 }
 
-CommanderProvider::~CommanderProvider() {
-  commander::Commander::Get()->backend()->SetUpdateCallback(base::DoNothing());
-}
+CommanderProvider::~CommanderProvider() = default;
 
 void CommanderProvider::Start(const AutocompleteInput& input,
                               bool minimal_changes) {
@@ -42,25 +47,24 @@ void CommanderProvider::Start(const AutocompleteInput& input,
     if (!browser || !backend) {
       return;
     }
-    if (!set_handler_) {
-      backend->SetUpdateCallback(
-          base::BindRepeating(&CommanderProvider::OnCommandsReceived,
-                              weak_ptr_factory_.GetWeakPtr()));
-      set_handler_ = true;
-    }
 
     std::u16string text(base::TrimWhitespace(
         input.text().substr(2), base::TrimPositions::TRIM_LEADING));
     if (text == last_text_) {
       return;
     }
+
+    if (!IsInObserverList()) {
+      static_cast<CommandCentre*>(commander::Commander::Get()->frontend())
+          ->AddObserver(this);
+    }
     last_text_ = text;
     backend->OnTextChanged(text, browser);
   }
 }
 
-void CommanderProvider::OnCommandsReceived(
-    commander::CommanderViewModel view_model) {
+void CommanderProvider::OnViewModelUpdated(
+    const commander::CommanderViewModel& view_model) {
   matches_.clear();
   int rank = 100000000;
   for (uint32_t i = 0; i < view_model.items.size(); ++i) {
