@@ -7,13 +7,16 @@
 #define BRAVE_COMPONENTS_OMNIBOX_BROWSER_COMMANDER_PROVIDER_H_
 
 #include <string>
+
 #include "base/memory/weak_ptr.h"
 #include "brave/browser/ui/commander/command_centre.h"
 #include "chrome/browser/ui/commander/commander_view_model.h"
 #include "components/omnibox/browser/autocomplete_provider.h"
 #include "components/omnibox/browser/autocomplete_provider_client.h"
 #include "components/omnibox/browser/autocomplete_provider_listener.h"
-class CommanderProvider : public AutocompleteProvider, public CommandCentre::Observer {
+
+class CommanderProvider : public AutocompleteProvider,
+                          public CommandCentre::Observer {
  public:
   CommanderProvider(AutocompleteProviderClient* client,
                     AutocompleteProviderListener* listener);
@@ -26,9 +29,16 @@ class CommanderProvider : public AutocompleteProvider, public CommandCentre::Obs
  private:
   ~CommanderProvider() override;
 
-  void OnViewModelUpdated(const commander::CommanderViewModel& view_model) override;
+  void OnViewModelUpdated(
+      const commander::CommanderViewModel& view_model) override;
 
-  std::u16string last_text_;
+  // This is shared between all CommanderProvider because so is
+  // Commander::Get().
+  static std::u16string last_text_;
+
+  std::u16string current_prompt_;
+
+  std::u16string last_input_;
   base::WeakPtrFactory<CommanderProvider> weak_ptr_factory_{this};
 };
 

@@ -23,10 +23,11 @@
 #include "components/omnibox/browser/autocomplete_provider_client.h"
 #include "components/omnibox/browser/autocomplete_provider_listener.h"
 
+std::u16string CommanderProvider::last_text_ = u"";
+
 CommanderProvider::CommanderProvider(AutocompleteProviderClient* client,
                                      AutocompleteProviderListener* listener)
-    // TODO: Might need to change this
-    : AutocompleteProvider(AutocompleteProvider::TYPE_SEARCH) {
+    : AutocompleteProvider(AutocompleteProvider::TYPE_BRAVE_COMMANDER) {
   AddListener(listener);
 
   auto* frontend =
@@ -37,7 +38,7 @@ CommanderProvider::CommanderProvider(AutocompleteProviderClient* client,
 }
 
 CommanderProvider::~CommanderProvider() {
-    auto* frontend =
+  auto* frontend =
       static_cast<CommandCentre*>(commander::Commander::Get()->frontend());
   if (frontend) {
     frontend->RemoveObserver(this);
@@ -46,7 +47,8 @@ CommanderProvider::~CommanderProvider() {
 
 void CommanderProvider::Start(const AutocompleteInput& input,
                               bool minimal_changes) {
-  // matches_.clear();
+  last_input_ = input.text();
+  Stop(true, false);
   if (base::StartsWith(input.text(), u":>")) {
     auto* backend = commander::Commander::Get()->backend();
     auto* browser = chrome::FindLastActive();
@@ -71,15 +73,20 @@ void CommanderProvider::Start(const AutocompleteInput& input,
 
 void CommanderProvider::OnViewModelUpdated(
     const commander::CommanderViewModel& view_model) {
+  if (view_model.action == commander::CommanderViewModel::kPrompt) {
+    current_prompt_ = view_model.prompt_text;
+  }
+
   matches_.clear();
   int rank = 10000;
   for (uint32_t i = 0; i < view_model.items.size(); ++i) {
     const auto& option = view_model.items[i];
     AutocompleteMatch match(this, rank--, false,
-                            AutocompleteMatchType::SEARCH_SUGGEST);
-    // match.additional_text = option.annotation;
-    // match.description = option.annotation;
+                            AutocompleteMatchType::BOOKMARK_TITLE);
+    // This is neat but it would be nice if we could always show it instead of
+    // only when we have a result selected.
     match.contents = option.annotation;
+    match.additional_text = current_prompt_;
     if (!option.annotation.empty()) {
       match.contents_class = {
           ACMatchClassification(0, ACMatchClassification::DIM)};
@@ -88,6 +95,9 @@ void CommanderProvider::OnViewModelUpdated(
     match.description = u":> " + option.title;
     match.allowed_to_be_default_match = true;
     match.scoring_signals.set_total_title_match_length(3);
+    // We don't want to change the prompt at all while the user is going through
+    // their options.
+    match.fill_into_edit = last_input_;
     match.destination_url =
         GURL("brave-command://" + std::to_string(view_model.result_set_id) +
              "/" + std::to_string(i));
