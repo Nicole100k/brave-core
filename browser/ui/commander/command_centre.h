@@ -6,6 +6,7 @@
 #ifndef BRAVE_BROWSER_UI_COMMANDER_COMMAND_CENTRE_H_
 #define BRAVE_BROWSER_UI_COMMANDER_COMMAND_CENTRE_H_
 
+#include <string>
 #include "base/memory/weak_ptr.h"
 #include "base/observer_list.h"
 #include "base/observer_list_types.h"
@@ -35,6 +36,9 @@ class CommandCentre : public commander::CommanderFrontend,
 
  private:
   void OnViewModelUpdated(commander::CommanderViewModel model);
+
+  std::u16string last_searched_;
+  commander::CommanderModel last_model_;
 
   raw_ptr<commander::CommanderBackend> backend_;
   base::ObserverList<Observer> observers_;

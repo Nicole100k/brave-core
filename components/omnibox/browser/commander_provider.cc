@@ -20,8 +20,6 @@
 #include "components/omnibox/browser/autocomplete_provider_client.h"
 #include "components/omnibox/browser/autocomplete_provider_listener.h"
 
-std::u16string CommanderProvider::last_text_ = u"";
-
 CommanderProvider::CommanderProvider(AutocompleteProviderClient* client,
                                      AutocompleteProviderListener* listener)
     : AutocompleteProvider(AutocompleteProvider::TYPE_BRAVE_COMMANDER) {
@@ -42,20 +40,14 @@ CommanderProvider::~CommanderProvider() {
 
 void CommanderProvider::Start(const AutocompleteInput& input,
                               bool minimal_changes) {
-  last_input_ = input.text();
   Stop(true, false);
   if (base::StartsWith(input.text(), u":>")) {
     std::u16string text(base::TrimWhitespace(
         input.text().substr(2), base::TrimPositions::TRIM_LEADING));
-    if (text == last_text_) {
-      return;
-    }
-
     auto* delegate = commander::CommanderFrontendDelegate::Get();
     if (!IsInObserverList()) {
       delegate->AddObserver(this);
     }
-    last_text_ = text;
     delegate->OnTextChanged(text);
   }
 }

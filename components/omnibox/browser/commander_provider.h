@@ -32,10 +32,6 @@ class CommanderProvider
 
   void OnModelUpdated(const commander::CommanderModel& model) override;
 
-  // This is shared between all CommanderProvider because so is
-  // Commander::Get().
-  static std::u16string last_text_;
-
   std::u16string current_prompt_;
 
   std::u16string last_input_;

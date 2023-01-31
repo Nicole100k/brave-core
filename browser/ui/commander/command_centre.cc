@@ -63,6 +63,7 @@ CommandCentre::~CommandCentre() {
 
 void CommandCentre::AddObserver(Observer* observer) {
   observers_.AddObserver(observer);
+  observer->OnModelUpdated(last_model_);
 }
 
 void CommandCentre::RemoveObserver(Observer* observer) {
@@ -70,6 +71,10 @@ void CommandCentre::RemoveObserver(Observer* observer) {
 }
 
 void CommandCentre::OnTextChanged(const std::u16string& text) {
+  if (text == last_searched_ && last_model_.items.size() != 0) {
+    return;
+  }
+  last_searched_ = text;
   backend_->OnTextChanged(text, chrome::FindLastActive());
 }
 
@@ -103,14 +108,17 @@ void CommandCentre::Hide() {
 }
 
 void CommandCentre::OnViewModelUpdated(commander::CommanderViewModel vm) {
-  auto model = commander::FromViewModel(vm);
+  last_model_ = commander::FromViewModel(vm);
   if (vm.action == commander::CommanderViewModel::kPrompt) {
     Show(chrome::FindLastActive());
+    last_searched_ = u"";
   } else if (vm.action == commander::CommanderViewModel::kClose) {
     Hide();
+    last_searched_ = u"";
   }
+
   for (auto& observer : observers_) {
-    observer.OnModelUpdated(model);
+    observer.OnModelUpdated(last_model_);
   }
 }
 
