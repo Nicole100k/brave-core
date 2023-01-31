@@ -415,6 +415,7 @@ source_set("ui") {
     "//brave/components/brave_vpn/common/buildflags",
     "//brave/components/brave_vpn/common/mojom",
     "//brave/components/brave_wayback_machine/buildflags",
+    "//brave/components/commander/common",
     "//brave/components/constants",
     "//brave/components/cosmetic_filters/resources/data:generated_resources",
     "//brave/components/l10n/common",

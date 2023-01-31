@@ -13,11 +13,8 @@
 #include "base/functional/callback_helpers.h"
 #include "base/strings/string_util.h"
 #include "base/strings/utf_string_conversions.h"
-#include "brave/browser/ui/commander/command_centre.h"
-#include "chrome/browser/ui/browser_finder.h"
-#include "chrome/browser/ui/commander/commander.h"
-#include "chrome/browser/ui/commander/commander_backend.h"
-#include "chrome/browser/ui/commander/commander_view_model.h"
+#include "brave/components/commander/common/commander_frontend_delegate.h"
+#include "brave/components/commander/common/commander_model.h"
 #include "components/omnibox/browser/autocomplete_match.h"
 #include "components/omnibox/browser/autocomplete_match_type.h"
 #include "components/omnibox/browser/autocomplete_provider_client.h"
@@ -30,18 +27,16 @@ CommanderProvider::CommanderProvider(AutocompleteProviderClient* client,
     : AutocompleteProvider(AutocompleteProvider::TYPE_BRAVE_COMMANDER) {
   AddListener(listener);
 
-  auto* frontend =
-      static_cast<CommandCentre*>(commander::Commander::Get()->frontend());
-  if (frontend) {
-    frontend->AddObserver(this);
+  auto* delegate = commander::CommanderFrontendDelegate::Get();
+  if (delegate) {
+    delegate->AddObserver(this);
   }
 }
 
 CommanderProvider::~CommanderProvider() {
-  auto* frontend =
-      static_cast<CommandCentre*>(commander::Commander::Get()->frontend());
-  if (frontend) {
-    frontend->RemoveObserver(this);
+  auto* delegate = commander::CommanderFrontendDelegate::Get();
+  if (delegate) {
+    delegate->RemoveObserver(this);
   }
 }
 
@@ -50,37 +45,30 @@ void CommanderProvider::Start(const AutocompleteInput& input,
   last_input_ = input.text();
   Stop(true, false);
   if (base::StartsWith(input.text(), u":>")) {
-    auto* backend = commander::Commander::Get()->backend();
-    auto* browser = chrome::FindLastActive();
-    if (!browser || !backend) {
-      return;
-    }
-
     std::u16string text(base::TrimWhitespace(
         input.text().substr(2), base::TrimPositions::TRIM_LEADING));
     if (text == last_text_) {
       return;
     }
 
+    auto* delegate = commander::CommanderFrontendDelegate::Get();
     if (!IsInObserverList()) {
-      static_cast<CommandCentre*>(commander::Commander::Get()->frontend())
-          ->AddObserver(this);
+      delegate->AddObserver(this);
     }
     last_text_ = text;
-    backend->OnTextChanged(text, browser);
+    delegate->OnTextChanged(text);
   }
 }
 
-void CommanderProvider::OnViewModelUpdated(
-    const commander::CommanderViewModel& view_model) {
-  if (view_model.action == commander::CommanderViewModel::kPrompt) {
-    current_prompt_ = view_model.prompt_text;
+void CommanderProvider::OnModelUpdated(const commander::CommanderModel& model) {
+  if (model.action == commander::CommanderModel::kPrompt) {
+    current_prompt_ = model.prompt_text;
   }
 
   matches_.clear();
   int rank = 10000;
-  for (uint32_t i = 0; i < view_model.items.size(); ++i) {
-    const auto& option = view_model.items[i];
+  for (uint32_t i = 0; i < model.items.size(); ++i) {
+    const auto& option = model.items[i];
     AutocompleteMatch match(this, rank--, false,
                             AutocompleteMatchType::BOOKMARK_TITLE);
     // This is neat but it would be nice if we could always show it instead of
@@ -99,8 +87,8 @@ void CommanderProvider::OnViewModelUpdated(
     // their options.
     match.fill_into_edit = last_input_;
     match.destination_url =
-        GURL("brave-command://" + std::to_string(view_model.result_set_id) +
-             "/" + std::to_string(i));
+        GURL("brave-command://" + std::to_string(model.result_set_id) + "/" +
+             std::to_string(i));
     match.description_class = {
         ACMatchClassification(0, ACMatchClassification::DIM),
         ACMatchClassification(2, ACMatchClassification::MATCH)};

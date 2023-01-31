@@ -9,14 +9,15 @@
 #include <string>
 
 #include "base/memory/weak_ptr.h"
-#include "brave/browser/ui/commander/command_centre.h"
-#include "chrome/browser/ui/commander/commander_view_model.h"
+#include "brave/components/commander/common/commander_frontend_delegate.h"
+#include "brave/components/commander/common/commander_model.h"
 #include "components/omnibox/browser/autocomplete_provider.h"
 #include "components/omnibox/browser/autocomplete_provider_client.h"
 #include "components/omnibox/browser/autocomplete_provider_listener.h"
 
-class CommanderProvider : public AutocompleteProvider,
-                          public CommandCentre::Observer {
+class CommanderProvider
+    : public AutocompleteProvider,
+      public commander::CommanderFrontendDelegate::Observer {
  public:
   CommanderProvider(AutocompleteProviderClient* client,
                     AutocompleteProviderListener* listener);
@@ -29,8 +30,7 @@ class CommanderProvider : public AutocompleteProvider,
  private:
   ~CommanderProvider() override;
 
-  void OnViewModelUpdated(
-      const commander::CommanderViewModel& view_model) override;
+  void OnModelUpdated(const commander::CommanderModel& model) override;
 
   // This is shared between all CommanderProvider because so is
   // Commander::Get().
