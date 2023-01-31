@@ -4,11 +4,30 @@
 // You can obtain one at https://mozilla.org/MPL/2.0/.
 import * as React from 'react'
 
-import {
-} from './nfts-empty-state.style'
+// utils
+import { getLocale } from '../../../../../../../common/locale'
 
-export const NftsEmptyState = () => {
-  return (
-    <div></div>
-  )
+// styles
+import {
+  DisclaimerText,
+  EmptyStateImage,
+  Heading,
+  StyledWrapper,
+  SubHeading,
+  ImportButton,
+} from './nfts-empty-state.style'
+import EmptyStateGraphic from '../../../../../../assets/svg-icons/nft-empty-state.svg'
+
+interface Props {
+  onImportNft: () => void
 }
+
+export const NftsEmptyState = ({ onImportNft }: Props) => (
+  <StyledWrapper>
+    <EmptyStateImage src={EmptyStateGraphic} />
+    <Heading>{getLocale('braveNftsTabEmptyStateHeading')}</Heading>
+    <SubHeading>{getLocale('braveNftsTabEmptyStateSubHeading')}</SubHeading>
+    <ImportButton onClick={onImportNft}>{getLocale('braveNftsTabImportNft')}</ImportButton>
+    <DisclaimerText>{getLocale('braveNftsTabEmptyStateDisclaimer')}</DisclaimerText>
+  </StyledWrapper>
+)

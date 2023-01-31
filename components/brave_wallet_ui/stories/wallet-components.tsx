@@ -15,6 +15,7 @@ import { SweepstakesBanner } from '../components/desktop/sweepstakes-banner'
 import { LoadingSkeleton } from '../components/shared'
 import { ChartControlBar } from '../components/desktop/chart-control-bar/chart-control-bar'
 import { BuySendSwapDepositNav } from '../components/desktop/buy-send-swap-deposit-nav/buy-send-swap-deposit-nav'
+import { NftsEmptyState } from '../components/desktop/views/nfts/components/nfts-empty-state/nfts-empty-state'
 
 export default {
   title: 'Wallet/Desktop/Components',
@@ -125,4 +126,12 @@ export const _BuySendSwapDeposit = () => {
 
 _BuySendSwapDeposit.story = {
   name: 'Buy/Send/Swap/Deposit'
+}
+
+export const _NftsEmptyState = () => {
+  return (
+    <NftsEmptyState
+      onImportNft={() => console.log('On import NFT')}
+    />
+  )
 }

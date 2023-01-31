@@ -998,9 +998,6 @@ constexpr webui::LocalizedString kLocalizedStrings[] = {
     {"braveWalletCancelHidingToken", IDS_BRAVE_WALLET_CANCEL_HIDING_TOKEN},
     {"braveWalletRequestFeatureButtonText",
      IDS_BRAVE_WALLET_REQUEST_FEATURE_BUTTON_TEXT},
-    {"braveWalletNftsEmptyState", IDS_BRAVE_WALLET_NFTS_EMPTY_STATE},
-    {"braveWalletNftsEmptyStateSearch",
-     IDS_BRAVE_WALLET_NFTS_EMPTY_STATE_SEARCH_FILTER},
     {"braveWalletEnsOffchainProceedWithYes",
      IDS_BRAVE_WALLET_ENS_OFFCHAIN_PROCEED_WITH_YES},
     {"braveWalletEnsOffchainProceedWithNo",
@@ -1008,8 +1005,6 @@ constexpr webui::LocalizedString kLocalizedStrings[] = {
     {"braveWalletEnsOffchainDontShowAgain",
      IDS_BRAVE_WALLET_ENS_OFFCHAIN_DONT_SHOW_AGAIN},
     {"braveWalletEnsOffchainWarning", IDS_BRAVE_WALLET_ENS_OFFCHAIN_WARNING},
-    {"braveWalletNftsEmptyStateSearch",
-     IDS_BRAVE_WALLET_NFTS_EMPTY_STATE_SEARCH_FILTER},
     {"braveWalletAddAssetTokenTabTitle",
      IDS_BRAVE_WALLET_ADD_ASSET_TOKEN_TAB_TITLE},
     {"braveWalletAddAssetNftTabTitle",
@@ -1080,7 +1075,12 @@ constexpr webui::LocalizedString kLocalizedStrings[] = {
     {"braveSwapZeroXDisclaimer", IDS_BRAVE_SWAP_ZERO_EX_DISCLAIMER},
     {"braveSwapJupiterDisclaimer", IDS_BRAVE_SWAP_JUPITER_DISCLAIMER},
     {"braveSwapZeroXPrivacy", IDS_BRAVE_SWAP_ZERO_EX_PRIVACY},
-    {"braveSwapJupiterPrivacy", IDS_BRAVE_SWAP_JUPITER_PRIVACY}};
+    {"braveSwapJupiterPrivacy", IDS_BRAVE_SWAP_JUPITER_PRIVACY},
+    {"braveNftsTabImportNft", IDS_BRAVE_WALLET_NFTS_TAB_IMPORT_NFT},
+    {"braveNftsTabEmptyStateHeading", IDS_BRAVE_WALLET_NFTS_TAB_EMPTY_STATE_HEADING},
+    {"braveNftsTabEmptyStateSubHeading", IDS_BRAVE_WALLET_NFTS_TAB_EMPTY_STATE_SUBHEADING},
+    {"braveNftsTabEmptyStateDisclaimer", IDS_BRAVE_WALLET_NFTS_TAB_EMPTY_STATE_DISCLAIMER},
+    };
 
 // 0x swap constants
 constexpr char kGoerliSwapBaseAPIURL[] = "https://goerli.api.0x.org/";

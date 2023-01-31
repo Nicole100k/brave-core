@@ -5,6 +5,9 @@
 
 import * as React from 'react'
 
+// Utils
+import { getLocale } from '../../../../../../../common/locale'
+
 // Styled Components
 import {
   StyledWrapper,
@@ -26,7 +29,7 @@ export const NftGalleryMorePopup = (props: Props) => {
     <StyledWrapper>
       <PopupButton onClick={onImportNft}>
         <PlusIcon />
-        <PopupButtonText>Import NFT</PopupButtonText>
+        <PopupButtonText>{getLocale('braveNftsTabImportNft')}</PopupButtonText>
       </PopupButton>
     </StyledWrapper>
   )

@@ -6,6 +6,13 @@ import styled from 'styled-components'
 import { WalletButton } from '../../../../shared/style'
 import MoreCircles from '../../../../../assets/svg-icons/more-circles.svg'
 
+export const StyledWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  justify-content: center;
+`
+
 export const FilterTokenRow = styled.div`
   display: flex;
   align-items: center;
