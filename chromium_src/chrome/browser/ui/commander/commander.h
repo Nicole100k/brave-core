@@ -9,10 +9,14 @@
 #include "chrome/browser/ui/commander/commander_backend.h"
 #include "chrome/browser/ui/commander/commander_frontend.h"
 
-#define Initialize                                          \
-  virtual Initialize();                                     \
-  CommanderBackend* backend() { return backend_.get(); }    \
-  CommanderFrontend* frontend() { return frontend_.get(); } \
+#define Initialize                \
+  virtual Initialize();           \
+  CommanderBackend* backend() {   \
+    return backend_.get();        \
+  }                               \
+  CommanderFrontend* frontend() { \
+    return frontend_.get();       \
+  }                               \
   void Initialize_Unused
 
 #include "src/chrome/browser/ui/commander/commander.h"

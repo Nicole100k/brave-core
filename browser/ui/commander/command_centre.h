@@ -17,7 +17,8 @@ class CommandCentre : public commander::CommanderFrontend {
  public:
   class Observer : public base::CheckedObserver {
    public:
-    virtual void OnViewModelUpdated(const commander::CommanderViewModel& model) = 0;
+    virtual void OnViewModelUpdated(
+        const commander::CommanderViewModel& model) = 0;
   };
 
   explicit CommandCentre(commander::CommanderBackend* backend);

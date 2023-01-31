@@ -20,6 +20,8 @@ brave_components_omnibox_browser_sources = [
   "//brave/components/omnibox/browser/brave_search_provider.h",
   "//brave/components/omnibox/browser/brave_shortcuts_provider.cc",
   "//brave/components/omnibox/browser/brave_shortcuts_provider.h",
+  "//brave/components/omnibox/browser/commander_provider.cc",
+  "//brave/components/omnibox/browser/commander_provider.h",
   "//brave/components/omnibox/browser/promotion_provider.cc",
   "//brave/components/omnibox/browser/promotion_provider.h",
   "//brave/components/omnibox/browser/promotion_utils.cc",
@@ -27,8 +29,6 @@ brave_components_omnibox_browser_sources = [
   "//brave/components/omnibox/browser/topsites_provider.cc",
   "//brave/components/omnibox/browser/topsites_provider.h",
   "//brave/components/omnibox/browser/topsites_provider_data.cc",
-  "//brave/components/omnibox/browser/commander_provider.cc",
-  "//brave/components/omnibox/browser/commander_provider.h",
 ]
 
 brave_components_omnibox_browser_deps = [

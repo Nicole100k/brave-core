@@ -5,6 +5,8 @@
 
 #include "brave/browser/ui/commander/command_centre.h"
 
+#include <memory>
+
 #include "base/functional/bind.h"
 #include "base/functional/callback_helpers.h"
 #include "chrome/browser/ui/browser.h"
@@ -56,8 +58,8 @@ void CommandCentre::Hide() {
   // omnibox->RevertAll();
   // omnibox->CloseOmniboxPopup();
   // no op
-  LOG(ERROR) << "Should hide now!"
-;}
+  LOG(ERROR) << "Should hide now!";
+}
 
 void CommandCentre::OnViewModelUpdated(commander::CommanderViewModel model) {
   if (model.action == commander::CommanderViewModel::kPrompt) {
@@ -66,4 +68,10 @@ void CommandCentre::OnViewModelUpdated(commander::CommanderViewModel model) {
   for (auto& observer : observers_) {
     observer.OnViewModelUpdated(model);
   }
+}
+
+// static
+std::unique_ptr<commander::CommanderFrontend>
+commander::CommanderFrontend::Create(commander::CommanderBackend* backend) {
+  return std::make_unique<CommandCentre>(backend);
 }

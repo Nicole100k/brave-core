@@ -24,7 +24,6 @@
 #include "content/public/browser/browser_thread.h"
 #include "content/public/browser/navigation_handle.h"
 #include "content/public/browser/navigation_throttle.h"
-#include "extensions/browser/api/serial/serial_connection.h"
 
 const char kCommanderThrottleName[] = "CommanderThrottle";
 

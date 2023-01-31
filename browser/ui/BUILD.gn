@@ -94,6 +94,10 @@ source_set("ui") {
       "browser_commands.cc",
       "browser_commands.h",
       "browser_dialogs.h",
+      "commander/command_centre.cc",
+      "commander/command_centre.h",
+      "commander/commander_throttle.cc",
+      "commander/commander_throttle.h",
       "content_settings/brave_autoplay_blocked_image_model.cc",
       "content_settings/brave_autoplay_blocked_image_model.h",
       "content_settings/brave_autoplay_content_setting_bubble_model.cc",
@@ -384,7 +388,7 @@ source_set("ui") {
     "//brave/browser:sparkle_buildflags",
     "//brave/browser/gcm_driver",
     "//brave/browser/profiles",
-    "//brave/browser/ui/commander",
+
     # //chrome/browser/ui depends on //brave/browser/ui, add this target here
     # to pull in dependencies needed for the overwrite codes in chromium_src.
     "//brave/browser/resources/federated_internals:resources",
