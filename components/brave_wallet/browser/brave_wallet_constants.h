@@ -1077,10 +1077,13 @@ constexpr webui::LocalizedString kLocalizedStrings[] = {
     {"braveSwapZeroXPrivacy", IDS_BRAVE_SWAP_ZERO_EX_PRIVACY},
     {"braveSwapJupiterPrivacy", IDS_BRAVE_SWAP_JUPITER_PRIVACY},
     {"braveNftsTabImportNft", IDS_BRAVE_WALLET_NFTS_TAB_IMPORT_NFT},
-    {"braveNftsTabEmptyStateHeading", IDS_BRAVE_WALLET_NFTS_TAB_EMPTY_STATE_HEADING},
-    {"braveNftsTabEmptyStateSubHeading", IDS_BRAVE_WALLET_NFTS_TAB_EMPTY_STATE_SUBHEADING},
-    {"braveNftsTabEmptyStateDisclaimer", IDS_BRAVE_WALLET_NFTS_TAB_EMPTY_STATE_DISCLAIMER},
-    };
+    {"braveNftsTabEmptyStateHeading",
+     IDS_BRAVE_WALLET_NFTS_TAB_EMPTY_STATE_HEADING},
+    {"braveNftsTabEmptyStateSubHeading",
+     IDS_BRAVE_WALLET_NFTS_TAB_EMPTY_STATE_SUBHEADING},
+    {"braveNftsTabEmptyStateDisclaimer",
+     IDS_BRAVE_WALLET_NFTS_TAB_EMPTY_STATE_DISCLAIMER},
+};
 
 // 0x swap constants
 constexpr char kGoerliSwapBaseAPIURL[] = "https://goerli.api.0x.org/";
