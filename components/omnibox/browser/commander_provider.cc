@@ -26,7 +26,7 @@
 CommanderProvider::CommanderProvider(AutocompleteProviderClient* client,
                                      AutocompleteProviderListener* listener)
     // TODO: Might need to change this
-    : AutocompleteProvider(AutocompleteProvider::TYPE_BUILTIN) {
+    : AutocompleteProvider(AutocompleteProvider::TYPE_SEARCH) {
   AddListener(listener);
 
   auto* frontend =
@@ -72,11 +72,11 @@ void CommanderProvider::Start(const AutocompleteInput& input,
 void CommanderProvider::OnViewModelUpdated(
     const commander::CommanderViewModel& view_model) {
   matches_.clear();
-  int rank = 100000000;
+  int rank = 10000;
   for (uint32_t i = 0; i < view_model.items.size(); ++i) {
     const auto& option = view_model.items[i];
-    AutocompleteMatch match(this, rank++, false,
-                            AutocompleteMatchType::BOOKMARK_TITLE);
+    AutocompleteMatch match(this, rank--, false,
+                            AutocompleteMatchType::SEARCH_SUGGEST);
     // match.additional_text = option.annotation;
     // match.description = option.annotation;
     match.contents = option.annotation;
@@ -89,7 +89,7 @@ void CommanderProvider::OnViewModelUpdated(
     match.allowed_to_be_default_match = true;
     match.scoring_signals.set_total_title_match_length(3);
     match.destination_url =
-        GURL("brave-command://" + std::to_string(view_model.result_set_id + 1) +
+        GURL("brave-command://" + std::to_string(view_model.result_set_id) +
              "/" + std::to_string(i));
     match.description_class = {
         ACMatchClassification(0, ACMatchClassification::DIM),
