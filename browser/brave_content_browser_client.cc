@@ -12,6 +12,7 @@
 #include <vector>
 
 #include "base/bind.h"
+#include "base/feature_list.h"
 #include "base/json/json_reader.h"
 #include "base/strings/strcat.h"
 #include "base/system/sys_info.h"
@@ -84,6 +85,7 @@
 #include "chrome/browser/profiles/profile.h"
 #include "chrome/browser/profiles/profile_io_data.h"
 #include "chrome/browser/search_engines/template_url_service_factory.h"
+#include "chrome/browser/ui/ui_features.h"
 #include "chrome/common/url_constants.h"
 #include "chrome/grit/chromium_strings.h"
 #include "components/content_settings/browser/page_specific_content_settings.h"
@@ -938,7 +940,8 @@ BraveContentBrowserClient::CreateThrottlesForNavigation(
   if (ntp_shows_navigation_throttle)
     throttles.push_back(std::move(ntp_shows_navigation_throttle));
 
-  throttles.push_back(std::make_unique<CommanderThrottle>(handle));
+  if (base::FeatureList::IsEnabled(features::kQuickCommands))
+    throttles.push_back(std::make_unique<CommanderThrottle>(handle));
 #endif
 
 #if BUILDFLAG(ENABLE_BRAVE_WEBTORRENT)
