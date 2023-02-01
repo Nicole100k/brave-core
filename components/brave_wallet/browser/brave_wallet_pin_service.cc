@@ -31,7 +31,8 @@ const char kErrorMessage[] = "error_message";
 const char kAssetUrlListKey[] = "cids";
 
 namespace {
-
+// Solana NFTs doesn't have token_id
+const char kEmptyTokenIdPart[] = "*";
 const char kNftPart[] = "nft";
 /**
  * Service name used in prefs for local pinning service.
@@ -157,7 +158,8 @@ std::string BraveWalletPinService::ErrorCodeToString(
 // static
 bool BraveWalletPinService::IsTokenSupportedForPinning(
     const mojom::BlockchainTokenPtr& token) {
-  return token->is_erc721;
+  return token->is_erc721 ||
+         (token->is_nft && token->coin == mojom::CoinType::SOL);
 }
 
 /**
@@ -252,14 +254,16 @@ absl::optional<std::string> BraveWalletPinService::GetTokenPrefPath(
   if (base::ContainsOnlyChars(token->contract_address, ".")) {
     return absl::nullopt;
   }
-  if (base::ContainsOnlyChars(token->token_id, ".")) {
+  if (!token->token_id.empty() &&
+      base::ContainsOnlyChars(token->token_id, ".")) {
     return absl::nullopt;
   }
   DCHECK(!base::ContainsOnlyChars(token->chain_id, "."));
-  return base::StrCat({kNftPart, ".", service.value_or(kLocalService), ".",
-                       base::NumberToString(static_cast<int>(token->coin)), ".",
-                       token->chain_id, ".", token->contract_address, ".",
-                       token->token_id});
+  return base::StrCat(
+      {kNftPart, ".", service.value_or(kLocalService), ".",
+       base::NumberToString(static_cast<int>(token->coin)), ".",
+       token->chain_id, ".", token->contract_address, ".",
+       (token->token_id.empty() ? kEmptyTokenIdPart : token->token_id)});
 }
 
 // static
@@ -278,7 +282,7 @@ mojom::BlockchainTokenPtr BraveWalletPinService::TokenFromPrefPath(
   token->coin = static_cast<mojom::CoinType>(coin);
   token->chain_id = parts.at(3);
   token->contract_address = parts.at(4);
-  token->token_id = parts.at(5);
+  token->token_id = parts.at(5) == kEmptyTokenIdPart ? "" : parts.at(5);
   token->is_nft = true;
   return token;
 }
@@ -390,7 +394,6 @@ void BraveWalletPinService::AddPin(mojom::BlockchainTokenPtr token,
     std::move(callback).Run(false, std::move(pin_error));
     return;
   }
-
   auto token_status = GetTokenStatus(service, token);
   if (token_status &&
       token_status->code == mojom::TokenPinStatusCode::STATUS_PINNED) {
@@ -400,11 +403,21 @@ void BraveWalletPinService::AddPin(mojom::BlockchainTokenPtr token,
     return;
   }
 
-  json_rpc_service_->GetERC721Metadata(
-      token->contract_address, token->token_id, token->chain_id,
-      base::BindOnce(&BraveWalletPinService::OnTokenMetaDataReceived,
-                     weak_ptr_factory_.GetWeakPtr(), service,
-                     std::move(callback), token.Clone()));
+  if (token->is_erc721) {
+    json_rpc_service_->GetERC721Metadata(
+        token->contract_address, token->token_id, token->chain_id,
+        base::BindOnce(&BraveWalletPinService::OnTokenMetaDataReceived,
+                       weak_ptr_factory_.GetWeakPtr(), service,
+                       std::move(callback), token.Clone()));
+  } else if (token->is_nft && token->coin == mojom::CoinType::SOL) {
+    json_rpc_service_->GetSolTokenMetadata(
+        token->contract_address,
+        base::BindOnce(&BraveWalletPinService::OnSolTokenMetaDataReceived,
+                       weak_ptr_factory_.GetWeakPtr(), service,
+                       std::move(callback), token.Clone()));
+  } else {
+    NOTREACHED();
+  }
 }
 
 void BraveWalletPinService::RemovePin(
@@ -480,6 +493,38 @@ void BraveWalletPinService::OnTokenMetaDataReceived(
     return;
   }
 
+  ProcessTokenMetadata(service, std::move(token), token_url, result,
+                       std::move(callback));
+}
+
+void BraveWalletPinService::OnSolTokenMetaDataReceived(
+    absl::optional<std::string> service,
+    AddPinCallback callback,
+    mojom::BlockchainTokenPtr token,
+    const std::string& token_url,
+    const std::string& result,
+    mojom::SolanaProviderError error,
+    const std::string& error_message) {
+  if (error != mojom::SolanaProviderError::kSuccess) {
+    auto pin_error = mojom::PinError::New(
+        mojom::WalletPinServiceErrorCode::ERR_FETCH_METADATA_FAILED,
+        "Failed to obtain token metadata");
+    SetTokenStatus(service, token,
+                   mojom::TokenPinStatusCode::STATUS_PINNING_FAILED, pin_error);
+    std::move(callback).Run(false, std::move(pin_error));
+    return;
+  }
+
+  ProcessTokenMetadata(service, std::move(token), token_url, result,
+                       std::move(callback));
+}
+
+void BraveWalletPinService::ProcessTokenMetadata(
+    absl::optional<std::string> service,
+    mojom::BlockchainTokenPtr token,
+    const std::string& token_url,
+    const std::string& result,
+    AddPinCallback callback) {
   GURL token_gurl = GURL(token_url);
   if (!token_gurl.SchemeIs(ipfs::kIPFSScheme)) {
     auto pin_error = mojom::PinError::New(

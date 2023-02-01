@@ -51,6 +51,20 @@ const char kMonkey1[] =
                         {"trait_type":"Clothes","value":"Toga"},
                         {"trait_type":"Hat","value":"Cowboy Hat"}]})";
 
+const char kSolMonkey1Path[] =
+    "nft.local.501.0x65.GdGXUTd9ZctZQdNCsV85ULryafVgMR4Jyiq3zkqwR8kY.*";
+const char kSolMonkey1Url[] = "ipfs://bafy1";
+const char kSolMonkey1[] =
+    R"({"name":"The Eyedeas #3193",
+        "symbol":"EYE",
+        "description":"",
+        "seller_fee_basis_points":1000,
+        "image":"ipfs://bafy2/1.png",
+        "external_url":"https://www.theeyedeas.com/","edition":3193})";
+
+const char kSolMonkey2Path[] =
+    "nft.local.501.0x65.9CuEUZkojwfwAhhbPCYH8smidkdFNRAcfJMm2U4kehQk.*";
+
 base::Time g_overridden_now;
 std::unique_ptr<ScopedTimeClockOverrides> OverrideWithTimeNow(
     const base::Time& overridden_now) {
@@ -87,6 +101,10 @@ class MockJsonRpcService : public JsonRpcService {
                     const std::string& token_id,
                     const std::string& chain_id,
                     GetERC721MetadataCallback callback));
+
+  MOCK_METHOD2(GetSolTokenMetadata,
+               void(const std::string& contract_address,
+                    GetSolTokenMetadataCallback callback));
 
   ~MockJsonRpcService() override {}
 };
@@ -241,6 +259,100 @@ TEST_F(BraveWalletPinServiceTest, AddPin) {
   }
 }
 
+TEST_F(BraveWalletPinServiceTest, AddSolPin) {
+  {
+    ON_CALL(*GetJsonRpcService(), GetSolTokenMetadata(_, _))
+        .WillByDefault(::testing::Invoke(
+            [](const std::string& token_mint_address,
+               MockJsonRpcService::GetSolTokenMetadataCallback callback) {
+              EXPECT_EQ("GdGXUTd9ZctZQdNCsV85ULryafVgMR4Jyiq3zkqwR8kY",
+                        token_mint_address);
+              std::move(callback).Run(kSolMonkey1Url, kSolMonkey1,
+                                      mojom::SolanaProviderError::kSuccess, "");
+            }));
+    ON_CALL(*GetIpfsLocalPinService(), AddPins(_, _, _))
+        .WillByDefault(::testing::Invoke(
+            [](const std::string& prefix, const std::vector<std::string>& cids,
+               ipfs::AddPinCallback callback) {
+              EXPECT_EQ(kSolMonkey1Path, prefix);
+              EXPECT_EQ("bafy1", cids.at(0));
+              EXPECT_EQ("bafy2", cids.at(1));
+              std::move(callback).Run(true);
+            }));
+
+    auto scoped_override = OverrideWithTimeNow(base::Time::FromTimeT(123u));
+
+    mojom::BlockchainTokenPtr token =
+        BraveWalletPinService::TokenFromPrefPath(kSolMonkey1Path);
+    token->is_nft = true;
+    absl::optional<bool> call_status;
+    service()->AddPin(
+        std::move(token), absl::nullopt,
+        base::BindLambdaForTesting(
+            [&call_status](bool result, mojom::PinErrorPtr error) {
+              call_status = result;
+              EXPECT_FALSE(error);
+            }));
+    EXPECT_TRUE(call_status.value());
+
+    const base::Value::Dict* token_record =
+        GetPrefs()
+            ->GetDict(kPinnedNFTAssets)
+            .FindDictByDottedPath(kSolMonkey1Path);
+
+    base::Value::List expected_cids;
+    expected_cids.Append("bafy1");
+    expected_cids.Append("bafy2");
+
+    EXPECT_EQ(BraveWalletPinService::StatusToString(
+                  mojom::TokenPinStatusCode::STATUS_PINNED),
+              *(token_record->FindString("status")));
+    EXPECT_EQ(nullptr, token_record->FindDict("error"));
+    EXPECT_EQ(expected_cids, *(token_record->FindList("cids")));
+    EXPECT_EQ(base::Time::FromTimeT(123u),
+              base::ValueToTime(token_record->Find("validate_timestamp")));
+  }
+
+  {
+    ON_CALL(*GetJsonRpcService(), GetSolTokenMetadata(_, _))
+        .WillByDefault(::testing::Invoke(
+            [](const std::string& token_mint_address,
+               MockJsonRpcService::GetSolTokenMetadataCallback callback) {
+              EXPECT_EQ("9CuEUZkojwfwAhhbPCYH8smidkdFNRAcfJMm2U4kehQk",
+                        token_mint_address);
+              std::move(callback).Run("", "",
+                                      mojom::SolanaProviderError::kParsingError,
+                                      "Parsing error");
+            }));
+
+    mojom::BlockchainTokenPtr token =
+        BraveWalletPinService::TokenFromPrefPath(kSolMonkey2Path);
+    token->is_nft = true;
+    absl::optional<bool> call_status;
+    service()->AddPin(
+        std::move(token), absl::nullopt,
+        base::BindLambdaForTesting(
+            [&call_status](bool result, mojom::PinErrorPtr error) {
+              call_status = result;
+              EXPECT_TRUE(error);
+            }));
+
+    EXPECT_FALSE(call_status.value());
+
+    const base::Value::Dict* token_record =
+        GetPrefs()
+            ->GetDict(kPinnedNFTAssets)
+            .FindDictByDottedPath(kSolMonkey2Path);
+
+    EXPECT_EQ(BraveWalletPinService::StatusToString(
+                  mojom::TokenPinStatusCode::STATUS_PINNING_FAILED),
+              *(token_record->FindString("status")));
+    EXPECT_EQ(BraveWalletPinService::ErrorCodeToString(
+                  mojom::WalletPinServiceErrorCode::ERR_FETCH_METADATA_FAILED),
+              token_record->FindByDottedPath("error.error_code")->GetString());
+  }
+}
+
 TEST_F(BraveWalletPinServiceTest, RemovePin) {
   {
     DictionaryPrefUpdate update(GetPrefs(), kPinnedNFTAssets);
@@ -280,6 +392,73 @@ TEST_F(BraveWalletPinServiceTest, RemovePin) {
               *(GetPrefs()
                     ->GetDict(kPinnedNFTAssets)
                     .FindByDottedPath(kMonkey1Path)
+                    ->FindStringKey("status")));
+  }
+
+  {
+    ON_CALL(*GetIpfsLocalPinService(), RemovePins(_, _))
+        .WillByDefault(::testing::Invoke(
+            [](const std::string& prefix, ipfs::RemovePinCallback callback) {
+              EXPECT_EQ(kMonkey1Path, prefix);
+              std::move(callback).Run(true);
+            }));
+
+    mojom::BlockchainTokenPtr token =
+        BraveWalletPinService::TokenFromPrefPath(kMonkey1Path);
+    token->is_erc721 = true;
+    absl::optional<bool> remove_status;
+    service()->RemovePin(
+        std::move(token), absl::nullopt,
+        base::BindLambdaForTesting(
+            [&remove_status](bool status, mojom::PinErrorPtr error) {
+              remove_status = status;
+            }));
+    EXPECT_TRUE(remove_status.value());
+    EXPECT_EQ(nullptr, GetPrefs()
+                           ->GetDict(kPinnedNFTAssets)
+                           .FindDictByDottedPath(kMonkey1Path));
+  }
+}
+
+TEST_F(BraveWalletPinServiceTest, RemoveSolPin) {
+  {
+    DictionaryPrefUpdate update(GetPrefs(), kPinnedNFTAssets);
+    base::Value::Dict& update_dict = update->GetDict();
+
+    base::Value::Dict item;
+    item.Set("status", "pinned");
+    item.Set("validation_timestamp", "123");
+    base::Value::List cids;
+    cids.Append("QmeSjSinHpPnmXmspMjwiXyN6zS4E9zccariGR3jxcaWtq");
+    cids.Append("Qmcyc7tm9sZB9JnvLgejPTwdzjjNjDMiRWCUvaZAfp6cUg");
+
+    update_dict.SetByDottedPath(kSolMonkey1Path, std::move(item));
+  }
+
+  {
+    ON_CALL(*GetIpfsLocalPinService(), RemovePins(_, _))
+        .WillByDefault(::testing::Invoke(
+            [](const std::string& prefix, ipfs::RemovePinCallback callback) {
+              EXPECT_EQ(kSolMonkey1Path, prefix);
+              std::move(callback).Run(false);
+            }));
+
+    mojom::BlockchainTokenPtr token =
+        BraveWalletPinService::TokenFromPrefPath(kSolMonkey1Path);
+    token->is_nft = true;
+    absl::optional<bool> remove_status;
+    service()->RemovePin(
+        std::move(token), absl::nullopt,
+        base::BindLambdaForTesting(
+            [&remove_status](bool status, mojom::PinErrorPtr error) {
+              remove_status = status;
+            }));
+    EXPECT_FALSE(remove_status.value());
+    EXPECT_EQ(BraveWalletPinService::StatusToString(
+                  mojom::TokenPinStatusCode::STATUS_UNPINNING_FAILED),
+              *(GetPrefs()
+                    ->GetDict(kPinnedNFTAssets)
+                    .FindByDottedPath(kSolMonkey1Path)
                     ->FindStringKey("status")));
   }
 
@@ -440,6 +619,22 @@ TEST_F(BraveWalletPinServiceTest, GetTokenStatus) {
     base::Value::Dict& update_dict = update->GetDict();
 
     base::Value::Dict item;
+    item.Set("status", "pinned");
+    item.Set("validate_timestamp",
+             base::TimeToValue(base::Time::FromTimeT(123u)));
+    base::Value::List cids;
+    cids.Append("QmeSjSinHpPnmXmspMjwiXyN6zS4E9zccariGR3jxcaWtq");
+    cids.Append("Qmcyc7tm9sZB9JnvLgejPTwdzjjNjDMiRWCUvaZAfp6cUg");
+    item.Set("cids", std::move(cids));
+
+    update_dict.SetByDottedPath(kSolMonkey1Path, std::move(item));
+  }
+
+  {
+    DictionaryPrefUpdate update(GetPrefs(), kPinnedNFTAssets);
+    base::Value::Dict& update_dict = update->GetDict();
+
+    base::Value::Dict item;
     item.Set("status", BraveWalletPinService::StatusToString(
                            mojom::TokenPinStatusCode::STATUS_PINNING_FAILED));
     base::Value::Dict error;
@@ -479,6 +674,17 @@ TEST_F(BraveWalletPinServiceTest, GetTokenStatus) {
     EXPECT_EQ(mojom::WalletPinServiceErrorCode::ERR_FETCH_METADATA_FAILED,
               status->error->error_code);
     EXPECT_EQ(base::Time(), status->validate_time);
+  }
+
+  mojom::BlockchainTokenPtr token3 =
+      BraveWalletPinService::TokenFromPrefPath(kSolMonkey1Path);
+  token1->is_nft = true;
+  {
+    mojom::TokenPinStatusPtr status =
+        service()->GetTokenStatus(absl::nullopt, token3);
+    EXPECT_EQ(mojom::TokenPinStatusCode::STATUS_PINNED, status->code);
+    EXPECT_TRUE(status->error.is_null());
+    EXPECT_EQ(base::Time::FromTimeT(123u), status->validate_time);
   }
 }
 
@@ -524,6 +730,16 @@ TEST_F(BraveWalletPinServiceTest, TokenFromPrefPath) {
   EXPECT_EQ("0x1", token->token_id);
 }
 
+TEST_F(BraveWalletPinServiceTest, SolTokenFromPrefPath) {
+  mojom::BlockchainTokenPtr token =
+      BraveWalletPinService::TokenFromPrefPath(kSolMonkey1Path);
+  EXPECT_EQ(mojom::CoinType::SOL, static_cast<mojom::CoinType>(token->coin));
+  EXPECT_EQ("0x65", token->chain_id);
+  EXPECT_EQ("GdGXUTd9ZctZQdNCsV85ULryafVgMR4Jyiq3zkqwR8kY",
+            token->contract_address);
+  EXPECT_EQ("", token->token_id);
+}
+
 TEST_F(BraveWalletPinServiceTest, ServiceFromPath) {
   EXPECT_FALSE(
       BraveWalletPinService::ServiceFromPrefPath(kMonkey1Path).has_value());
@@ -531,6 +747,16 @@ TEST_F(BraveWalletPinServiceTest, ServiceFromPath) {
   EXPECT_EQ("nftstorage", BraveWalletPinService::ServiceFromPrefPath(
                               "nft.nftstorage.60.0x1."
                               "0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d.0x1")
+                              .value());
+}
+
+TEST_F(BraveWalletPinServiceTest, ServiceFromSolPath) {
+  EXPECT_FALSE(
+      BraveWalletPinService::ServiceFromPrefPath(kMonkey1Path).has_value());
+
+  EXPECT_EQ("nftstorage", BraveWalletPinService::ServiceFromPrefPath(
+                              "nft.nftstorage.501.0x65."
+                              "GdGXUTd9ZctZQdNCsV85ULryafVgMR4Jyiq3zkqwR8kY.*")
                               .value());
 }
 
@@ -553,6 +779,15 @@ TEST_F(BraveWalletPinServiceTest, GetPath) {
     token->chain_id = "mainnet";
     auto path = BraveWalletPinService::GetTokenPrefPath("nftstorage", token);
     EXPECT_EQ("nft.nftstorage.60.mainnet.abc.0x2", path.value());
+  }
+
+  {
+    mojom::BlockchainTokenPtr token = mojom::BlockchainToken::New();
+    token->coin = mojom::CoinType::SOL;
+    token->contract_address = "abc";
+    token->chain_id = "0x65";
+    auto path = BraveWalletPinService::GetTokenPrefPath("nftstorage", token);
+    EXPECT_EQ("nft.nftstorage.501.0x65.abc.*", path.value());
   }
 }
 
@@ -588,10 +823,21 @@ TEST_F(BraveWalletPinServiceTest, GetTokens) {
   }
 
   {
+    DictionaryPrefUpdate update(GetPrefs(), kPinnedNFTAssets);
+    base::Value::Dict& update_dict = update->GetDict();
+
+    base::Value::Dict item;
+    item.Set("status", "pinned");
+
+    update_dict.SetByDottedPath(kSolMonkey1Path, std::move(item));
+  }
+
+  {
     auto tokens = service()->GetTokens(absl::nullopt);
-    EXPECT_EQ(2u, tokens.size());
+    EXPECT_EQ(3u, tokens.size());
     EXPECT_TRUE(tokens.contains(kMonkey1Path));
     EXPECT_TRUE(tokens.contains(kMonkey2Path));
+    EXPECT_TRUE(tokens.contains(kSolMonkey1Path));
   }
 
   {

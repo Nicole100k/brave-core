@@ -127,6 +127,12 @@ class BraveWalletPinService : public KeyedService,
                         mojom::BlockchainTokenPtr,
                         absl::optional<bool> result);
 
+  void ProcessTokenMetadata(absl::optional<std::string> service,
+                            mojom::BlockchainTokenPtr token,
+                            const std::string& token_url,
+                            const std::string& result,
+                            AddPinCallback callback);
+
   void OnTokenMetaDataReceived(absl::optional<std::string> service,
                                AddPinCallback callback,
                                mojom::BlockchainTokenPtr token,
@@ -134,6 +140,14 @@ class BraveWalletPinService : public KeyedService,
                                const std::string& result,
                                mojom::ProviderError error,
                                const std::string& error_message);
+
+  void OnSolTokenMetaDataReceived(absl::optional<std::string> service,
+                                  AddPinCallback callback,
+                                  mojom::BlockchainTokenPtr token,
+                                  const std::string& token_url,
+                                  const std::string& result,
+                                  mojom::SolanaProviderError error,
+                                  const std::string& error_message);
 
   // ipfs::IpfsServiceObserver
   void OnIpfsLaunched(bool result, int64_t pid) override;
