@@ -26,7 +26,9 @@ namespace commander {
 CommanderProvider::CommanderProvider(AutocompleteProviderClient* client,
                                      AutocompleteProviderListener* listener)
     : AutocompleteProvider(AutocompleteProvider::TYPE_BRAVE_COMMANDER) {
-  AddListener(listener);
+  if (listener) {
+    AddListener(listener);
+  }
 
   auto* delegate = commander::CommanderFrontendDelegate::Get();
   if (delegate) {
@@ -43,6 +45,8 @@ CommanderProvider::~CommanderProvider() {
 
 void CommanderProvider::Start(const AutocompleteInput& input,
                               bool minimal_changes) {
+  last_input_ = input.text();
+
   Stop(true, false);
   if (base::StartsWith(input.text(), commander::kCommandPrefix)) {
     std::u16string text(base::TrimWhitespace(
@@ -56,11 +60,14 @@ void CommanderProvider::Start(const AutocompleteInput& input,
 }
 
 void CommanderProvider::OnModelUpdated(const commander::CommanderModel& model) {
+  matches_.clear();
   if (model.action == commander::CommanderModel::kPrompt) {
     current_prompt_ = model.prompt_text;
+  } else if (model.action == commander::CommanderModel::kClose) {
+    current_prompt_ = u"";
+    return;
   }
 
-  matches_.clear();
   int rank = 10000;
   for (uint32_t i = 0; i < model.items.size(); ++i) {
     const auto& option = model.items[i];
@@ -77,6 +84,7 @@ void CommanderProvider::OnModelUpdated(const commander::CommanderModel& model) {
     match.description =
         commander::kCommandPrefix + std::u16string(u" ") + option.title;
     match.allowed_to_be_default_match = true;
+    match.swap_contents_and_description = true;
     // We don't want to change the prompt at all while the user is going through
     // their options.
     match.fill_into_edit = last_input_;
