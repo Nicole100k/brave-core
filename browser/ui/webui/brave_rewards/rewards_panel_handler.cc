@@ -7,7 +7,6 @@
 
 #include <utility>
 
-#include "brave/components/brave_rewards/browser/rewards_service.h"
 #include "chrome/browser/profiles/profile.h"
 #include "chrome/browser/ui/browser.h"
 #include "chrome/browser/ui/browser_finder.h"
@@ -21,10 +20,8 @@ RewardsPanelHandler::RewardsPanelHandler(
     : receiver_(this, std::move(receiver)),
       panel_(std::move(panel)),
       embedder_(embedder),
-      rewards_service_(rewards_service),
       panel_coordinator_(panel_coordinator) {
   DCHECK(embedder_);
-  DCHECK(rewards_service_);
   if (panel_coordinator_) {
     panel_observation_.Observe(panel_coordinator_);
   }

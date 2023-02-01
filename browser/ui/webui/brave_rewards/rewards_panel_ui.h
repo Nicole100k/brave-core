@@ -36,8 +36,9 @@ class RewardsPanelUI : public ui::MojoBubbleWebUIController,
   // brave_rewards::mojom::PanelHandlerFactory:
   void CreatePanelHandler(
       mojo::PendingRemote<brave_rewards::mojom::Panel> panel,
-      mojo::PendingReceiver<brave_rewards::mojom::PanelHandler> receiver)
-      override;
+      mojo::PendingReceiver<brave_rewards::mojom::PanelHandler> handler,
+      mojo::PendingReceiver<brave_rewards::mojom::BraveRewardsService>
+          rewards_service) override;
 
   std::unique_ptr<brave_rewards::mojom::PanelHandler> panel_handler_;
   mojo::Receiver<PanelHandlerFactory> panel_factory_receiver_{this};

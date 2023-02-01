@@ -98,7 +98,7 @@ class RewardsDOMHandler
   void RestartBrowser(const base::Value::List& args);
   void IsInitialized(const base::Value::List& args);
   void GetUserType(const base::Value::List& args);
-  void OnGetUserType(ledger::mojom::UserType user_type);
+  void OnGetUserType(brave_rewards::mojom::UserType user_type);
   void GetRewardsParameters(const base::Value::List& args);
   void GetAutoContributeProperties(const base::Value::List& args);
   void FetchPromotions(const base::Value::List& args);
@@ -607,7 +607,8 @@ void RewardsDOMHandler::GetUserType(const base::Value::List&) {
       &RewardsDOMHandler::OnGetUserType, weak_factory_.GetWeakPtr()));
 }
 
-void RewardsDOMHandler::OnGetUserType(ledger::mojom::UserType user_type) {
+void RewardsDOMHandler::OnGetUserType(
+    brave_rewards::mojom::UserType user_type) {
   CallJavascriptFunction("brave_rewards.userType",
                          base::Value(static_cast<int>(user_type)));
 }

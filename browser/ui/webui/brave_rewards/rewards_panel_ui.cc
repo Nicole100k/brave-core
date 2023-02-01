@@ -8,6 +8,7 @@
 #include <memory>
 #include <utility>
 
+#include "brave/browser/brave_rewards/brave_rewards_service_factory.h"
 #include "brave/browser/brave_rewards/rewards_panel/rewards_panel_coordinator.h"
 #include "brave/browser/brave_rewards/rewards_service_factory.h"
 #include "brave/browser/ui/webui/brave_rewards/rewards_panel_handler.h"
@@ -255,13 +256,18 @@ void RewardsPanelUI::BindInterface(
 
 void RewardsPanelUI::CreatePanelHandler(
     mojo::PendingRemote<brave_rewards::mojom::Panel> panel,
-    mojo::PendingReceiver<brave_rewards::mojom::PanelHandler> receiver) {
+    mojo::PendingReceiver<brave_rewards::mojom::PanelHandler> handler,
+    mojo::PendingReceiver<brave_rewards::mojom::BraveRewardsService>
+        rewards_service) {
   DCHECK(panel);
 
   auto* profile = Profile::FromWebUI(web_ui());
   auto* rewards = brave_rewards::RewardsServiceFactory::GetForProfile(profile);
 
   panel_handler_ = std::make_unique<RewardsPanelHandler>(
-      std::move(panel), std::move(receiver), embedder(), rewards,
+      std::move(panel), std::move(handler), embedder(), rewards,
       panel_coordinator_);
+
+  brave_rewards::BraveRewardsServiceFactory::BindForContext(
+      profile, std::move(rewards_service));
 }

@@ -16,6 +16,7 @@
 #include "base/types/expected.h"
 #include "base/version.h"
 #include "brave/components/brave_rewards/browser/rewards_notification_service.h"
+#include "brave/components/brave_rewards/common/brave_rewards.mojom.h"
 #include "brave/vendor/bat-native-ledger/include/bat/ledger/mojom_structs.h"
 #include "brave/vendor/bat-native-ledger/include/bat/ledger/public/interfaces/ledger_types.mojom.h"
 #include "build/build_config.h"
@@ -148,7 +149,7 @@ class RewardsService : public KeyedService {
 
   // Returns the Rewards user type for the current profile.
   virtual void GetUserType(
-      base::OnceCallback<void(ledger::mojom::UserType)> callback) = 0;
+      base::OnceCallback<void(mojom::UserType)> callback) = 0;
 
   using GetAvailableCountriesCallback =
       base::OnceCallback<void(std::vector<std::string>)>;

@@ -591,26 +591,25 @@ void RewardsServiceImpl::CreateRewardsWallet(
 }
 
 void RewardsServiceImpl::GetUserType(
-    base::OnceCallback<void(ledger::mojom::UserType)> callback) {
-  using ledger::mojom::UserType;
-
+    base::OnceCallback<void(mojom::UserType)> callback) {
   if (!Connected()) {
     return DeferCallback(FROM_HERE, std::move(callback),
-                         UserType::kUnconnected);
+                         mojom::UserType::kUnconnected);
   }
 
   auto on_external_wallet = [](base::WeakPtr<RewardsServiceImpl> self,
-                               base::OnceCallback<void(UserType)> callback,
+                               base::OnceCallback<void(mojom::UserType)>
+                                   callback,
                                GetExternalWalletResult result) {
     if (!self) {
-      std::move(callback).Run(UserType::kUnconnected);
+      std::move(callback).Run(mojom::UserType::kUnconnected);
       return;
     }
 
     auto wallet = std::move(result).value_or(nullptr);
     if (!wallet ||
         wallet->status != ledger::mojom::WalletStatus::kNotConnected) {
-      std::move(callback).Run(UserType::kConnected);
+      std::move(callback).Run(mojom::UserType::kConnected);
       return;
     }
 
@@ -622,11 +621,11 @@ void RewardsServiceImpl::GetUserType(
 
     if (!prefs->GetBoolean(prefs::kParametersVBatExpired) &&
         version.CompareTo(base::Version({2, 5})) < 0) {
-      std::move(callback).Run(UserType::kLegacyUnconnected);
+      std::move(callback).Run(mojom::UserType::kLegacyUnconnected);
       return;
     }
 
-    std::move(callback).Run(UserType::kUnconnected);
+    std::move(callback).Run(mojom::UserType::kUnconnected);
   };
 
   GetExternalWallet(

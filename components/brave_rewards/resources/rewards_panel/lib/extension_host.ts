@@ -1,4 +1,5 @@
-/* This Source Code Form is subject to the terms of the Mozilla Public
+/* Copyright (c) 2023 The Brave Authors. All rights reserved.
+ * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this file,
  * You can obtain one at https://mozilla.org/MPL/2.0/. */
 
@@ -15,6 +16,7 @@ import {
 
 import { ExternalWalletAction } from '../../shared/components/wallet_card'
 import { getInitialState } from './initial_state'
+import { userTypeFromMojo } from '../../shared/lib/user_type'
 import { createStateManager } from '../../shared/lib/state_manager'
 import { createLocalStorageScope } from '../../shared/lib/local_storage_scope'
 import { RewardsPanelProxy } from './rewards_panel_proxy'
@@ -335,8 +337,10 @@ export function createHost (): Host {
       apiAdapter.getRewardsEnabled().then((rewardsEnabled) => {
         stateManager.update({ rewardsEnabled })
       }),
-      apiAdapter.getUserType().then((userType) => {
-        stateManager.update({ userType })
+      proxy.rewardsService.getUserType().then((result) => {
+        stateManager.update({
+          userType: userTypeFromMojo(result.userType)
+        })
       }),
       apiAdapter.getPublishersVisitedCount().then((publishersVisitedCount) => {
         stateManager.update({ publishersVisitedCount })

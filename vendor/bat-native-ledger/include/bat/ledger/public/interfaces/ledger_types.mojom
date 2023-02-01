@@ -77,12 +77,6 @@ union ConnectExternalWalletResult {
   ConnectExternalWalletError error;
 };
 
-enum UserType {
-  kLegacyUnconnected,
-  kUnconnected,
-  kConnected
-};
-
 enum Environment {
   STAGING = 0,
   PRODUCTION = 1,

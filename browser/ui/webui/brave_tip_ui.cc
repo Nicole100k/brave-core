@@ -88,7 +88,7 @@ class TipMessageHandler : public WebUIMessageHandler,
   void FetchBalance(const base::Value::List& args);
 
   // Rewards service callbacks
-  void GetUserTypeCallback(ledger::mojom::UserType user_type);
+  void GetUserTypeCallback(brave_rewards::mojom::UserType user_type);
 
   void OnTipCallback(double amount, ledger::mojom::Result result);
 
@@ -263,7 +263,8 @@ void TipMessageHandler::GetUserType(const base::Value::List& args) {
       &TipMessageHandler::GetUserTypeCallback, weak_factory_.GetWeakPtr()));
 }
 
-void TipMessageHandler::GetUserTypeCallback(ledger::mojom::UserType user_type) {
+void TipMessageHandler::GetUserTypeCallback(
+    brave_rewards::mojom::UserType user_type) {
   FireWebUIListener("userTypeUpdated",
                     base::Value(static_cast<int>(user_type)));
 }

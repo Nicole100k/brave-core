@@ -7,4 +7,13 @@ module brave_rewards.mojom;
 
 interface BraveRewardsService {
 
+  // Returns the `UserType` for the current profile.
+  GetUserType() => (UserType user_type);
+
+};
+
+enum UserType {
+  kLegacyUnconnected,
+  kUnconnected,
+  kConnected
 };

@@ -736,14 +736,15 @@ ExtensionFunction::ResponseAction BraveRewardsGetUserTypeFunction::Run() {
 }
 
 void BraveRewardsGetUserTypeFunction::Callback(
-    ledger::mojom::UserType user_type) {
-  auto map_user_type = [](ledger::mojom::UserType user_type) -> std::string {
+    ::brave_rewards::mojom::UserType user_type) {
+  auto map_user_type =
+      [](::brave_rewards::mojom::UserType user_type) -> std::string {
     switch (user_type) {
-      case ledger::mojom::UserType::kLegacyUnconnected:
+      case ::brave_rewards::mojom::UserType::kLegacyUnconnected:
         return "legacy-unconnected";
-      case ledger::mojom::UserType::kConnected:
+      case ::brave_rewards::mojom::UserType::kConnected:
         return "connected";
-      case ledger::mojom::UserType::kUnconnected:
+      case ::brave_rewards::mojom::UserType::kUnconnected:
         return "unconnected";
     }
   };

@@ -5,6 +5,8 @@
 
 module brave_rewards.mojom;
 
+import "brave/components/brave_rewards/common/brave_rewards.mojom";
+
 enum RewardsPanelView {
   kDefault,
   kRewardsTour,
@@ -21,7 +23,8 @@ struct RewardsPanelArgs {
 interface PanelHandlerFactory {
   // The WebUI calls this method when the page is first initialized.
   CreatePanelHandler(pending_remote<Panel> panel,
-                     pending_receiver<PanelHandler> receiver);
+                     pending_receiver<PanelHandler> handler,
+                     pending_receiver<BraveRewardsService> rewards_service);
 };
 
 interface Panel {

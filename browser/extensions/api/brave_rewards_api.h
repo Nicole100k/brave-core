@@ -12,6 +12,7 @@
 #include <vector>
 
 #include "base/types/expected.h"
+#include "brave/components/brave_rewards/common/brave_rewards.mojom.h"
 #include "brave/vendor/bat-native-ads/include/bat/ads/public/interfaces/ads.mojom.h"
 #include "brave/vendor/bat-native-ledger/include/bat/ledger/mojom_structs.h"
 #include "brave/vendor/bat-native-ledger/include/bat/ledger/public/interfaces/ledger_types.mojom.h"
@@ -237,7 +238,7 @@ class BraveRewardsGetUserTypeFunction : public ExtensionFunction {
   ResponseAction Run() override;
 
  private:
-  void Callback(ledger::mojom::UserType user_type);
+  void Callback(brave_rewards::mojom::UserType user_type);
 };
 
 class BraveRewardsGetPublishersVisitedCountFunction : public ExtensionFunction {

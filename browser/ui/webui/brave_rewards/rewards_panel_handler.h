@@ -18,10 +18,6 @@
 
 class Browser;
 
-namespace brave_rewards {
-class RewardsService;
-}
-
 class RewardsPanelHandler
     : public brave_rewards::mojom::PanelHandler,
       public brave_rewards::RewardsPanelCoordinator::Observer {
@@ -51,7 +47,6 @@ class RewardsPanelHandler
   mojo::Receiver<brave_rewards::mojom::PanelHandler> receiver_;
   mojo::Remote<brave_rewards::mojom::Panel> panel_;
   base::WeakPtr<ui::MojoBubbleWebUIController::Embedder> embedder_;
-  raw_ptr<brave_rewards::RewardsService> rewards_service_ = nullptr;
   raw_ptr<brave_rewards::RewardsPanelCoordinator> panel_coordinator_ = nullptr;
   brave_rewards::RewardsPanelCoordinator::Observation panel_observation_{this};
 };

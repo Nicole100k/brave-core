@@ -7,6 +7,7 @@
 #define BRAVE_COMPONENTS_BRAVE_REWARDS_BROWSER_BRAVE_REWARDS_SERVICE_H_
 
 #include "base/memory/raw_ptr.h"
+#include "base/memory/weak_ptr.h"
 #include "brave/components/brave_rewards/common/brave_rewards.mojom.h"
 #include "components/keyed_service/core/keyed_service.h"
 #include "mojo/public/cpp/bindings/pending_receiver.h"
@@ -29,9 +30,13 @@ class BraveRewardsService : public KeyedService,
   mojo::PendingRemote<mojom::BraveRewardsService> MakeRemote();
   void Bind(mojo::PendingReceiver<mojom::BraveRewardsService> receiver);
 
+  // mojom::BraveRewardsService:
+  void GetUserType(GetUserTypeCallback callback) override;
+
  private:
   raw_ptr<RewardsService> rewards_service_ = nullptr;
   mojo::ReceiverSet<mojom::BraveRewardsService> receivers_;
+  base::WeakPtrFactory<BraveRewardsService> weak_factory_{this};
 };
 
 }  // namespace brave_rewards

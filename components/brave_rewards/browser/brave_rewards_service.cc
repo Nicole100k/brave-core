@@ -7,10 +7,14 @@
 
 #include <utility>
 
+#include "brave/components/brave_rewards/browser/rewards_service.h"
+
 namespace brave_rewards {
 
 BraveRewardsService::BraveRewardsService(RewardsService* rewards_service)
-    : rewards_service_(rewards_service) {}
+    : rewards_service_(rewards_service) {
+  DCHECK(rewards_service_);
+}
 
 BraveRewardsService::~BraveRewardsService() = default;
 
@@ -24,6 +28,10 @@ BraveRewardsService::MakeRemote() {
 void BraveRewardsService::Bind(
     mojo::PendingReceiver<mojom::BraveRewardsService> receiver) {
   receivers_.Add(this, std::move(receiver));
+}
+
+void BraveRewardsService::GetUserType(GetUserTypeCallback callback) {
+  rewards_service_->GetUserType(std::move(callback));
 }
 
 }  // namespace brave_rewards
