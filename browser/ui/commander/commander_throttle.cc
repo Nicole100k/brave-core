@@ -33,6 +33,15 @@ CommanderThrottle::~CommanderThrottle() = default;
 
 content::NavigationThrottle::ThrottleCheckResult
 CommanderThrottle::WillStartRequest() {
+  // Don't handle renderer initiated navigations, we don't want them to be able
+  // to trigger commands.
+  // Note: As an additional protection, commander URLs have an
+  // base::UnguessableToken which needs to be set correctly in order to work
+  // properly.
+  if (navigation_handle()->IsRendererInitiated()) {
+    return ThrottleCheckResult(ThrottleAction::PROCEED);
+  }
+
   uint32_t command_index;
   uint32_t result_set_id;
   if (commander::TryParseCommandURL(navigation_handle()->GetURL(),
