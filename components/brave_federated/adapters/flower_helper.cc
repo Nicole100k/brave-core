@@ -7,13 +7,15 @@
 
 #include <sstream>
 #include <string>
+#include <utility>
 
 #include "base/json/json_writer.h"
+#include "base/logging.h"
 #include "base/strings/string_util.h"
 #include "base/values.h"
-
 #include "brave/components/brave_federated/task/model.h"
 #include "brave/components/brave_federated/task/typing.h"
+#include "brave/third_party/flower/src/brave/flwr/serde.h"
 #include "brave/third_party/flower/src/proto/flwr/proto/fleet.pb.h"
 #include "brave/third_party/flower/src/proto/flwr/proto/node.pb.h"
 
@@ -26,66 +28,54 @@ namespace {
 
 namespace brave_federated {
 
-std::vector<float> GetFloatVectorFromString(std::string string) {
-  int vector_size = string.size() / sizeof(double);
-  double parameters_array[vector_size];
-  std::memcpy(parameters_array, string.data(), string.size());
+TaskList ParseTaskListFromResponseBody(const std::string& response_body) {
+  flower::PullTaskInsResponse response;
+  if ((response.ParseFromString(response_body))) {
+    TaskList task_list;
+    for (int i = 0; i < response.task_ins_list_size(); i++) {
+      flower::TaskIns task_instruction = response.task_ins_list(i);
 
-  std::vector<float> parameters_vector(parameters_array,
-                                       parameters_array + vector_size);
-  return parameters_vector;
-}
+      std::string id = task_instruction.task_id();
+      std::string group_id = task_instruction.group_id();
+      std::string workload_id = task_instruction.workload_id();
+      TaskId task_id = TaskId{id, group_id, workload_id};
+      flower::Task flower_task = task_instruction.task();
 
-std::string GetStringFromFloatVector(std::vector<float> vector) {
-  std::ostringstream oss;
-  oss.write(reinterpret_cast<const char*>(vector.data()),
-            vector.size() * sizeof(float));
+      flower::ServerMessage message = flower_task.legacy_server_message();
 
-  return oss.str();
-}
+      TaskType type;
+      std::vector<Weights> parameters = {};
+      if (message.has_fit_ins()) {
+        type = TaskType::Training;
+        parameters = GetVectorsFromParameters(message.fit_ins().parameters());
+      } else if (message.has_evaluate_ins()) {
+        type = TaskType::Evaluation;
+        parameters =
+            GetVectorsFromParameters(message.evaluate_ins().parameters());
+      } else if (message.has_reconnect_ins()) {
+        VLOG(2) << "**: Legacy reconnect instruction received from FL service";
+        continue;
+      } else {
+        VLOG(2) << "**: Received unrecognized instruction from FL service";
+        continue;
+      }
 
-std::vector<std::vector<float>> GetParametersFromMessage(
-    flower::Parameters parameters_msg) {
-  std::vector<std::vector<float>> tensors;
-  for (int i = 0; i < parameters_msg.tensors_size(); i++) {
-    std::string parameters_string = parameters_msg.tensors(i);
-    std::vector<float> parameters_vector =
-        GetFloatVectorFromString(parameters_string);
-    tensors.push_back(parameters_vector);
+      Task task = Task(task_id, type, "token", parameters);
+      task_list.push_back(task);
+    }
+
+    return task_list;
   }
 
-  return tensors;
-}
-
-flower::Parameters GetMessageFromParameters(
-    std::vector<std::vector<float>> parameters_vector) {
-  flower::Parameters flower_parameters;
-  flower_parameters.set_tensor_type("cpp_double");
-
-  for (auto const& vector : parameters_vector) {
-    std::string string = GetStringFromFloatVector(vector);
-    flower_parameters.add_tensors(string);
-  }
-
-  return flower_parameters;
-}
-
-flower::PullTaskInsRequest BuildPullTaskInsRequestMessage() {
-  flower::Node node;
-  node.set_node_id(1);
-  node.set_anonymous(true);
-
-  flower::PullTaskInsRequest pull_task_instructions_request;
-  *pull_task_instructions_request.mutable_node() = node;
-  pull_task_instructions_request.add_task_ids("0");
-
-  return pull_task_instructions_request;
+  VLOG(1) << "Failed to parse PullTaskInsRes";
+  return {};
 }
 
 std::string BuildGetTasksPayload() {
   std::string request;
 
-  flower::PullTaskInsRequest task_request = BuildPullTaskInsRequestMessage();
+  flower::PullTaskInsRequest task_request =
+      BuildAnonymousPullTaskInsRequestMessage();
   task_request.SerializeToString(&request);
 
   return request;
@@ -103,7 +93,7 @@ std::string BuildPostTaskResultsPayload(TaskResult result) {
   if (task_type == TaskType::Training) {
     flower::ClientMessage_FitRes fit_res;
     fit_res.set_num_examples(report.dataset_size);
-    *fit_res.mutable_parameters() = GetMessageFromParameters(report.parameters);
+    *fit_res.mutable_parameters() = GetParametersFromVectors(report.parameters);
     *client_message.mutable_fit_res() = fit_res;
   } else {
     flower::ClientMessage_EvaluateRes eval_res;
