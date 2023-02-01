@@ -8,6 +8,7 @@
 #include <string>
 #include <vector>
 
+#include "base/strings/string_number_conversions.h"
 #include "base/strings/string_split.h"
 #include "base/strings/string_util.h"
 #include "base/unguessable_token.h"
@@ -15,6 +16,8 @@
 namespace commander {
 namespace {
 std::string GetScheme() {
+  // For the commander urls, we generate an unguessable scheme so that these
+  // commands can't be triggered unless you already know the token.
   static std::string scheme = base::ToLowerASCII(
       "brave-commands-" + base::UnguessableToken::Create().ToString());
   return scheme;
@@ -22,8 +25,8 @@ std::string GetScheme() {
 }  // namespace
 
 GURL GetCommandURL(uint32_t command_index, uint32_t result_set_id) {
-  return GURL(GetScheme() + "://" + std::to_string(command_index) + "/" +
-              std::to_string(result_set_id));
+  return GURL(GetScheme() + "://" + base::NumberToString(command_index) + "/" +
+              base::NumberToString(result_set_id));
 }
 
 bool TryParseCommandURL(const GURL& url,

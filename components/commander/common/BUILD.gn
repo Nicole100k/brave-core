@@ -19,19 +19,18 @@ source_set("common") {
   deps = [
     "//base",
     "//ui/gfx",
-    "//url"
+    "//url",
   ]
 }
 
 source_set("unittests") {
   testonly = true
 
-  sources = [
-    "commander_url_unittest.cc"
-  ]
+  sources = [ "commander_url_unittest.cc" ]
 
   deps = [
     ":common",
+    "//base",
     "//testing/gtest",
   ]
 }

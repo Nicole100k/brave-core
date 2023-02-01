@@ -17,7 +17,8 @@ TEST(BraveCommander, UrlsShouldRoundTrip) {
   uint32_t parsed_result_set_id;
   uint32_t parsed_command_index;
 
-  ASSERT_TRUE(commander::TryParseCommandURL(url, &parsed_command_index, &parsed_result_set_id));
+  ASSERT_TRUE(commander::TryParseCommandURL(url, &parsed_command_index,
+                                            &parsed_result_set_id));
   EXPECT_EQ(result_set_id, parsed_result_set_id);
   EXPECT_EQ(command_index, parsed_command_index);
 }

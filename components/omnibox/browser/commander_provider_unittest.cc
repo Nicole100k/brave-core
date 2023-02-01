@@ -17,13 +17,11 @@
 #include "brave/components/commander/common/constants.h"
 #include "brave/components/commander/common/features.h"
 #include "brave/components/omnibox/browser/brave_fake_autocomplete_provider_client.h"
-#include "chrome/browser/ui/commander/commander_view_model.h"
 #include "components/omnibox/browser/autocomplete_input.h"
 #include "components/omnibox/browser/autocomplete_match.h"
 #include "components/omnibox/browser/autocomplete_provider_listener.h"
 #include "components/omnibox/browser/match_compare.h"
 #include "components/omnibox/browser/test_scheme_classifier.h"
-#include "omnibox_event.pb.h"
 #include "testing/gtest/include/gtest/gtest.h"
 #include "third_party/googletest/src/googletest/include/gtest/gtest.h"
 
@@ -159,7 +157,8 @@ TEST_F(CommanderProviderTest, ItemsAreConvertedToMatches) {
     // scrolling through the commands doesn't affect what the user typed.
     EXPECT_EQ(u":> Hello World", match.fill_into_edit);
     // Check the urls are what we expect.
-    EXPECT_EQ(commander::GetCommandURL(command_index++, model.result_set_id), match.destination_url);
+    EXPECT_EQ(commander::GetCommandURL(command_index++, model.result_set_id),
+              match.destination_url);
   }
 }
 
