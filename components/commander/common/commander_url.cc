@@ -4,10 +4,10 @@
 // You can obtain one at https://mozilla.org/MPL/2.0/.
 
 #include "brave/components/commander/common/commander_url.h"
-#include <cstdint>
+
 #include <string>
 #include <vector>
-#include "base/strings/string_number_conversions.h"
+
 #include "base/strings/string_split.h"
 #include "base/unguessable_token.h"
 

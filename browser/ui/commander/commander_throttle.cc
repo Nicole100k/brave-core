@@ -5,7 +5,6 @@
 
 #include "brave/browser/ui/commander/commander_throttle.h"
 
-#include <cstdint>
 #include <string>
 #include <vector>
 

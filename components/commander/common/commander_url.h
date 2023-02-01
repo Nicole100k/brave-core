@@ -6,7 +6,6 @@
 #ifndef BRAVE_COMPONENTS_COMMANDER_COMMON_COMMANDER_URL_H_
 #define BRAVE_COMPONENTS_COMMANDER_COMMON_COMMANDER_URL_H_
 
-#include <cstdint>
 #include "url/gurl.h"
 
 namespace commander {

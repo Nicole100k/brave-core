@@ -7,12 +7,12 @@
 #define BRAVE_BROWSER_UI_COMMANDER_COMMAND_CENTRE_H_
 
 #include <string>
+
 #include "base/memory/weak_ptr.h"
 #include "base/observer_list.h"
 #include "base/observer_list_types.h"
 #include "brave/components/commander/common/commander_frontend_delegate.h"
 #include "brave/components/commander/common/commander_model.h"
-#include "chrome/browser/ui/commander/commander_backend.h"
 #include "chrome/browser/ui/commander/commander_frontend.h"
 #include "chrome/browser/ui/commander/commander_view_model.h"
 

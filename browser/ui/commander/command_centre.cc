@@ -10,7 +10,6 @@
 
 #include "base/functional/bind.h"
 #include "base/functional/callback_helpers.h"
-#include "base/strings/strcat.h"
 #include "brave/components/commander/common/commander_frontend_delegate.h"
 #include "brave/components/commander/common/commander_model.h"
 #include "brave/components/commander/common/constants.h"
