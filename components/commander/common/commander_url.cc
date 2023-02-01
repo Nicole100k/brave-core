@@ -9,13 +9,15 @@
 #include <vector>
 
 #include "base/strings/string_split.h"
+#include "base/strings/string_util.h"
 #include "base/unguessable_token.h"
 
 namespace commander {
 namespace {
 std::string GetScheme() {
-  static base::UnguessableToken token;
-  return "brave-commands-" + token.ToString();
+  static std::string scheme = base::ToLowerASCII(
+      "brave-commands-" + base::UnguessableToken::Create().ToString());
+  return scheme;
 }
 }  // namespace
 

@@ -22,3 +22,16 @@ source_set("common") {
     "//url"
   ]
 }
+
+source_set("unittests") {
+  testonly = true
+
+  sources = [
+    "commander_url_unittest.cc"
+  ]
+
+  deps = [
+    ":common",
+    "//testing/gtest",
+  ]
+}
