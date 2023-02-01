@@ -16,7 +16,7 @@ import {
   SubHeading,
   ImportButton
 } from './nfts-empty-state.style'
-import EmptyStateGraphic from '../../../../../../assets/svg-icons/nft-empty-state.svg'
+import EmptyStateGraphic from '../../../../../../assets/png-icons/nft-empty-state.png'
 
 interface Props {
   onImportNft: () => void
