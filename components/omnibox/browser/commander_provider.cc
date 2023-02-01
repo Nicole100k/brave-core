@@ -16,6 +16,7 @@
 #include "brave/components/commander/common/commander_frontend_delegate.h"
 #include "brave/components/commander/common/commander_model.h"
 #include "brave/components/commander/common/commander_url.h"
+#include "brave/components/commander/common/constants.h"
 #include "components/omnibox/browser/autocomplete_match.h"
 #include "components/omnibox/browser/autocomplete_match_type.h"
 #include "components/omnibox/browser/autocomplete_provider_client.h"
@@ -42,7 +43,7 @@ CommanderProvider::~CommanderProvider() {
 void CommanderProvider::Start(const AutocompleteInput& input,
                               bool minimal_changes) {
   Stop(true, false);
-  if (base::StartsWith(input.text(), u":>")) {
+  if (base::StartsWith(input.text(), commander::kCommandPrefix)) {
     std::u16string text(base::TrimWhitespace(
         input.text().substr(2), base::TrimPositions::TRIM_LEADING));
     auto* delegate = commander::CommanderFrontendDelegate::Get();
@@ -72,10 +73,8 @@ void CommanderProvider::OnModelUpdated(const commander::CommanderModel& model) {
       match.contents_class = {
           ACMatchClassification(0, ACMatchClassification::DIM)};
     }
-    match.keyword = u":> ";
-    match.description = u":> " + option.title;
+    match.description = commander::kCommandPrefix + option.title;
     match.allowed_to_be_default_match = true;
-    match.scoring_signals.set_total_title_match_length(3);
     // We don't want to change the prompt at all while the user is going through
     // their options.
     match.fill_into_edit = last_input_;

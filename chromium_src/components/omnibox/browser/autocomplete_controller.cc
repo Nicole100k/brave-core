@@ -9,6 +9,7 @@
 #include "base/ranges/algorithm.h"
 #include "base/strings/string_util.h"
 #include "brave/components/brave_search_conversion/utils.h"
+#include "brave/components/commander/common/constants.h"
 #include "brave/components/omnibox/browser/brave_bookmark_provider.h"
 #include "brave/components/omnibox/browser/brave_history_quick_provider.h"
 #include "brave/components/omnibox/browser/brave_history_url_provider.h"
@@ -31,7 +32,7 @@ namespace {
 void MaybeShowCommands(AutocompleteResult* result,
                        const AutocompleteInput& input) {
   // If this input isn't a command, return and don't do any work.
-  if (!base::StartsWith(input.text(), u":>")) {
+  if (!base::StartsWith(input.text(), commander::kCommandPrefix)) {
     return;
   }
 

@@ -11,10 +11,12 @@ source_set("common") {
     "commander_model.h",
     "commander_url.cc",
     "commander_url.h",
+    "constants.h",
   ]
 
   deps = [
     "//base",
     "//ui/gfx",
+    "//url"
   ]
 }

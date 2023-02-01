@@ -16,6 +16,7 @@
 #include "chrome/browser/ui/commander/commander_frontend.h"
 #include "chrome/browser/ui/commander/commander_view_model.h"
 
+class OmniboxView;
 class CommandCentre : public commander::CommanderFrontend,
                       public commander::CommanderFrontendDelegate {
  public:
@@ -35,6 +36,8 @@ class CommandCentre : public commander::CommanderFrontend,
   void OnTextChanged(const std::u16string& text) override;
 
  private:
+  OmniboxView* GetOmnibox();
+  bool IsShowing();
   void OnViewModelUpdated(commander::CommanderViewModel model);
 
   std::u16string last_searched_;

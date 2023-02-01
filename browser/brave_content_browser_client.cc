@@ -940,8 +940,9 @@ BraveContentBrowserClient::CreateThrottlesForNavigation(
   if (ntp_shows_navigation_throttle)
     throttles.push_back(std::move(ntp_shows_navigation_throttle));
 
-  if (base::FeatureList::IsEnabled(features::kQuickCommands))
+  if (base::FeatureList::IsEnabled(features::kQuickCommands)) {
     throttles.push_back(std::make_unique<CommanderThrottle>(handle));
+  }
 #endif
 
 #if BUILDFLAG(ENABLE_BRAVE_WEBTORRENT)

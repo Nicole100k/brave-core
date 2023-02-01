@@ -6,11 +6,14 @@
 #include "brave/browser/ui/commander/command_centre.h"
 
 #include <memory>
+#include <string>
 
 #include "base/functional/bind.h"
 #include "base/functional/callback_helpers.h"
+#include "base/strings/strcat.h"
 #include "brave/components/commander/common/commander_frontend_delegate.h"
 #include "brave/components/commander/common/commander_model.h"
+#include "brave/components/commander/common/constants.h"
 #include "chrome/browser/ui/browser.h"
 #include "chrome/browser/ui/browser_finder.h"
 #include "chrome/browser/ui/browser_window.h"
@@ -79,39 +82,45 @@ void CommandCentre::OnTextChanged(const std::u16string& text) {
 }
 
 void CommandCentre::ToggleForBrowser(Browser*) {
-  backend_->Reset();
-
-  auto* omnibox =
-      chrome::FindLastActive()->window()->GetLocationBar()->GetOmniboxView();
-  omnibox->SetFocus(true);
-  omnibox->SetUserText(u":> ");
-  omnibox->SetCaretPos(3);
+  if (IsShowing()) {
+    Hide();
+  } else {
+    Show(chrome::FindLastActive());
+  }
 }
 
 void CommandCentre::Show(Browser*) {
-  auto* omnibox =
-      chrome::FindLastActive()->window()->GetLocationBar()->GetOmniboxView();
+  auto* omnibox = GetOmnibox();
   omnibox->SetFocus(true);
-  omnibox->SetUserText(u":> ");
-  omnibox->SetCaretPos(3);
+
+  auto text = commander::kCommandPrefix + std::u16string(u" ");
+  omnibox->SetUserText(text);
+  omnibox->SetCaretPos(text.size());
 }
 
 void CommandCentre::Hide() {
   backend_->Reset();
-  auto* omnibox =
-      chrome::FindLastActive()->window()->GetLocationBar()->GetOmniboxView();
-  if (!omnibox->GetText().starts_with(u":>")) {
+  if (!IsShowing()) {
     return;
   }
+  auto* omnibox = GetOmnibox();
   omnibox->RevertAll();
   omnibox->CloseOmniboxPopup();
+}
+
+OmniboxView* CommandCentre::GetOmnibox() {
+  return chrome::FindLastActive()->window()->GetLocationBar()->GetOmniboxView();
+}
+
+bool CommandCentre::IsShowing() {
+  return GetOmnibox()->GetText().starts_with(commander::kCommandPrefix);
 }
 
 void CommandCentre::OnViewModelUpdated(commander::CommanderViewModel vm) {
   last_model_ = commander::FromViewModel(vm);
   if (vm.action == commander::CommanderViewModel::kPrompt) {
-    Show(chrome::FindLastActive());
     last_searched_ = u"";
+    Show(chrome::FindLastActive());
   } else if (vm.action == commander::CommanderViewModel::kClose) {
     Hide();
     last_searched_ = u"";
