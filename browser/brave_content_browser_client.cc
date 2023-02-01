@@ -59,6 +59,7 @@
 #include "brave/components/brave_wallet/browser/solana_provider_impl.h"
 #include "brave/components/brave_wallet/common/brave_wallet.mojom.h"
 #include "brave/components/brave_webtorrent/browser/buildflags/buildflags.h"
+#include "brave/components/commander/common/features.h"
 #include "brave/components/constants/pref_names.h"
 #include "brave/components/constants/webui_url_constants.h"
 #include "brave/components/cosmetic_filters/browser/cosmetic_filters_resources.h"
@@ -85,7 +86,6 @@
 #include "chrome/browser/profiles/profile.h"
 #include "chrome/browser/profiles/profile_io_data.h"
 #include "chrome/browser/search_engines/template_url_service_factory.h"
-#include "chrome/browser/ui/ui_features.h"
 #include "chrome/common/url_constants.h"
 #include "chrome/grit/chromium_strings.h"
 #include "components/content_settings/browser/page_specific_content_settings.h"
@@ -940,7 +940,7 @@ BraveContentBrowserClient::CreateThrottlesForNavigation(
   if (ntp_shows_navigation_throttle)
     throttles.push_back(std::move(ntp_shows_navigation_throttle));
 
-  if (base::FeatureList::IsEnabled(features::kQuickCommands)) {
+  if (base::FeatureList::IsEnabled(features::kBraveCommander)) {
     throttles.push_back(std::make_unique<CommanderThrottle>(handle));
   }
 #endif

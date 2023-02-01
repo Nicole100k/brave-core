@@ -10,6 +10,7 @@
 #include "base/strings/string_util.h"
 #include "brave/components/brave_search_conversion/utils.h"
 #include "brave/components/commander/common/constants.h"
+#include "brave/components/commander/common/features.h"
 #include "brave/components/omnibox/browser/brave_bookmark_provider.h"
 #include "brave/components/omnibox/browser/brave_history_quick_provider.h"
 #include "brave/components/omnibox/browser/brave_history_url_provider.h"
@@ -62,13 +63,12 @@ void MaybeShowCommands(AutocompleteResult* result,
 #define LocalHistoryZeroSuggestProvider BraveLocalHistoryZeroSuggestProvider
 #define BookmarkProvider BraveBookmarkProvider
 #define ShortcutsProvider BraveShortcutsProvider
-#define BRAVE_AUTOCOMPLETE_CONTROLLER_AUTOCOMPLETE_CONTROLLER                 \
-  /* TODO: Work out how to disable this without a deps violation (the flag */ \
-  /* is in chrome/browser/ui) */                                              \
-  providers_.push_back(new CommanderProvider(provider_client_.get(), this));  \
-  providers_.push_back(new TopSitesProvider(provider_client_.get()));         \
-  if (IsBraveSearchConversionFetureEnabled() &&                               \
-      !provider_client_->IsOffTheRecord())                                    \
+#define BRAVE_AUTOCOMPLETE_CONTROLLER_AUTOCOMPLETE_CONTROLLER                  \
+  if (base::FeatureList::IsEnabled(features::kBraveCommander))                 \
+    providers_.push_back(new CommanderProvider(provider_client_.get(), this)); \
+  providers_.push_back(new TopSitesProvider(provider_client_.get()));          \
+  if (IsBraveSearchConversionFetureEnabled() &&                                \
+      !provider_client_->IsOffTheRecord())                                     \
     providers_.push_back(new PromotionProvider(provider_client_.get()));
 
 // This sort should be done in the middle of

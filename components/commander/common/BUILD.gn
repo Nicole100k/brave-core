@@ -12,6 +12,8 @@ source_set("common") {
     "commander_url.cc",
     "commander_url.h",
     "constants.h",
+    "features.cc",
+    "features.h",
   ]
 
   deps = [
