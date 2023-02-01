@@ -33,9 +33,9 @@ namespace {
 
 // constexpr char kServerEndpoint[] = "https://fl.brave.com";
 constexpr char kLocalServerTasksEndpoint[] =
-    "http://127.0.0.1:8000/api/1.1/tasks";
+    "http://127.0.0.1:8000/api/v0/fleet/pull-task-ins";
 constexpr char kLocalServerResultsEndpoint[] =
-    "http://127.0.0.1:8000/api/1.1/results";
+    "http://127.0.0.1:8000/api/v0/fleet/push-task-res";
 
 // TODO(lminto): update this annotation
 net::NetworkTrafficAnnotationTag GetNetworkTrafficAnnotationTag() {
@@ -111,9 +111,10 @@ void CommunicationAdapter::OnGetTasks(
       for (int i = 0; i < pull_task_response.task_ins_list_size(); i++) {
         flower::TaskIns task_instruction = pull_task_response.task_ins_list(i);
 
-        std::string task_id = task_instruction.task_id();
+        std::string id = task_instruction.task_id();
         std::string group_id = task_instruction.group_id();
         std::string workload_id = task_instruction.workload_id();
+        TaskId task_id = TaskId{id, group_id, workload_id};
         flower::Task flower_task = task_instruction.task();
 
         flower::ServerMessage message = flower_task.legacy_server_message();
@@ -138,7 +139,7 @@ void CommunicationAdapter::OnGetTasks(
           return;
         }
 
-        Task task = Task(std::stoi(task_id), type, "token", parameters);
+        Task task = Task(task_id, type, "token", parameters);
         task_list.push_back(task);
       }
 
@@ -169,8 +170,7 @@ void CommunicationAdapter::PostTaskResult(TaskResult result,
 
   url_loader_ = network::SimpleURLLoader::Create(
       std::move(request), GetNetworkTrafficAnnotationTag());
-  url_loader_->AttachStringForUpload(std::move(payload),
-                                     "application/protobuf");
+  url_loader_->AttachStringForUpload(payload, "application/protobuf");
   url_loader_->DownloadToStringOfUnboundedSizeUntilCrashAndDie(
       url_loader_factory_.get(),
       base::BindOnce(&CommunicationAdapter::OnPostTaskResult,

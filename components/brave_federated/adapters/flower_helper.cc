@@ -6,6 +6,7 @@
 #include "brave/components/brave_federated/adapters/flower_helper.h"
 
 #include <sstream>
+#include <string>
 
 #include "base/json/json_writer.h"
 #include "base/strings/string_util.h"
@@ -26,13 +27,12 @@ namespace {
 namespace brave_federated {
 
 std::vector<float> GetFloatVectorFromString(std::string string) {
-  int vector_size = string.size() / sizeof(float);
-  float parameters_array[vector_size];
+  int vector_size = string.size() / sizeof(double);
+  double parameters_array[vector_size];
   std::memcpy(parameters_array, string.data(), string.size());
 
   std::vector<float> parameters_vector(parameters_array,
                                        parameters_array + vector_size);
-
   return parameters_vector;
 }
 
@@ -60,11 +60,11 @@ std::vector<std::vector<float>> GetParametersFromMessage(
 flower::Parameters GetMessageFromParameters(
     std::vector<std::vector<float>> parameters_vector) {
   flower::Parameters flower_parameters;
-  flower_parameters.set_tensor_type("cpp_float");
+  flower_parameters.set_tensor_type("cpp_double");
 
   for (auto const& vector : parameters_vector) {
     std::string string = GetStringFromFloatVector(vector);
-    flower_parameters.add_tensors();
+    flower_parameters.add_tensors(string);
   }
 
   return flower_parameters;
@@ -77,7 +77,7 @@ flower::PullTaskInsRequest BuildPullTaskInsRequestMessage() {
 
   flower::PullTaskInsRequest pull_task_instructions_request;
   *pull_task_instructions_request.mutable_node() = node;
-  pull_task_instructions_request.add_task_ids(0);
+  pull_task_instructions_request.add_task_ids("0");
 
   return pull_task_instructions_request;
 }
@@ -93,12 +93,12 @@ std::string BuildGetTasksPayload() {
 
 std::string BuildPostTaskResultsPayload(TaskResult result) {
   Task task = result.GetTask();
+  TaskId task_id = task.GetId();
+  TaskType task_type = task.GetType();
   PerformanceReport report = result.GetReport();
 
-  int task_id = task.GetId();
-  TaskType task_type = task.GetType();
-
   flower::Task flower_task;
+  // Client Message Creation
   flower::ClientMessage client_message;
   if (task_type == TaskType::Training) {
     flower::ClientMessage_FitRes fit_res;
@@ -111,15 +111,21 @@ std::string BuildPostTaskResultsPayload(TaskResult result) {
     eval_res.set_loss(report.loss);
     *client_message.mutable_evaluate_res() = eval_res;
   }
+  flower_task.add_ancestry(task_id.id);
+
+  flower::Node node;
+  node.set_node_id(0);
+  node.set_anonymous(true);
+
+  *flower_task.mutable_producer() = node;
   *flower_task.mutable_legacy_client_message() = client_message;
 
   flower::PushTaskResRequest task_results;
   flower::TaskRes* task_result = task_results.add_task_res_list();
-  task_result->set_task_id(std::to_string(task_id));
-  task_result->set_group_id("0");
-  task_result->set_workload_id("0");
+  task_result->set_task_id("");
+  task_result->set_group_id(task_id.group_id);
+  task_result->set_workload_id(task_id.family_id);
   *task_result->mutable_task() = flower_task;
-  //task_result->set_token("fixed_token");
 
   std::string result_payload;
   task_results.SerializeToString(&result_payload);
