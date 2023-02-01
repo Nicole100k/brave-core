@@ -390,7 +390,11 @@ void PlaylistService::FindMediaFilesFromActiveTab(
   LOG(ERROR) << "BravePlaylist : "
              << "FindMediaFilesFromActiveTab 4";
   PlaylistDownloadRequestManager::Request request;
-  request.url_or_contents = contents->GetWeakPtr();
+  if (ShouldDownloadOnBackground(contents)) {
+    request.url_or_contents = contents->GetVisibleURL().spec();
+  } else {
+    request.url_or_contents = contents->GetWeakPtr();
+  }
   request.callback = std::move(callback);
   download_request_manager_->GetMediaFilesFromPage(std::move(request));
 }
@@ -524,7 +528,7 @@ void PlaylistService::OnThumbnailDownloaded(const std::string& id,
   const auto* value = prefs_->GetDict(kPlaylistItemsPref).FindDict(id);
   DCHECK(value);
   auto playlist_item = ConvertValueToPlaylistItem(*value);
-  playlist_item->thumbnail_path = GURL(path.AsUTF8Unsafe());
+  playlist_item->thumbnail_path = GURL("file://" + path.AsUTF8Unsafe());
   UpdatePlaylistItemValue(
       id, base::Value(ConvertPlaylistItemToValue(playlist_item)));
   NotifyPlaylistChanged({PlaylistChangeParams::Type::kItemThumbnailReady, id});

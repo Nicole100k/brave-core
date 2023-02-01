@@ -44,6 +44,7 @@ MediaDetectorComponentManager::MediaDetectorComponentManager(
   // TODO(sko) This list should be dynamically updated from the playlist.
   // Once it's done, remove this line.
   SetUseLocalListToHideMediaSrcAPI();
+  SetUseLocalScriptForTesting();
 }
 
 MediaDetectorComponentManager::~MediaDetectorComponentManager() = default;
@@ -117,12 +118,17 @@ std::string MediaDetectorComponentManager::GetMediaDetectorScript(
   }
 
   if (net::SchemefulSite site(url); site_specific_detectors_.count(site)) {
-    constexpr std::string_view kPlaceholder =
-        "const siteSpecificDetector = null";
+    constexpr std::string_view kPlaceholder = "const siteSpecificDetector=null";
     auto pos = detector_script.find(kPlaceholder);
+    LOG(ERROR) << "BravePlaylist : " << detector_script;
     if (pos != std::string::npos) {
       detector_script.replace(pos, kPlaceholder.length(),
                               site_specific_detectors_.at(site));
+      LOG(ERROR) << "BravePlaylist : "
+                 << "GetMediaDetectorScript";
+    } else {
+      LOG(ERROR) << "BravePlaylist : "
+                 << "GetMediaDetectorScript 2";
     }
   }
 
