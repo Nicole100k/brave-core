@@ -15,6 +15,7 @@
 #include "base/strings/utf_string_conversions.h"
 #include "brave/components/commander/common/commander_frontend_delegate.h"
 #include "brave/components/commander/common/commander_model.h"
+#include "brave/components/commander/common/commander_url.h"
 #include "components/omnibox/browser/autocomplete_match.h"
 #include "components/omnibox/browser/autocomplete_match_type.h"
 #include "components/omnibox/browser/autocomplete_provider_client.h"
@@ -78,9 +79,7 @@ void CommanderProvider::OnModelUpdated(const commander::CommanderModel& model) {
     // We don't want to change the prompt at all while the user is going through
     // their options.
     match.fill_into_edit = last_input_;
-    match.destination_url =
-        GURL("brave-command://" + std::to_string(model.result_set_id) + "/" +
-             std::to_string(i));
+    match.destination_url = commander::GetCommandURL(i, model.result_set_id);
     match.description_class = {
         ACMatchClassification(0, ACMatchClassification::DIM),
         ACMatchClassification(2, ACMatchClassification::MATCH)};

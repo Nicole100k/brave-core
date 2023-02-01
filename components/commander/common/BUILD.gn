@@ -9,6 +9,8 @@ source_set("common") {
     "commander_frontend_delegate.h",
     "commander_model.cc",
     "commander_model.h",
+    "commander_url.cc",
+    "commander_url.h",
   ]
 
   deps = [

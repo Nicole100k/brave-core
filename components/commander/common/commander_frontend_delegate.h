@@ -9,7 +9,9 @@
 #include <string>
 
 #include "base/observer_list_types.h"
+#include "base/unguessable_token.h"
 #include "brave/components/commander/common/commander_model.h"
+#include "url/gurl.h"
 
 namespace commander {
 class CommanderFrontendDelegate {
