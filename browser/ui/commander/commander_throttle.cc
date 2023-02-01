@@ -25,8 +25,7 @@
 #include "content/public/browser/navigation_handle.h"
 #include "content/public/browser/navigation_throttle.h"
 
-const char kCommanderThrottleName[] = "CommanderThrottle";
-
+namespace commander {
 CommanderThrottle::CommanderThrottle(content::NavigationHandle* handle)
     : content::NavigationThrottle(handle) {}
 
@@ -52,5 +51,6 @@ CommanderThrottle::WillStartRequest() {
 }
 
 const char* CommanderThrottle::GetNameForLogging() {
-  return kCommanderThrottleName;
+  return "CommanderThrottle";
 }
+}  // namespace commander

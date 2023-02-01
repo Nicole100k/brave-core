@@ -15,6 +15,7 @@
 #include "components/omnibox/browser/autocomplete_provider_client.h"
 #include "components/omnibox/browser/autocomplete_provider_listener.h"
 
+namespace commander {
 class CommanderProvider
     : public AutocompleteProvider,
       public commander::CommanderFrontendDelegate::Observer {
@@ -37,5 +38,6 @@ class CommanderProvider
   std::u16string last_input_;
   base::WeakPtrFactory<CommanderProvider> weak_ptr_factory_{this};
 };
+}  // namespace commander
 
 #endif  // BRAVE_COMPONENTS_OMNIBOX_BROWSER_COMMANDER_PROVIDER_H_

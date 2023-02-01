@@ -63,12 +63,13 @@ void MaybeShowCommands(AutocompleteResult* result,
 #define LocalHistoryZeroSuggestProvider BraveLocalHistoryZeroSuggestProvider
 #define BookmarkProvider BraveBookmarkProvider
 #define ShortcutsProvider BraveShortcutsProvider
-#define BRAVE_AUTOCOMPLETE_CONTROLLER_AUTOCOMPLETE_CONTROLLER                  \
-  if (base::FeatureList::IsEnabled(features::kBraveCommander))                 \
-    providers_.push_back(new CommanderProvider(provider_client_.get(), this)); \
-  providers_.push_back(new TopSitesProvider(provider_client_.get()));          \
-  if (IsBraveSearchConversionFetureEnabled() &&                                \
-      !provider_client_->IsOffTheRecord())                                     \
+#define BRAVE_AUTOCOMPLETE_CONTROLLER_AUTOCOMPLETE_CONTROLLER            \
+  if (base::FeatureList::IsEnabled(features::kBraveCommander))           \
+    providers_.push_back(                                                \
+        new commander::CommanderProvider(provider_client_.get(), this)); \
+  providers_.push_back(new TopSitesProvider(provider_client_.get()));    \
+  if (IsBraveSearchConversionFetureEnabled() &&                          \
+      !provider_client_->IsOffTheRecord())                               \
     providers_.push_back(new PromotionProvider(provider_client_.get()));
 
 // This sort should be done in the middle of

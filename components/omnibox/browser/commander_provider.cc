@@ -22,6 +22,7 @@
 #include "components/omnibox/browser/autocomplete_provider_client.h"
 #include "components/omnibox/browser/autocomplete_provider_listener.h"
 
+namespace commander {
 CommanderProvider::CommanderProvider(AutocompleteProviderClient* client,
                                      AutocompleteProviderListener* listener)
     : AutocompleteProvider(AutocompleteProvider::TYPE_BRAVE_COMMANDER) {
@@ -73,7 +74,8 @@ void CommanderProvider::OnModelUpdated(const commander::CommanderModel& model) {
       match.contents_class = {
           ACMatchClassification(0, ACMatchClassification::DIM)};
     }
-    match.description = commander::kCommandPrefix + std::u16string(u" ") + option.title;
+    match.description =
+        commander::kCommandPrefix + std::u16string(u" ") + option.title;
     match.allowed_to_be_default_match = true;
     // We don't want to change the prompt at all while the user is going through
     // their options.
@@ -87,3 +89,4 @@ void CommanderProvider::OnModelUpdated(const commander::CommanderModel& model) {
 
   NotifyListeners(true);
 }
+}  // namespace commander

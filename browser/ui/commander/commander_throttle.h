@@ -9,6 +9,7 @@
 #include "content/public/browser/navigation_handle.h"
 #include "content/public/browser/navigation_throttle.h"
 
+namespace commander {
 class CommanderThrottle : public content::NavigationThrottle {
  public:
   explicit CommanderThrottle(content::NavigationHandle* handle);
@@ -18,5 +19,6 @@ class CommanderThrottle : public content::NavigationThrottle {
   ThrottleCheckResult WillStartRequest() override;
   const char* GetNameForLogging() override;
 };
+}  // namespace commander
 
 #endif  // BRAVE_BROWSER_UI_COMMANDER_COMMANDER_THROTTLE_H_

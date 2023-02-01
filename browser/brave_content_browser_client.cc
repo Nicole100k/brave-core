@@ -941,7 +941,7 @@ BraveContentBrowserClient::CreateThrottlesForNavigation(
     throttles.push_back(std::move(ntp_shows_navigation_throttle));
 
   if (base::FeatureList::IsEnabled(features::kBraveCommander)) {
-    throttles.push_back(std::make_unique<CommanderThrottle>(handle));
+    throttles.push_back(std::make_unique<commander::CommanderThrottle>(handle));
   }
 #endif
 
