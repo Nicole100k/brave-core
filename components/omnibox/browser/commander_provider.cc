@@ -55,7 +55,7 @@ void CommanderProvider::Start(const AutocompleteInput& input,
     if (!IsInObserverList()) {
       delegate->AddObserver(this);
     }
-    delegate->OnTextChanged(text);
+    delegate->SetText(text);
   }
 }
 

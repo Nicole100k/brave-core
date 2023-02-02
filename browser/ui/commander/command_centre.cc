@@ -72,12 +72,17 @@ void CommandCentre::RemoveObserver(Observer* observer) {
   observers_.RemoveObserver(observer);
 }
 
-void CommandCentre::OnTextChanged(const std::u16string& text) {
+void CommandCentre::SetText(const std::u16string& text) {
   if (text == last_searched_ && last_model_.items.size() != 0) {
     return;
   }
   last_searched_ = text;
   backend_->OnTextChanged(text, chrome::FindLastActive());
+}
+
+void CommandCentre::SelectCommand(uint32_t command_index,
+                                  uint32_t result_set_id) {
+  backend_->OnCommandSelected(command_index, result_set_id);
 }
 
 void CommandCentre::ToggleForBrowser(Browser*) {

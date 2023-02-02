@@ -6,6 +6,7 @@
 #ifndef BRAVE_BROWSER_UI_COMMANDER_COMMAND_CENTRE_H_
 #define BRAVE_BROWSER_UI_COMMANDER_COMMAND_CENTRE_H_
 
+#include <cstddef>
 #include <string>
 
 #include "base/memory/weak_ptr.h"
@@ -33,7 +34,8 @@ class CommandCentre : public commander::CommanderFrontend,
   // commander::CommanderFrontendDelegate:
   void AddObserver(Observer* observer) override;
   void RemoveObserver(Observer* observer) override;
-  void OnTextChanged(const std::u16string& text) override;
+  void SetText(const std::u16string& text) override;
+  void SelectCommand(uint32_t command_index, uint32_t result_set_id) override;
 
  private:
   OmniboxView* GetOmnibox();

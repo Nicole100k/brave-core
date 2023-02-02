@@ -96,8 +96,6 @@ source_set("ui") {
       "browser_dialogs.h",
       "commander/command_centre.cc",
       "commander/command_centre.h",
-      "commander/commander_throttle.cc",
-      "commander/commander_throttle.h",
       "content_settings/brave_autoplay_blocked_image_model.cc",
       "content_settings/brave_autoplay_blocked_image_model.h",
       "content_settings/brave_autoplay_content_setting_bubble_model.cc",

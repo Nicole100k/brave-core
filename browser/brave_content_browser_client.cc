@@ -6,13 +6,11 @@
 #include "brave/browser/brave_content_browser_client.h"
 
 #include <algorithm>
-#include <memory>
 #include <string>
 #include <utility>
 #include <vector>
 
 #include "base/bind.h"
-#include "base/feature_list.h"
 #include "base/json/json_reader.h"
 #include "base/strings/strcat.h"
 #include "base/system/sys_info.h"
@@ -35,7 +33,6 @@
 #include "brave/browser/profiles/brave_renderer_updater_factory.h"
 #include "brave/browser/profiles/profile_util.h"
 #include "brave/browser/skus/skus_service_factory.h"
-#include "brave/browser/ui/commander/commander_throttle.h"
 #include "brave/components/brave_ads/common/features.h"
 #include "brave/components/brave_federated/features.h"
 #include "brave/components/brave_rewards/browser/rewards_protocol_handler.h"
@@ -59,7 +56,6 @@
 #include "brave/components/brave_wallet/browser/solana_provider_impl.h"
 #include "brave/components/brave_wallet/common/brave_wallet.mojom.h"
 #include "brave/components/brave_webtorrent/browser/buildflags/buildflags.h"
-#include "brave/components/commander/common/features.h"
 #include "brave/components/constants/pref_names.h"
 #include "brave/components/constants/webui_url_constants.h"
 #include "brave/components/cosmetic_filters/browser/cosmetic_filters_resources.h"
@@ -939,10 +935,6 @@ BraveContentBrowserClient::CreateThrottlesForNavigation(
       NewTabShowsNavigationThrottle::MaybeCreateThrottleFor(handle);
   if (ntp_shows_navigation_throttle)
     throttles.push_back(std::move(ntp_shows_navigation_throttle));
-
-  if (base::FeatureList::IsEnabled(features::kBraveCommander)) {
-    throttles.push_back(std::make_unique<commander::CommanderThrottle>(handle));
-  }
 #endif
 
 #if BUILDFLAG(ENABLE_BRAVE_WEBTORRENT)

@@ -22,9 +22,3 @@ TEST(BraveCommander, UrlsShouldRoundTrip) {
   EXPECT_EQ(result_set_id, parsed_result_set_id);
   EXPECT_EQ(command_index, parsed_command_index);
 }
-
-TEST(BraveCommander, UrlSchemeIsStable) {
-  auto scheme_1 = commander::GetCommandURL(1, 1).scheme();
-  auto scheme_2 = commander::GetCommandURL(2, 2).scheme();
-  EXPECT_EQ(scheme_1, scheme_2);
-}

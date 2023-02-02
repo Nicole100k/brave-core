@@ -23,7 +23,9 @@ class CommanderFrontendDelegate {
 
   virtual void AddObserver(Observer* observer) = 0;
   virtual void RemoveObserver(Observer* observer) = 0;
-  virtual void OnTextChanged(const std::u16string& text) = 0;
+  virtual void SetText(const std::u16string& text) = 0;
+  virtual void SelectCommand(uint32_t command_index,
+                             uint32_t result_set_id) = 0;
 
  protected:
   static void SetInstance(CommanderFrontendDelegate* instance);
