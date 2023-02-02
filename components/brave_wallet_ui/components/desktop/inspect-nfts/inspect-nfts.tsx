@@ -9,7 +9,7 @@ import { useHistory } from 'react-router'
 
 // components
 import { NftList } from './components/nft-list/nft-list'
-import Illustration from '../../../assets/svg-icons/nft-ipfs/pinned-nft-illustration.svg'
+import Illustration from '../../../assets/png-icons/nft-ipfs/pinned-nft-illustration.png'
 import { InfoTooltip } from './components/info-tooltip/info-tooltip'
 
 // styled components
