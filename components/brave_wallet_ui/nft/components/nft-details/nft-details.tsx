@@ -92,7 +92,7 @@ export const NftDetails = ({ selectedAsset, nftMetadata, nftMetadataError, token
               </MultimediaWrapper>
               <DetailColumn>
                 <TokenName>
-                  {nftMetadata.contractInformation.name}{' '}
+                  {selectedAsset.name}{' '}
                   {selectedAsset.tokenId
                     ? '#' + new Amount(selectedAsset.tokenId).toNumber()
                     : ''}
