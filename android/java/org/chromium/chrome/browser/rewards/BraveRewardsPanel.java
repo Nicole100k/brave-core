@@ -164,6 +164,9 @@ public class BraveRewardsPanel
     private static final String REWARDS_PROMOTION_CLAIM_ERROR_ID =
             "rewards_promotion_claim_error_id";
 
+    private static final String REWARDS_NOTIFICATION_PERMISSION_ID = "1122";
+    private static final int REWARDS_NOTIFICATION_PERMISSION = 1122;
+
     // Auto contribute results
     private static final String AUTO_CONTRIBUTE_SUCCESS = "0";
     private static final String AUTO_CONTRIBUTE_GENERAL_ERROR = "1";
@@ -177,7 +180,8 @@ public class BraveRewardsPanel
         DO_NOTHING,
         RECONNECT,
         CLAIM,
-        TURN_ON_ADS;
+        TURN_ON_ADS,
+        NOTIFICATION_PERMISSION
     }
 
     private static final String WHITE_COLOR = "#FFFFFF";
@@ -499,19 +503,21 @@ public class BraveRewardsPanel
     }
 
     private void showNotification(String id, int type, long timestamp, String[] args) {
-        if (mBraveRewardsNativeWorker == null) {
-            return;
-        }
+        if (!id.equals(REWARDS_NOTIFICATION_PERMISSION_ID)) {
+            if (mBraveRewardsNativeWorker == null) {
+                return;
+            }
 
-        if (mExternalWallet == null
-                || (mExternalWallet.getStatus() == WalletStatus.NOT_CONNECTED
-                        && type == BraveRewardsNativeWorker.REWARDS_NOTIFICATION_GRANT)) {
-            return;
-        }
+            if (mExternalWallet == null
+                    || (mExternalWallet.getStatus() == WalletStatus.NOT_CONNECTED
+                            && type == BraveRewardsNativeWorker.REWARDS_NOTIFICATION_GRANT)) {
+                return;
+            }
 
-        if (!isValidNotificationType(type, args.length)) {
-            mBraveRewardsNativeWorker.DeleteNotification(id);
-            return;
+            if (!isValidNotificationType(type, args.length)) {
+                mBraveRewardsNativeWorker.DeleteNotification(id);
+                return;
+            }
         }
 
         mCurrentNotificationId = id;
@@ -719,6 +725,19 @@ public class BraveRewardsPanel
                                 R.string.brave_rewards_local_server_not_responding);
                 actionNotificationButton.setVisibility(View.GONE);
                 break;
+            case REWARDS_NOTIFICATION_PERMISSION:
+                notificationClaimImg.setVisibility(View.VISIBLE);
+                notificationClaimImg.setImageResource(R.drawable.ic_tipping_error);
+                notificationClaimSubText.setVisibility(View.GONE);
+                title = mPopupView.getResources().getString(R.string.notifications_are_disabled);
+                description = mPopupView.getResources().getString(
+                        R.string.brave_rewards_may_not_work_while_notifications_are_disabled);
+                actionNotificationButton.setText(
+                        mPopupView.getResources().getString(R.string.stats_notification_on));
+                actionNotificationButton.setVisibility(View.VISIBLE);
+                notificationClickAction = NotificationClickAction.NOTIFICATION_PERMISSION;
+
+                break;
             case REWARDS_PROMOTION_CLAIM_ERROR:
                 notificationClaimImg.setVisibility(View.GONE);
                 notificationClaimSubText.setVisibility(View.GONE);
@@ -740,7 +759,9 @@ public class BraveRewardsPanel
         }
         notificationTitleText.setText(title);
         notificationTitleText.setVisibility(title.isEmpty() ? View.GONE : View.VISIBLE);
-        notificationTitleText.setCompoundDrawablesWithIntrinsicBounds(notificationIcon, 0, 0, 0);
+        if (!id.equals(REWARDS_NOTIFICATION_PERMISSION_ID))
+            notificationTitleText.setCompoundDrawablesWithIntrinsicBounds(
+                    notificationIcon, 0, 0, 0);
         notificationSubtitleText.setText(description);
         notificationSubtitleText.setVisibility(description.isEmpty() ? View.GONE : View.VISIBLE);
 
@@ -817,6 +838,14 @@ public class BraveRewardsPanel
                             mActivity.getClass(), BraveActivity.class));
                     BraveActivity.class.cast(mActivity).openNewOrSelectExistingTab(
                             BraveActivity.BRAVE_REWARDS_SETTINGS_URL);
+                    dismiss();
+                }
+            });
+        } else if (notificationClickAction == NotificationClickAction.NOTIFICATION_PERMISSION) {
+            actionNotificationButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    BravePermissionUtils.notificationSettingPage(mAnchorView.getContext());
                     dismiss();
                 }
             });
@@ -1211,6 +1240,17 @@ public class BraveRewardsPanel
         mBraveRewardsNativeWorker.GetAllNotifications();
         setVerifyWalletButton();
         showRewardsFromAdsSummary();
+        mayBeShowNotitionPermissionDialog();
+    }
+
+    private void mayBeShowNotitionPermissionDialog() {
+        if ((!BravePermissionUtils.hasNotificationPermission(mAnchorView.getContext()))
+                || BraveNotificationWarningDialog.shouldShowRewardWarningDialog(
+                        mAnchorView.getContext())) {
+            String args[] = {};
+            showNotification(
+                    REWARDS_NOTIFICATION_PERMISSION_ID, REWARDS_NOTIFICATION_PERMISSION, 0, args);
+        }
     }
 
     private void showUnverifiedLayout() {
