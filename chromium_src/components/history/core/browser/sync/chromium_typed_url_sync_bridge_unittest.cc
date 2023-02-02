@@ -11,10 +11,10 @@
 #include "components/history/core/browser/sync/typed_url_sync_bridge.h"
 #include "components/sync/model/model_type_sync_bridge.h"
 
-#define BRAVE_SCOPED_FEATURE_LIST_DECLARE \
+#define BRAVE_TEST_MEMBERS_DECLARE \
   base::test::ScopedFeatureList scoped_feature_list_;
 
-#define BRAVE_SCOPED_FEATURE_LIST_INIT   \
+#define BRAVE_TEST_MEMBERS_INIT          \
   scoped_feature_list_.InitWithFeatures( \
       {}, {brave_sync::features::kBraveSyncSendAllHistory});
 
@@ -24,5 +24,5 @@
 
 #undef TypedURLSyncBridge
 
-#undef BRAVE_SCOPED_FEATURE_LIST_INIT
-#undef BRAVE_SCOPED_FEATURE_LIST_DECLARE
+#undef BRAVE_TEST_MEMBERS_INIT
+#undef BRAVE_TEST_MEMBERS_DECLARE

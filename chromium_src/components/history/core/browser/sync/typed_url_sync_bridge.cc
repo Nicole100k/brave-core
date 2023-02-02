@@ -17,32 +17,19 @@ bool IsSendAllHistoryEnabled() {
 
 }  // namespace
 
-namespace ui {
-
-static bool PageTransitionCoreTypeIs_BraveImpl(PageTransition lhs,
-                                               PageTransition rhs) {
-  if (IsSendAllHistoryEnabled() &&
-      PageTransitionCoreTypeIs(rhs, ui::PAGE_TRANSITION_RELOAD)) {
-    // At TypedURLSyncBridge::WriteToTypedUrlSpecifics when syncing all
-    // history, don't ignore reload transitions.
-    return false;
-  }
-  return PageTransitionCoreTypeIs(lhs, rhs);
-}
-
-}  // namespace ui
+// }  // namespace ui
 
 #define BRAVE_TYPED_URL_SYNC_BRIDGE_ON_URL_VISITED_REPLACE_SHOULD_SYNC_VISIT \
   if (!ShouldSyncVisit(url_row, visit_row.transition)) {                     \
     return;                                                                  \
   }                                                                          \
+  /* Suppress cpplint error: (cpplint) If/else bodies with multiple */       \
+  /* statements require braces  [readability/braces] [4]            */       \
+  /* NOLINTNEXTLINE */                                                       \
   if (false)
-
-#define PageTransitionCoreTypeIs PageTransitionCoreTypeIs_BraveImpl
 
 #include "src/components/history/core/browser/sync/typed_url_sync_bridge.cc"
 
-#undef PageTransitionCoreTypeIs
 #undef BRAVE_TYPED_URL_SYNC_BRIDGE_ON_URL_VISITED_REPLACE_SHOULD_SYNC_VISIT
 
 namespace history {
@@ -50,9 +37,12 @@ namespace history {
 // static
 bool TypedURLSyncBridge::HasTypedUrl(const std::vector<VisitRow>& visits) {
   if (IsSendAllHistoryEnabled()) {
-    // When there are no visits, we must return false. Otherwise
-    // TypedURLSyncBridge will try to send data to sync
-    return !visits.empty();
+    // We are ignoring only reload transitions, so any other like typed,
+    // link, bookmark - are accepted as worth to be synced.
+    return base::ranges::any_of(visits, [](const VisitRow& visit) {
+      return !ui::PageTransitionCoreTypeIs(visit.transition,
+                                           ui::PAGE_TRANSITION_RELOAD);
+    });
   }
   return ::history::HasTypedUrl(visits);
 }

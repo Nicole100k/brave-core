@@ -825,8 +825,8 @@ constexpr char kRestrictEventSourcePoolDescription[] =
       kOsAll, FEATURE_VALUE_TYPE(                                           \
           blink::features::kRestrictEventSourcePool)},                      \
     {"brave-sync-send-all-history",                                         \
-      flag_descriptions::kBraveSyncSendAllHistoryName,                       \
-      flag_descriptions::kBraveSyncSendAllHistoryDescription,                \
+      flag_descriptions::kBraveSyncSendAllHistoryName,                      \
+      flag_descriptions::kBraveSyncSendAllHistoryDescription,               \
       kOsAll, FEATURE_VALUE_TYPE(                                           \
           brave_sync::features::kBraveSyncSendAllHistory)},                 \
     BRAVE_IPFS_FEATURE_ENTRIES                                              \
