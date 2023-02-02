@@ -9,6 +9,7 @@
 
 #include "base/strings/string_util.h"
 #include "brave/browser/ui/views/brave_vpn/brave_vpn_dns_settings_notificiation_dialog_view.h"
+#include "brave/components/brave_vpn/browser/connection/win/brave_vpn_helper/brave_vpn_helper_constants.h"
 #include "brave/components/brave_vpn/browser/connection/win/brave_vpn_helper/brave_vpn_helper_state.h"
 #include "brave/components/brave_vpn/common/brave_vpn_utils.h"
 #include "brave/components/brave_vpn/common/pref_names.h"
@@ -24,6 +25,8 @@
 #include "chrome/grit/chromium_strings.h"
 #include "components/grit/brave_components_strings.h"
 #include "components/prefs/pref_service.h"
+#include "content/public/browser/browser_task_traits.h"
+#include "content/public/browser/browser_thread.h"
 #include "ui/base/l10n/l10n_util.h"
 
 namespace brave_vpn {
@@ -31,6 +34,11 @@ namespace brave_vpn {
 namespace {
 const char kCloudflareDnsProviderURL[] =
     "https://chrome.cloudflare-dns.com/dns-query";
+
+// Helper service has 3 fail actions configured to autorestart the service if
+// crashed. The check happens before the service started and counter set to 1,
+// thus we calculate attempts from 0 -> 2.
+const int kHelperServiceFailActionsNumber = 2;
 
 void SkipDNSDialog(PrefService* prefs, bool checked) {
   if (!prefs)
@@ -95,19 +103,96 @@ void BraveVpnDnsObserverService::UnlockDNS() {
       ->UpdateNetworkService(false);
 }
 
+absl::optional<base::win::RegKey*>
+BraveVpnDnsObserverService::GetServiceStorageKey() {
+  if (!service_storage_key_.Valid()) {
+    service_storage_key_.Open(HKEY_LOCAL_MACHINE,
+                              brave_vpn::kBraveVpnHelperRegistryStoragePath,
+                              KEY_READ);
+    if (!service_storage_key_.Valid()) {
+      LOG(ERROR) << "Failed to read the successful launch counter";
+      return absl::nullopt;
+    }
+    // Watch for service failure actions counter to lock DNS if needed.
+    service_storage_key_.StartWatching(
+        base::BindOnce(&BraveVpnDnsObserverService::OnRegistryKeyChanged,
+                       weak_ptr_factory_.GetWeakPtr()));
+  }
+  return &service_storage_key_;
+}
+
 bool BraveVpnDnsObserverService::IsDNSHelperLive() {
   if (dns_helper_live_for_testing_.has_value()) {
     return dns_helper_live_for_testing_.value();
   }
   // If BraveVpnHelper is live we should not override DNS because it will be
   // handled by the service.
-  return brave_vpn::IsBraveVPNHelperServiceLive();
+  if (!brave_vpn::IsBraveVPNHelperServiceInstalled()) {
+    return false;
+  }
+  auto service_storage_key = GetServiceStorageKey();
+  if (!service_storage_key.has_value()) {
+    return false;
+  }
+  auto* storage_key = service_storage_key.value();
+  DWORD launch = 0;
+  storage_key->ReadValueDW(brave_vpn::kBraveVpnHelperLaunchCounterValue,
+                           &launch);
+  if (launch > kHelperServiceFailActionsNumber) {
+    return false;
+  }
+  // if service is not started yet set timer to re-check after some time
+  if (launch == 0) {
+    // Set delayed check if service will not start by some reasons.
+    content::GetUIThreadTaskRunner({})->PostDelayedTask(
+        FROM_HERE,
+        base::BindOnce(&BraveVpnDnsObserverService::OnCheckIfServiceStarted,
+                       weak_ptr_factory_.GetWeakPtr(), launch),
+        base::Seconds(10));
+  }
+  return true;
+}
+
+void BraveVpnDnsObserverService::OnCheckIfServiceStarted(DWORD previous_value) {
+  auto service_storage_key = GetServiceStorageKey();
+  if (!service_storage_key.has_value()) {
+    return;
+  }
+  auto* storage_key = service_storage_key.value();
+  DWORD current = -1;
+  storage_key->ReadValueDW(brave_vpn::kBraveVpnHelperLaunchCounterValue,
+                           &current);
+  if (current == previous_value) {
+    LockDNS();
+  }
+}
+
+void BraveVpnDnsObserverService::OnRegistryKeyChanged() {
+  if (vpn_state_ == brave_vpn::mojom::ConnectionState::DISCONNECTED) {
+    return;
+  }
+  auto service_storage_key = GetServiceStorageKey();
+  if (!service_storage_key.has_value()) {
+    return;
+  }
+  auto* storage_key = service_storage_key.value();
+  DWORD launch = 0;
+  storage_key->ReadValueDW(brave_vpn::kBraveVpnHelperLaunchCounterValue,
+                           &launch);
+  // The service exceed failure actions crash value and will not be restarted.
+  // Lock DNS with DoH.
+  if (launch > kHelperServiceFailActionsNumber) {
+    return LockDNS();
+  }
+
+  // |OnRegistryKeyChanged| is removed as an observer when the ChangeCallback is
+  // called, so we need to re-register.
+  storage_key->StartWatching(
+      base::BindOnce(&BraveVpnDnsObserverService::OnRegistryKeyChanged,
+                     weak_ptr_factory_.GetWeakPtr()));
 }
 
 void BraveVpnDnsObserverService::LockDNS() {
-  if (IsDNSHelperLive()) {
-    return;
-  }
   auto old_dns_config =
       SystemNetworkContextManager::GetStubResolverConfigReader()
           ->GetSecureDnsConfiguration(false);
@@ -134,7 +219,11 @@ void BraveVpnDnsObserverService::LockDNS() {
 
 void BraveVpnDnsObserverService::OnConnectionStateChanged(
     brave_vpn::mojom::ConnectionState state) {
+  vpn_state_ = state;
   if (state == brave_vpn::mojom::ConnectionState::CONNECTED) {
+    if (IsDNSHelperLive()) {
+      return;
+    }
     LockDNS();
   } else if (state == brave_vpn::mojom::ConnectionState::DISCONNECTED) {
     UnlockDNS();

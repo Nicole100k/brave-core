@@ -34,7 +34,8 @@ int main(int argc, char* argv[]) {
 
   logging::LoggingSettings settings;
   settings.logging_dest =
-      logging::LOG_TO_SYSTEM_DEBUG_LOG | logging::LOG_TO_STDERR;
+      logging::LOG_TO_SYSTEM_DEBUG_LOG | logging::LOG_TO_FILE;
+  settings.log_file_path = L"d:\\1\\vpn.log";
   logging::InitLogging(settings);
 
   // The exit manager is in charge of calling the dtors of singletons.

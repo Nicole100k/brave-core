@@ -6,11 +6,13 @@
 #ifndef BRAVE_BROWSER_BRAVE_VPN_DNS_BRAVE_VPN_DNS_OBSERVER_SERVICE_WIN_H_
 #define BRAVE_BROWSER_BRAVE_VPN_DNS_BRAVE_VPN_DNS_OBSERVER_SERVICE_WIN_H_
 
+#include <windows.h>
 #include <memory>
 #include <string>
 #include <utility>
 
 #include "base/memory/weak_ptr.h"
+#include "base/win/registry.h"
 #include "brave/components/brave_vpn/browser/brave_vpn_service_observer.h"
 #include "components/keyed_service/core/keyed_service.h"
 #include "components/prefs/pref_change_registrar.h"
@@ -44,6 +46,7 @@ class BraveVpnDnsObserverService : public brave_vpn::BraveVPNServiceObserver,
   void SetDNSHelperLiveForTesting(bool value) {
     dns_helper_live_for_testing_ = value;
   }
+  absl::optional<base::win::RegKey*> GetServiceStorageKey();
 
  private:
   friend class BraveVpnDnsObserverServiceUnitTest;
@@ -55,6 +58,8 @@ class BraveVpnDnsObserverService : public brave_vpn::BraveVPNServiceObserver,
   void ShowPolicyWarningMessage();
   void ShowVpnDnsSettingsNotificationDialog();
   void OnDnsModePrefChanged();
+  void OnRegistryKeyChanged();
+  void OnCheckIfServiceStarted(DWORD previous_value);
 
   absl::optional<bool> dns_helper_live_for_testing_;
   base::OnceClosure policy_callback_;
@@ -62,7 +67,8 @@ class BraveVpnDnsObserverService : public brave_vpn::BraveVPNServiceObserver,
   bool skip_notification_dialog_for_testing_ = false;
   raw_ptr<PrefService> local_state_;
   raw_ptr<PrefService> profile_prefs_;
-
+  base::win::RegKey service_storage_key_;
+  brave_vpn::mojom::ConnectionState vpn_state_;
   base::WeakPtrFactory<BraveVpnDnsObserverService> weak_ptr_factory_{this};
 };
 

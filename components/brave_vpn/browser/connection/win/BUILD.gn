@@ -27,7 +27,11 @@ source_set("win") {
     "brave_vpn_os_connection_api_win.cc",
     "brave_vpn_os_connection_api_win.h",
   ]
-
+  libs = [
+    "Fwpuclnt.lib",
+    "Iphlpapi.lib",
+    "rasapi32.lib",
+  ]
   deps = [
     ":utils",
     "brave_vpn_helper",

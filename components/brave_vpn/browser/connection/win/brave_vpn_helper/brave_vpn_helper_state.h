@@ -10,7 +10,7 @@
 
 namespace brave_vpn {
 
-bool IsBraveVPNHelperServiceLive();
+bool IsBraveVPNHelperServiceInstalled();
 std::wstring GetBraveVPNConnectionName();
 std::wstring GetVpnServiceName();
 std::wstring GetVpnServiceDisplayName();
