@@ -45,6 +45,8 @@ import { WalletPageActions } from '../../../../page/actions'
 import { useNftPin } from '../../../../common/hooks/nft-pin'
 import { BannerWrapper } from '../../../shared/style'
 import { NftIpfsBanner } from '../../nft-ipfs-banner/nft-ipfs-banner'
+import { useSafeWalletSelector } from '../../../../common/hooks/use-safe-selector'
+import { WalletSelectors } from '../../../../common/selectors'
 
 interface ParamsType {
   category?: TopTabNavTypes
@@ -78,6 +80,8 @@ const CryptoView = (props: Props) => {
   const accountToRemove = useSelector(({ accountsTab }: { accountsTab: AccountsTabState }) => accountsTab.accountToRemove)
   const showAccountModal = useSelector(({ accountsTab }: { accountsTab: AccountsTabState }) => accountsTab.showAccountModal)
   const selectedAccount = useSelector(({ accountsTab }: { accountsTab: AccountsTabState }) => accountsTab.selectedAccount)
+
+  const isNftPinningFeatureEnabled = useSafeWalletSelector(WalletSelectors.isNftPinningFeatureEnabled)
 
   const dispatch = useDispatch()
 
@@ -287,13 +291,25 @@ const CryptoView = (props: Props) => {
           <TransactionsScreen />
         </Route>
 
-        <Route path={WalletRoutes.LocalIpfsNode} exact={true}>
-          <LocalIpfsNodeScreen onClose={onClose} />
-        </Route>
+        {/* NFT Pinning onboarding page */}
+        <Route
+          path={WalletRoutes.LocalIpfsNode}
+          exact={true}
+          render={(props) => isNftPinningFeatureEnabled
+            ? <LocalIpfsNodeScreen onClose={onClose} {...props} />
+            : <Redirect to={WalletRoutes.Portfolio}/>
+          }
+        />
 
-        <Route path={WalletRoutes.InspectNfts} exact={true}>
-          <InspectNftsScreen onClose={onClose} onBack={onBack} />
-        </Route>
+        {/* NFT Pinning inspect pinnable page */}
+        <Route
+          path={WalletRoutes.InspectNfts}
+          exact={true}
+          render={(props) => isNftPinningFeatureEnabled
+            ? <InspectNftsScreen onClose={onClose} onBack={onBack} {...props} />
+            : <Redirect to={WalletRoutes.Portfolio} />
+          }
+        />
 
         <Redirect to={sessionRoute || WalletRoutes.Portfolio} />
 

@@ -145,7 +145,10 @@ handler.on(WalletPageActions.selectAsset.type, async (store: Store, payload: Upd
 
     if (payload.asset.isErc721 || payload.asset.isNft) {
       store.dispatch(WalletPageActions.getNFTMetadata(payload.asset))
-      store.dispatch(WalletPageActions.getPinStatus(payload.asset))
+
+      if (store.getState().wallet.isNftPinningFeatureEnabled) {
+        store.dispatch(WalletPageActions.getPinStatus(payload.asset))
+      }
     }
   } else {
     store.dispatch(WalletPageActions.updatePriceInfo({ priceHistory: undefined, defaultFiatPrice: undefined, defaultCryptoPrice: undefined, timeFrame: payload.timeFrame }))
@@ -311,12 +314,16 @@ handler.on(WalletPageActions.getNFTMetadata.type, async (store, payload: BraveWa
 })
 
 handler.on(WalletPageActions.getIsAutoPinEnabled.type, async (store) => {
+  if (!store.getState().wallet.isNftPinningFeatureEnabled) return
+
   const { braveWalletAutoPinService } = getWalletPageApiProxy()
   const { enabled } = await braveWalletAutoPinService.isAutoPinEnabled()
   store.dispatch(WalletPageActions.updateAutoPinEnabled(enabled))
 })
 
 handler.on(WalletPageActions.setAutoPinEnabled.type, async (store, payload: boolean) => {
+  if (!store.getState().wallet.isNftPinningFeatureEnabled) return
+
   const { braveWalletAutoPinService } = getWalletPageApiProxy()
   store.dispatch(WalletPageActions.updateEnablingAutoPin(true))
   await braveWalletAutoPinService.setAutoPinEnabled(payload)
@@ -326,6 +333,8 @@ handler.on(WalletPageActions.setAutoPinEnabled.type, async (store, payload: bool
 })
 
 handler.on(WalletPageActions.getPinStatus.type, async (store, payload: BraveWallet.BlockchainToken) => {
+  if (!store.getState().wallet.isNftPinningFeatureEnabled) return
+
   const braveWalletPinService = getWalletPageApiProxy().braveWalletPinService
   const result = await braveWalletPinService.getTokenStatus(payload)
   if (result.status) {
@@ -336,6 +345,8 @@ handler.on(WalletPageActions.getPinStatus.type, async (store, payload: BraveWall
 })
 
 handler.on(WalletPageActions.getNftsPinningStatus.type, async (store, payload: BraveWallet.BlockchainToken[]) => {
+  if (!store.getState().wallet.isNftPinningFeatureEnabled) return
+
   const { braveWalletPinService } = getWalletPageApiProxy()
   const getTokenStatusPromises = payload.map((token) => braveWalletPinService.getTokenStatus(token))
   const results = await Promise.all(getTokenStatusPromises)
@@ -352,6 +363,8 @@ handler.on(WalletPageActions.getNftsPinningStatus.type, async (store, payload: B
 })
 
 handler.on(WalletPageActions.getLocalIpfsNodeStatus.type, async (store) => {
+  if (!store.getState().wallet.isNftPinningFeatureEnabled) return
+
   const { braveWalletPinService } = getWalletPageApiProxy()
   const isNodeRunning = await braveWalletPinService.isLocalNodeRunning()
   store.dispatch(WalletPageActions.updateLocalIpfsNodeStatus(isNodeRunning.result))

@@ -12,6 +12,10 @@ import {
   WalletRoutes
 } from '../../../../../constants/types'
 
+// selectors
+import { useSafeWalletSelector } from '../../../../../common/hooks/use-safe-selector'
+import { WalletSelectors } from '../../../../../common/selectors'
+
 // utils
 import { getLocale } from '$web-common/locale'
 
@@ -43,6 +47,8 @@ export const Nfts = (props: Props) => {
     nftList,
     onToggleShowIpfsBanner
   } = props
+
+  const isNftPinningFeatureEnabled = useSafeWalletSelector(WalletSelectors.isNftPinningFeatureEnabled)
 
   // state
   const [searchValue, setSearchValue] = React.useState<string>('')
@@ -99,9 +105,11 @@ export const Nfts = (props: Props) => {
           value={searchValue}
         />
         <NetworkFilterSelector networkListSubset={networks} />
-        <IpfsButton onClick={onClickIpfsButton}>
-          <IpfsIcon />
-        </IpfsButton>
+        {isNftPinningFeatureEnabled &&
+          <IpfsButton onClick={onClickIpfsButton}>
+            <IpfsIcon />
+          </IpfsButton>
+        }
       </FilterTokenRow>
       {filteredNfts.length === 0
         ? <EmptyStateText>{emptyStateMessage}</EmptyStateText>

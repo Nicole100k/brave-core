@@ -26,7 +26,6 @@ export const NftPinningStatusAnimation = ({ size, status, isAutopinEnabled }: Pr
   const { STATUS_PINNING_IN_PROGRESS, STATUS_PINNED } = BraveWallet.TokenPinStatusCode
   const { pinnableNftsCount } = useNftPin()
 
-  console.log({ isAutopinEnabled, status })
   return (
     <StyledWrapper size={size || '30px'}>
       {(!isAutopinEnabled || pinnableNftsCount === 0) ? (
