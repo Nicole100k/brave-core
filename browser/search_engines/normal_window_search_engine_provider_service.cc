@@ -10,14 +10,21 @@
 #include "chrome/browser/profiles/profile.h"
 #include "chrome/browser/search_engines/template_url_service_factory.h"
 #include "components/search_engines/template_url_service.h"
+#include "components/search_engines/search_engines_pref_names.h"
 
 NormalWindowSearchEngineProviderService::
-    NormalWindowSearchEngineProviderService(Profile* profile) {
-  // No-op if default provider was set to prefs.
+    NormalWindowSearchEngineProviderService(Profile* profile)
+    : profile_(profile) {
+  private_search_provider_guid_.Init(
+      prefs::kSyncedDefaultPrivateSearchProviderGUID,
+      profile_->GetPrefs(),
+      base::BindRepeating(
+          &NormalWindowSearchEngineProviderService::OnPreferenceChanged,
+          base::Unretained(this)));
 
-  auto* service = TemplateURLServiceFactory::GetForProfile(profile);
+  auto* service = TemplateURLServiceFactory::GetForProfile(profile_);
   if (service->loaded()) {
-    brave::SetDefaultPrivateSearchProvider(profile);
+    brave::SetDefaultPrivateSearchProvider(profile_);
     return;
   }
 
@@ -34,5 +41,10 @@ NormalWindowSearchEngineProviderService::
 void NormalWindowSearchEngineProviderService::OnTemplateURLServiceLoaded(
     Profile* profile) {
   template_url_service_subscription_ = {};
-  brave::SetDefaultPrivateSearchProvider(profile);
+  brave::SetDefaultPrivateSearchProvider(profile_);
+}
+
+void NormalWindowSearchEngineProviderService::OnPreferenceChanged(
+    const std::string& pref_name) {
+  brave::SetDefaultPrivateSearchProvider(profile_);
 }

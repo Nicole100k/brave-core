@@ -7,7 +7,9 @@
 #define BRAVE_BROWSER_SEARCH_ENGINES_NORMAL_WINDOW_SEARCH_ENGINE_PROVIDER_SERVICE_H_
 
 #include "base/callback_list.h"
+#include "base/memory/raw_ptr.h"
 #include "components/keyed_service/core/keyed_service.h"
+#include "components/prefs/pref_member.h"
 
 class Profile;
 
@@ -25,7 +27,10 @@ class NormalWindowSearchEngineProviderService : public KeyedService {
 
  private:
   void OnTemplateURLServiceLoaded(Profile* profile);
+  void OnPreferenceChanged(const std::string& pref_name);
 
+  raw_ptr<Profile> profile_ = nullptr;
+  StringPrefMember private_search_provider_guid_;
   base::CallbackListSubscription template_url_service_subscription_;
 };
 

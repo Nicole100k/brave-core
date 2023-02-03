@@ -42,7 +42,8 @@ void BraveSearchEnginesHandler::OnModelChanged() {
 
   brave::SetDefaultPrivateSearchProvider(profile_);
 
-  // Sync normal profile's search provider list with private profile's.
+  // Sync normal profile's search provider list with private profile
+  // for using same list on both.
   FireWebUIListener("private-search-engines-changed",
                     GetPrivateSearchEnginesList());
 }
